@@ -16,6 +16,9 @@
 // game's language, so which stat a line is comes from the same text in ENGLISH.pak, line by line
 // ("Elemental Power", "Armor", "Critical Hit", "Speed"; the packs list the bonuses in the same
 // order, e.g. "+7 Critical Hit\n+7 Elemental Power" = "+7 Kritische Treffer\n+7 Elementarkraft").
+// The menu's gold symbol ("ui:gold") is the stats screen's coin as well, in the global scene
+// (permanent/global.bld: ".../ui_main/sprites/stats/coin.png", 128x128 with the Skylanders S; the
+// HUD's own coin there is a 32x32 one).
 
 #include "toy_hats.h"
 
@@ -45,6 +48,7 @@ constexpr std::string_view kIconPath = "/haticons/";
 constexpr std::string_view kKeyPrefix = "hat:";
 constexpr uint32_t kMaxHat = 255;
 constexpr char kStatsArchive[] = "character/UI_StatsScreen_Extra.bld";
+constexpr std::string_view kCoinPicture = "/ui_main/sprites/stats/coin.png";
 constexpr char kEnglishPack[] = "ENGLISH.pak";
 
 // A bonus's stat by its English name, and the stats screen's picture of it.
@@ -155,6 +159,14 @@ void Load(std::filesystem::path rom, std::string pack) {
         if (std::regex_match(key, m, kName)) names[uint32_t(std::stoi(m[1])) + 1] = text;
       }
     }
+    // The stats screen's coin, the menu's gold symbol ("ui:gold").
+    ReadPictures(
+        *global, [](const std::string& name) { return name.ends_with(kCoinPicture); },
+        [](const std::string&, std::shared_ptr<const FigureImage> image) {
+          std::lock_guard<std::mutex> lock(g_mutex);
+          g_images["ui:gold"] = std::move(image);
+          return false;
+        });
   }
   const int stat_pictures = ReadStatPictures(rom);
   int with_picture = 0;
