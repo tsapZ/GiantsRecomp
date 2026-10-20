@@ -1,0 +1,7 @@
+# Codegen fixes for default.xex (Skylanders: Giants, Xbox 360).
+# Keys use the same schema as the manifest's [entrypoint] table.
+# Every entry (or group of same-reason entries) needs a comment: what's at the address, how it was
+# found, and why the fix is safe. Addresses from SwapForceRecomp, SSARecomp or GiantsRecomp by
+# TheBiemGamer apply to their own executables only and are checked against this one first.
+#
+# Entries are added as codegen and the runtime report them.
