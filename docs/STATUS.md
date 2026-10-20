@@ -14,7 +14,7 @@ Updated at the end of every session. Only record what a build actually did.
 | Menus | ✅ autosave notice, Choose Play (Story, Battle Mode, Settings), game slots, difficulty |
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
-| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander shows the game's collection portrait, the element filters the game's symbols; sidekicks and magic items still the menu's own |
+| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander, sidekick and magic item shows the game's collection portrait, the element filters the game's symbols |
 | Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
 | Frame rate | 30 FPS by default as on the console; `frame_rate_limit` (F4 > Bildrate) gives 60.0 and 143.9 FPS on the title screen, 96-97 FPS in the first level with 144 (scale 2); walking speed and the intro's pace unchanged |
 
@@ -78,9 +78,13 @@ Updated at the end of every session. Only record what a build actually did.
   thread, decoding only the archive blocks the portraits and the scene's tables are in. Checked
   in the menu: Double Trouble, Royal Double Trouble, Scarlet Ninjini, Ninjini, Chop Chop, Spyro
   (Series 1 and 2), Voodood, Wrecking Ball (Series 1 and 2), Pop Fizz. The element symbols come
-  from `CardGame_Streaming.bld`. Sidekicks and magic items have no such pictures in their scenes;
-  the scenes also name the upgrade pose pictures (`Cynder_Up1.png` ...), which sit as separate
-  textures in the character's `.arc`: material for a details view later.
+  from `CardGame_Streaming.bld`. Sidekicks and magic items have no portrait in their own scenes,
+  but the collection screen's scene (`misc/UI_Collection_Champions.bld`) has all 24 by name:
+  "<Skylander>_sidekick" (sidekick id = 500 + the Skylander's id, Giants' four from a table) and
+  "magicitem_<name>" (a table by id; the golden Dragonfire Cannon has its own). Checked in the
+  menu: Mini Jini and all twelve Spyro's Adventure items. The character scenes also name the
+  upgrade pose pictures (`Cynder_Up1.png` ...), which sit as separate textures in the character's
+  `.arc`: material for a details view later.
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read

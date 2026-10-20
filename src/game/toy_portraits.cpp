@@ -18,7 +18,12 @@
 // the best one wins, so a figure without a picture of its own (most chase variants) gets the
 // nearest. Spyro's Adventure's variants have ids of their own: 400 + n is the Legendary of n
 // (404 Legendary Bash), 28 is Dark Spyro (016_Spyro_Dark).
-// The element symbols come from CardGame_Streaming.bld (the card game's "element_icon_<name>").
+// Sidekicks and magic items have no portrait in their own scenes; the collection screen's scene
+// (rom/misc/UI_Collection_Champions.bld) has them in the same folder, by name: a sidekick is
+// "<its Skylander's portrait>_sidekick" ("landshark_sidekick" for Terrabite, 505), and its id is
+// 500 + that Skylander's id, except Giants' four (kGiantsSidekicks); the items are listed in
+// kItems. The element symbols come from CardGame_Streaming.bld (the card game's
+// "element_icon_<name>").
 
 #include "toy_portraits.h"
 
@@ -47,7 +52,10 @@ using skylanders::FigureImage;
 
 constexpr std::string_view kPortraitPath = "/collections/sky2/portraits/";
 constexpr std::string_view kElementPrefix = "element_icon_";
-constexpr char kElementArchive[] = "CardGame_Streaming.bld";
+constexpr char kElementArchive[] = "character/CardGame_Streaming.bld";
+constexpr char kCollectionArchive[] = "misc/UI_Collection_Champions.bld";
+constexpr char kCharacterDir[] = "character";
+constexpr std::string_view kSidekickSuffix = "_sidekick";
 constexpr char kScene[] = "level.bld";
 
 // Variant bits of the portal catalog (portal/figure_catalog.h).
@@ -60,6 +68,32 @@ constexpr uint16_t kLegendaryDeco = 3;
 constexpr uint16_t kLegendaryIds = 400;
 constexpr uint16_t kDarkSpyro = 28;
 constexpr uint16_t kSpyro = 16;
+constexpr uint16_t kSidekicks = 500;
+constexpr uint16_t kSidekicksEnd = 600;
+
+// Giants' sidekicks and the Skylander each is the small one of (the catalog's names: Barkley,
+// Thumpling, Mini Jini, Eye Small; the portraits: titanlife_, whale_, giantmagic_,
+// cyclopsgiant_sidekick).
+constexpr std::pair<uint16_t, uint16_t> kGiantsSidekicks[] = {
+    {540, 112}, {541, 107}, {542, 109}, {543, 114}};
+
+// The magic items and adventure packs by catalog id and their portraits; the alternate deco of the
+// Dragonfire Cannon (the golden one) has a picture of its own.
+struct ItemPicture {
+  uint16_t id;
+  bool alternate;
+  const char* name;
+};
+constexpr ItemPicture kItems[] = {
+    {200, false, "magicitem_anvilrain"},     {201, false, "magicitem_treasurechest"},
+    {202, false, "magicitem_healingelixir"}, {203, false, "magicitem_ghostswords"},
+    {204, false, "magicitems_timetwister"},  {205, false, "magicitem_skyironshield"},
+    {206, false, "magicitem_wingedboots"},   {207, false, "magicitem_sparx"},
+    {208, false, "magicitem_cannon"},        {208, true, "magicitem_cannonlegendary"},
+    {209, false, "magicitem_catapult"},      {300, false, "magicitem_dragonspeak"},
+    {301, false, "magicitem_empireofice"},   {302, false, "magicitem_pirateship"},
+    {303, false, "magicitem_darklightcrypt"}, {304, false, "magicitem_volcanicvault"},
+};
 
 struct Portrait {
   std::string deco;  // the archive's suffix in lower case: "", "legendary", "alt", "red", "dark"
@@ -70,6 +104,8 @@ struct Portrait {
 std::mutex g_mutex;
 std::unordered_map<uint16_t, std::vector<Portrait>> g_portraits;               // by figure id
 std::unordered_map<std::string, std::shared_ptr<const FigureImage>> g_art;    // by art key
+// The collection scene's sidekick and item portraits, by picture name.
+std::unordered_map<std::string, std::shared_ptr<const FigureImage>> g_named;
 
 std::string Lower(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
@@ -122,11 +158,11 @@ int ReadPictures(const std::filesystem::path& archive_path, Want want, Use use) 
   return count;
 }
 
-void Load(std::filesystem::path dir) {
+void Load(std::filesystem::path rom) {
   const auto start = Clock::now();
   std::error_code ec;
   int portraits = 0, archives = 0;
-  for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+  for (const auto& entry : std::filesystem::directory_iterator(rom / kCharacterDir, ec)) {
     const std::string file = entry.path().filename().string();
     // NNN_<model>[_<deco>].bld
     if (file.size() < 9 || !entry.path().extension().string().ends_with(".bld") ||
@@ -157,8 +193,19 @@ void Load(std::filesystem::path dir) {
       {"magic", "magic"}, {"water", "water"}, {"air", "air"},     {"death", "undead"},
       {"mech", "tech"},   {"fire", "fire"},   {"earth", "earth"}, {"life", "life"},
   };
+  const int named = ReadPictures(
+      rom / kCollectionArchive,
+      [](const alchemy::Igz6File::Image& image) {
+        const std::string name = PictureName(image.name);
+        return Has(Lower(image.name), kPortraitPath) && image.width == image.height &&
+               (name.ends_with(kSidekickSuffix) || name.starts_with("magicitem"));
+      },
+      [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
+        std::lock_guard<std::mutex> lock(g_mutex);
+        g_named[PictureName(image.name)] = ToFigureImage(std::move(rgba));
+      });
   const int elements = ReadPictures(
-      dir / kElementArchive,
+      rom / kElementArchive,
       [](const alchemy::Igz6File::Image& image) {
         return PictureName(image.name).starts_with(kElementPrefix);
       },
@@ -169,12 +216,47 @@ void Load(std::filesystem::path dir) {
           g_art["element:" + it->second] = ToFigureImage(std::move(rgba));
         }
       });
-  REXLOG_INFO("Toy portraits: {} portraits from {} archives, {} element symbols, in {} ms",
-              portraits, archives, elements,
+  REXLOG_INFO("Toy portraits: {} portraits from {} archives, {} sidekicks and items, {} element "
+              "symbols, in {} ms",
+              portraits, archives, named, elements,
               std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - start).count());
 }
 
+// The plain portrait's name of a Skylander (not a Series 2, LightCore or other deco one).
+std::string PlainName(uint16_t id) {
+  auto it = g_portraits.find(id);
+  if (it == g_portraits.end()) return {};
+  for (const Portrait& p : it->second) {
+    if (p.deco.empty() && !Has(p.name, "series2") && !Has(p.name, "lightcore")) return p.name;
+  }
+  return {};
+}
+
+std::shared_ptr<const FigureImage> Named(const std::string& name) {
+  auto it = g_named.find(name);
+  return it == g_named.end() ? nullptr : it->second;
+}
+
 std::shared_ptr<const FigureImage> Lookup(uint16_t id, uint16_t variant) {
+  if (id >= kSidekicks && id < kSidekicksEnd) {
+    uint16_t skylander = id - kSidekicks;
+    for (const auto& [sidekick, of] : kGiantsSidekicks) {
+      if (sidekick == id) skylander = of;
+    }
+    std::lock_guard<std::mutex> lock(g_mutex);
+    const std::string plain = PlainName(skylander);
+    return plain.empty() ? nullptr : Named(plain + std::string(kSidekickSuffix));
+  }
+  // An item's alternate deco without a picture of its own shows the plain one.
+  const ItemPicture* item = nullptr;
+  for (const ItemPicture& candidate : kItems) {
+    if (candidate.id != id) continue;
+    if (!item || candidate.alternate == bool(variant & kAlternateDeco)) item = &candidate;
+  }
+  if (item) {
+    std::lock_guard<std::mutex> lock(g_mutex);
+    return Named(item->name);
+  }
   uint16_t base = id;
   std::string deco;
   if (id >= kLegendaryIds && id < kLegendaryIds + 100) {
@@ -212,8 +294,8 @@ std::shared_ptr<const FigureImage> Lookup(uint16_t id, uint16_t variant) {
 
 }  // namespace
 
-void InstallToyPortraits(const std::filesystem::path& character_dir) {
-  std::thread(Load, character_dir).detach();
+void InstallToyPortraits(const std::filesystem::path& rom_dir) {
+  std::thread(Load, rom_dir).detach();
   skylanders::SetFigureImageProvider(
       [](uint16_t id, uint16_t variant) { return Lookup(id, variant); });
   skylanders::SetArtImageProvider([](const std::string& key) -> std::shared_ptr<const FigureImage> {
