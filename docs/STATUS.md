@@ -14,7 +14,7 @@ Updated at the end of every session. Only record what a build actually did.
 | Menus | ✅ autosave notice, Choose Play (Story, Battle Mode, Settings), game slots, difficulty |
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
-| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu |
+| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander shows the game's collection portrait, the element filters the game's symbols; sidekicks and magic items still the menu's own |
 | Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
 | Frame rate | 30 FPS by default as on the console; `frame_rate_limit` (F4 > Bildrate) gives 60.0 and 143.9 FPS on the title screen, 96-97 FPS in the first level with 144 (scale 2); walking speed and the intro's pace unchanged |
 
@@ -65,6 +65,22 @@ Updated at the end of every session. Only record what a build actually did.
   the intro's subtitles keep their pace (screenshots every 4 s); only the loading screen before it
   finishes about 4 s sooner at 144 FPS. The setting is `frame_rate_limit` on F4 > Bildrate,
   0 (30 FPS) by default.
+- **The game's pictures in the portal menu** (`src/game/toy_portraits.cpp`). The archives are
+  IGA version 8 (little-endian; `src/game/alchemy/iga8_archive.h`), the scenes in them IGZ
+  version 6 (`src/game/alchemy/igz6_file.h`: numbered fixup records instead of fourccs, pointers
+  with the pool in the top byte, igImage2 with its name at +0x08). Each Skylander's scene archive
+  `character/NNN_<model>[_<deco>].bld` (NNN = its figure id) holds the collection screen's
+  portraits, 256x256 DXT5: plain, `_series2`, `lightcore`, and the Legendary / alternate deco
+  models in archives of their own. Indexed over every character archive with a Python prototype
+  first; the menu picks by the catalog variant (Series 2, LightCore, alternate deco 3 =
+  Legendary, other alternate decos = `_Alt` / `_Red`), and Spyro's Adventure's own variant ids
+  (4xx Legendary, 28 Dark Spyro). 100 portraits from 69 archives load in 0.6 s on a background
+  thread, decoding only the archive blocks the portraits and the scene's tables are in. Checked
+  in the menu: Double Trouble, Royal Double Trouble, Scarlet Ninjini, Ninjini, Chop Chop, Spyro
+  (Series 1 and 2), Voodood, Wrecking Ball (Series 1 and 2), Pop Fizz. The element symbols come
+  from `CardGame_Streaming.bld`. Sidekicks and magic items have no such pictures in their scenes;
+  the scenes also name the upgrade pose pictures (`Cynder_Up1.png` ...), which sit as separate
+  textures in the character's `.arc`: material for a details view later.
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read

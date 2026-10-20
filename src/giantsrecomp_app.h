@@ -24,6 +24,7 @@
 #include "dev/input_script.h"
 #include "dev/gpu_diagnostics.h"
 #include "game/portal_prompt_watch.h"
+#include "game/toy_portraits.h"
 #include "localization.h"
 #include "portal_rex/portal_menu.h"
 #include "portal_rex/portal_menu_input.h"
@@ -124,6 +125,9 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::StartPortalPromptWatch(runtime()->memory());
     // Items go on and off the portal only once the player's Skylander is back in the game.
     skylanders::SetGameBusyProvider([] { return giantsrecomp::PortalPromptActive(); });
+    // Pictures for the portal menu from the game's own files: every Skylander's collection
+    // portrait and the element symbols.
+    giantsrecomp::InstallToyPortraits(game_data_root_ / "character");
     // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
     // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
     // it themselves.

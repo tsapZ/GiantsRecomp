@@ -24,10 +24,15 @@ What we know about the game and the dump this project targets, and what still ha
 
 - **Alchemy, like Swap Force, not Spyro's Adventure's engine.** The disc has `alchemy.xml` and
   folders `character\`, `item\`, `level\`, `misc\`, `movies\`, `outfit\`, `permanent\` with
-  `.arc` / `.bld` files (596 `.bld`, 295 `.arc`), movies as Bink 2 `.mov`. The archives start
-  with `IGA\x1a`, version 8 with a little-endian header; Swap Force's `.pak` are version 10 with
-  a big-endian one, so SwapForceRecomp's archive reader needs adapting before the portal menu can
-  use the game's pictures and names.
+  `.arc` / `.bld` files (596 `.bld`, 295 `.arc`), movies as Bink 2 `.mov`. The archives are
+  `IGA\x1a` version 8 with a little-endian header (Swap Force's `.pak`: version 10, big-endian):
+  `src/game/alchemy/iga8_archive.h`. A `.bld` holds a scene (`level.bld`, IGZ version 6:
+  `src/game/alchemy/igz6_file.h`) and the language packs (`ENGLISH.pak`, `GERMAN.pak`, ...); a
+  `.arc` the streamed files (voices as `.wav.enc` per language, textures as `.png.igb.tex.igz`).
+- **Figures:** `character\NNN_<model>[_<deco>].bld` per Skylander, NNN its figure id; the scene
+  has its collection portraits (`.../collections/sky2/portraits/<name>.png`), the text key
+  `NNN_Toy_String` and the names of its upgrade pose pictures; the global scene has the
+  `NNN_Toy_Name` keys.
 - **The portal screens are a game script.** The "Portal Control" state machine (global level
   includes) runs them: states such as `Portal Control - In Game - 0 - Idle`, `Portal Control -
   Portal - 0 - Idle P1 Only` (the prompt), `Portal Control - Magic Moment - 4 - Show Minion P1`

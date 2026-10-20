@@ -8,7 +8,7 @@ Giants Recompiled, the second Skylanders game, built the same way as SwapForceRe
 | 1 Recompile and boot | ✅ | codegen, title screen (jump tables), menus, the first level with a figure |
 | 1.1 Portal | ✅ | emulated portal and the portal menu; the menu opening by itself at the game's prompt, the portal check |
 | 2 In-game | ⬜ | the first levels playable, saves, figures, intro skip |
-| 3 Polish | ⬜ | the game's pictures and names in the menus (IGA v8 archives), resolution, ultrawide; high frame rate works (`frame_rate_limit`), more levels to check |
+| 3 Polish | ⬜ | the game's pictures in the menus (Skylanders done; sidekicks, items, upgrade poses open), names from the game's text, resolution, ultrawide; high frame rate works (`frame_rate_limit`), more levels to check |
 
 ## Now, next, later
 
