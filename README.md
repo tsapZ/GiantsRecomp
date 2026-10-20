@@ -16,6 +16,8 @@ See [docs/STATUS.md](docs/STATUS.md) and [docs/roadmap.md](docs/roadmap.md).
 | In-game | ✅ first level with a figure |
 | Portal | ✅ emulated portal: figures are read and come into the game |
 | Portal menu | ✅ opens by itself when the game asks for a Skylander; portal check on "too many" |
+| Languages | ✅ English, German, French, Spanish, Italian |
+| Frame rate | ✅ 30 FPS like the console, or up to your screen's rate (F4 > Bildrate) |
 
 ## Building
 

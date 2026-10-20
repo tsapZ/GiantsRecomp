@@ -16,6 +16,7 @@ Updated at the end of every session. Only record what a build actually did.
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
 | Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu |
 | Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
+| Frame rate | 30 FPS by default as on the console; `frame_rate_limit` (F4 > Bildrate) gives 60.0 and 143.9 FPS on the title screen, 96-97 FPS in the first level with 144 (scale 2); walking speed and the intro's pace unchanged |
 
 ## 2026-10-20: session log
 
@@ -54,6 +55,16 @@ Updated at the end of every session. Only record what a build actually did.
   and the prompt ("Spieler 1: Bitte setze einen Skylander auf das Magische Portal.") in German;
   English and Spanish unchanged. Whether the voices are German is for a listen (the files are
   there). The language choice is back to five, "auto" included.
+- **Frame rate.** The game measured 30.0 FPS on the title and in the first level. Its D3D swap
+  queue (`sub_823D9758`, the same 107 instructions as Swap Force's `sub_82F5C258`) already gets
+  presentation interval 1 (swap word 0x100, logged by a test hook), so unlike Swap Force no hook
+  is needed: the 30 FPS are the SDK's emulated vblank, which runs at 30 Hz without
+  `frame_rate_limit` and at the limit's rate with one. Measured: 60.0 FPS with 60, 143.9 with
+  144 and 180 with 200 on the title screen; 60.0 and 96-97 in the first level (scale 2). Game
+  speed: holding forward for 2 s in the first level ends at the same spot at 30 and 144 FPS, and
+  the intro's subtitles keep their pace (screenshots every 4 s); only the loading screen before it
+  finishes about 4 s sooner at 144 FPS. The setting is `frame_rate_limit` on F4 > Bildrate,
+  0 (30 FPS) by default.
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read
