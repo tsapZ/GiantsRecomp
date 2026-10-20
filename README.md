@@ -12,8 +12,9 @@ See [docs/STATUS.md](docs/STATUS.md) and [docs/roadmap.md](docs/roadmap.md).
 | Area | State |
 |---|---|
 | Build | ✅ codegen and build work |
-| Boot | ✅ title screen |
-| Portal | ⬜ (the portal code is in, not tried with this game) |
+| Boot | ✅ title screen, menus |
+| In-game | ✅ first level with a figure |
+| Portal | ✅ emulated portal: figures are read and come into the game |
 
 ## Building
 
