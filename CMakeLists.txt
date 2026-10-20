@@ -47,6 +47,7 @@ set(GIANTSRECOMP_SOURCES
     src/game/game_text.cpp
     src/game/kernel_stubs.cpp
     src/game/portal_prompt_watch.cpp
+    src/game/toy_hats.cpp
     src/game/toy_portraits.cpp
     src/game/toy_upgrades.cpp
     src/game/xenos_dxt.cpp

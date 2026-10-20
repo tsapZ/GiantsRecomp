@@ -108,6 +108,13 @@ Updated at the end of every session. Only record what a build actually did.
   The card game's element symbols are model textures too and were upside down in the menu
   (seen by the owner): both are turned now; the collection portraits are UI sprites and come
   the right way up.
+- **Hats in the details view** (`src/game/toy_hats.cpp`): the hat number a figure stores is the
+  game's kTfbSpyroTag_Hat_* (Swap Force's executable has the enum), and Giants' own data follows
+  it with number - 1: the store archives `misc/StoreItem_Hat_NNN.bld` (icon, bonuses as text)
+  and the global scene's `HatName(kk)` (all 37 names of Spyro's Adventure's hats checked against
+  the enum, German and English). 96 names and 52 hats with picture and bonuses load in the
+  background. Checked with a test copy of Chop Chop given hat 1: "Kampfhut", the army helmet,
+  "+15 Elementarkraft".
   Checked in the menu: Double Trouble ("Kanalisierer" / "Beschwörer", "Erweiterter
   Geisterstrahl", 1700 Gold) and Scarlet Ninjini ("Schwerter der Macht" / "Alte Dschinn-Magie",
   "Wunschklingen-Kombos: Drücke X, X, HALTE Y für Klingenschwung"). Not yet seen with a figure

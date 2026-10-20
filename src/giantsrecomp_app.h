@@ -25,6 +25,7 @@
 #include "dev/gpu_diagnostics.h"
 #include "game/game_text.h"
 #include "game/portal_prompt_watch.h"
+#include "game/toy_hats.h"
 #include "game/toy_portraits.h"
 #include "game/toy_upgrades.h"
 #include "localization.h"
@@ -134,6 +135,8 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::InstallGameText(game_data_root_);
     // The details view's upgrades: names, descriptions, prices and pictures from the game.
     giantsrecomp::InstallToyUpgrades(game_data_root_);
+    // The details view's hat: the game's name, picture and bonuses.
+    giantsrecomp::InstallToyHats(game_data_root_);
     // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
     // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
     // it themselves.
