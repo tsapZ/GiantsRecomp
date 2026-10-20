@@ -1,27 +1,51 @@
 # GiantsRecomp
 
 An unofficial native Windows port of **Skylanders: Giants** (Xbox 360), made with static
-recompilation (ReXGlue). Work in progress: it boots, and the first level plays with a figure.
+recompilation through ReXGlue. The first level plays with the emulated Portal of Power, and the
+portal menu shows the game's own portraits, upgrades and hats.
 
-You need your own copy of the game: nothing from the game is in this repository.
+> **Unofficial fan project.** It is not affiliated with or endorsed by Activision, Toys for Bob
+> or Microsoft. This repository contains **no game data**: you need your own copy of the game.
+
+One of a set: [SSARecomp](https://github.com/tsapZ/SSARecomp), GiantsRecomp and
+[SwapForceRecomp](https://github.com/tsapZ/SwapForceRecomp) share one portal, one menu style and
+one figure folder. Later the hub, [Skylanders: Core of Light](https://github.com/tsapZ/SkylandersCoreOfLight),
+starts them all; each game stays playable on its own.
 
 ## Status
 
-See [docs/STATUS.md](docs/STATUS.md) and [docs/roadmap.md](docs/roadmap.md).
+First level playable. Where each part stands and what comes next: **[docs/roadmap.md](docs/roadmap.md)**.
+Session details and known bugs: [docs/STATUS.md](docs/STATUS.md).
 
 | Area | State |
 |---|---|
-| Build | ✅ codegen and build work |
-| Boot | ✅ title screen, menus |
-| In-game | ✅ first level with a figure |
-| Portal | ✅ emulated portal: figures are read and come into the game |
-| Portal menu | ✅ opens by itself when the game asks for a Skylander; portal check on "too many"; the game's own portraits, item names and upgrade screen |
-| Languages | ✅ English, German, French, Spanish, Italian |
-| Frame rate | ✅ 30 FPS like the console, or up to your screen's rate (F4 > Bildrate) |
+| Boot, menus, saving | ✅ title screen after about 15 s (logo movies skipped), Choose Play, game slots, pause menu, Continue |
+| First level | ✅ the intro with Eon's narration, then Chapter 1 with a figure; three minutes of scripted play without errors |
+| Rest of the game | 🟡 not played through yet (#7); Battle Mode needs two pads (#8) |
+| Frame rate | ✅ 30 FPS like the console, or faster: 96-108 FPS in the first level with 144 (F4 > Bildrate), game speed unchanged |
+| Audio | ✅ real 5.1 (voices on the center, LFE, rear channels) on a 5.1 device, stereo otherwise |
+| Languages | ✅ English, German, French, Spanish, Italian (German and Italian through a region hook, the North American disc has them all) |
+| Portal | ✅ emulated: figures come in with their portal sequence, a second Skylander as player 2; real USB portal still to test (#12) |
+| Portal menu | ✅ opens by itself at "Please put a Skylander" for player 1 and 2; the portal check on "too many"; the game's own portraits for every figure, item names, upgrades like the game's upgrade screen, hats |
+| Settings menu | ✅ F4 or Back + RB: presets, resolution, frame rate, language, portal, controls |
+| Ultrawide | ⬜ planned (#19) |
+| Installer tested on a clean PC | ⬜ planned (#20) |
+
+## Playing
+
+Build it once (below), then from the **x64 Native Tools Command Prompt for VS 2022**:
+
+    just play-release
+
+The keys and menus are in [docs/menus.md](docs/menus.md), the portal in [docs/portal.md](docs/portal.md).
+The emulated figures live in `Documents\Skylanders\Figures`, shared with the other games.
 
 ## Building
 
-The same as SwapForceRecomp: see [docs/development.md](docs/development.md).
+Needs Windows, Visual Studio 2022 (C++ workload and C++ Clang tools), CMake, Ninja, just, Git and
+Python 3, and the game's `default.xex` in `rom/` (see [rom/README.md](rom/README.md)). The steps are
+the same as for SwapForceRecomp: [docs/development.md](docs/development.md). All docs:
+[docs/README.md](docs/README.md).
 
 ## Credits
 

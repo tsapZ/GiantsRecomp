@@ -144,3 +144,7 @@ Updated at the end of every session. Only record what a build actually did.
 - **Input script:** `save` (guest memory to a file, for snapshot comparisons), `remove <slot>`,
   and addresses as `hit<n>` (a hit of the last scan) or `*<addr>` (through a pointer), for data
   whose heap address changes from run to run.
+- **Repository brought to SwapForceRecomp's level:** GitHub milestones per phase and an issue
+  for every step, done ones closed with their result, the open ones as the plan; a play test
+  issue for the owner; docs/roadmap.md with issue numbers, docs/README.md, docs/portal.md and
+  docs/menus.md; the README's status table.
