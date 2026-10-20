@@ -158,3 +158,10 @@ Updated at the end of every session. Only record what a build actually did.
   1566231, found in SwapForceRecomp with the USB portal).
 - **Crash report in the log** (`src/dev/write_watch.cpp`, `InstallCrashReport`, from
   SwapForceRecomp): a real crash logs the guest call chain and registers ("Crash: ...").
+- **No speed-up above 120 FPS** (#22). The Cemu packs for the Wii U version patch a clamp against
+  a "speed-up above 120 FPS". The game clock here (`sub_822F18D8`, once per frame) has such a
+  clamp, a minimum time step at +0x10 of the clock, but its minimum is 0 in this executable, so it
+  never raises a step. Measured with a new midasm hook at its compare (`src/hooks/game_clock_hook.cpp`,
+  developer setting `game_clock_log`: game time against real time every 5 s): speed 1.000 at
+  230-240 FPS (resolution scale 1, title and level start) and at 125-130 FPS in play. The hook
+  changes nothing and stays as the measuring tool.

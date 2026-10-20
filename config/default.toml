@@ -56,3 +56,15 @@ registers = ["r1"]
 address = 0x8217F350
 name = "GameRegionForLanguage"
 registers = ["r3"]
+
+# 0x822F197C is in the game clock's step (sub_822F18D8, called once per frame from sub_8223C4B8):
+# the compare of this frame's time step (f0) with the clock's minimum step (f13, loaded from +0x10
+# of the clock, r31) that would raise shorter steps to the minimum (the Cemu packs for the Wii U
+# version patch out such a clamp against a speed-up above 120 FPS). Here the minimum is 0, so it
+# never does: src/hooks/game_clock_hook.cpp only logs the minimum and, with game_clock_log, the game
+# time against real time (speed 1.000 measured at 230-240 FPS). It changes nothing. Found
+# 2026-10-20 in the Ghidra listing and checked in the generated code.
+[[midasm_hook]]
+address = 0x822F197C
+name = "GameClockMinStepHook"
+registers = ["f0", "f13", "r31"]
