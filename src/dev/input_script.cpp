@@ -80,6 +80,23 @@ struct Event {
 // The hits of the last scan, for hit<n> addresses. Only the script thread uses it.
 std::vector<uint32_t> g_scan_hits;
 
+// Whether [address, address + size) is committed, readable guest memory: a dump or a pointer read
+// anywhere else would end the game with a guest access violation.
+bool Readable(rex::memory::Memory* memory, uint32_t address, uint32_t size) {
+  for (uint64_t at = address; at < uint64_t(address) + size;) {
+    rex::memory::BaseHeap* heap = memory->LookupHeap(uint32_t(at));
+    rex::memory::HeapAllocationInfo info{};
+    if (!heap || !heap->QueryRegionInfo(uint32_t(at), &info) ||
+        !(info.state & rex::memory::kMemoryAllocationCommit) ||
+        !(info.protect & rex::memory::kMemoryProtectRead) || !info.region_size) {
+      return false;
+    }
+    // The region is counted in whole pages from the one that holds `at`.
+    at = (at & ~uint64_t(heap->page_size() - 1)) + info.region_size;
+  }
+  return true;
+}
+
 // An address word: a hex address, hit<n>[+<hex>] (sets e.hit) or *<hex>[+<hex>] (sets
 // e.pointer); for the last two it returns the offset.
 uint32_t ParseAddress(const std::string& word, Event& e) {
@@ -103,6 +120,10 @@ uint32_t ParseAddress(const std::string& word, Event& e) {
 bool ResolveAddress(rex::memory::Memory* memory, const Event& e, uint32_t& address) {
   address = e.words[0];
   if (e.pointer) {
+    if (!Readable(memory, e.pointer, 4)) {
+      REXLOG_WARN("Input script: {} through {:08X}, which isn't mapped", e.text, e.pointer);
+      return false;
+    }
     uint32_t v;
     std::memcpy(&v, memory->TranslateVirtual<const uint8_t*>(e.pointer), 4);
     address += rex::byte_swap(v);
@@ -452,6 +473,10 @@ class ScriptInputDriver final : public rex::input::InputDriver {
         } else if (e.kind == Event::Kind::kDump) {
           uint32_t address;
           if (!ResolveAddress(memory, e, address)) continue;
+          if (!Readable(memory, address, 4 * e.frames)) {
+            REXLOG_WARN("Input script: dump {:08X}: not mapped", address);
+            continue;
+          }
           for (uint32_t i = 0; i < e.frames; i += 8) {
             std::string line;
             for (uint32_t k = i; k < e.frames && k < i + 8; ++k) {
