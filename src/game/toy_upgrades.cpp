@@ -310,12 +310,7 @@ std::shared_ptr<const FigureImage> ReadPicture(const std::filesystem::path& arc_
   if (images.empty()) return nullptr;
   auto rgba = igz->Decode(images.front());
   if (!rgba) return nullptr;
-  // Stored upside down.
-  const size_t row = size_t(rgba->width) * 4;
-  for (int y = 0; y < rgba->height / 2; ++y) {
-    std::swap_ranges(rgba->pixels.begin() + y * row, rgba->pixels.begin() + (y + 1) * row,
-                     rgba->pixels.begin() + (rgba->height - 1 - y) * row);
-  }
+  FlipVertically(*rgba);  // stored upside down
   auto out = std::make_shared<FigureImage>();
   out->width = rgba->width;
   out->height = rgba->height;

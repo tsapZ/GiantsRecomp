@@ -23,4 +23,9 @@ struct RgbaImage {
 std::optional<RgbaImage> DecodeXenosDxt(const uint8_t* data, size_t size, int width, int height,
                                         Dxt kind, bool tiled);
 
+// Turns the picture upside down. This game stores its model textures bottom row first (the
+// upgrade poses, the card game's element symbols); its UI sprites (the collection portraits) are
+// the right way up.
+void FlipVertically(RgbaImage& image);
+
 }  // namespace giantsrecomp

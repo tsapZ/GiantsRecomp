@@ -23,7 +23,7 @@
 // "<its Skylander's portrait>_sidekick" ("landshark_sidekick" for Terrabite, 505), and its id is
 // 500 + that Skylander's id, except Giants' four (kGiantsSidekicks); the items are listed in
 // kItems. The element symbols come from CardGame_Streaming.bld (the card game's
-// "element_icon_<name>").
+// "element_icon_<name>"), model textures stored upside down like the upgrade poses.
 
 #include "toy_portraits.h"
 
@@ -213,6 +213,7 @@ void Load(std::filesystem::path rom) {
       [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
         const std::string element = PictureName(image.name).substr(kElementPrefix.size());
         if (auto it = kElements.find(element); it != kElements.end()) {
+          FlipVertically(rgba);  // a model texture, stored upside down (skull's teeth on top)
           std::lock_guard<std::mutex> lock(g_mutex);
           g_art["element:" + it->second] = ToFigureImage(std::move(rgba));
         }

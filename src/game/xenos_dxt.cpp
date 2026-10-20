@@ -1,5 +1,6 @@
 #include "xenos_dxt.h"
 
+#include <algorithm>
 #include <cstring>
 
 namespace giantsrecomp {
@@ -73,6 +74,15 @@ void DecodeAlphaBlock(const uint8_t* b, Dxt kind, RgbaImage& img, int x0, int y0
 }
 
 }  // namespace
+
+void FlipVertically(RgbaImage& image) {
+  const size_t row = size_t(image.width) * 4;
+  for (int y = 0; y < image.height / 2; ++y) {
+    std::swap_ranges(image.pixels.begin() + ptrdiff_t(y * row),
+                     image.pixels.begin() + ptrdiff_t((y + 1) * row),
+                     image.pixels.begin() + ptrdiff_t((image.height - 1 - y) * row));
+  }
+}
 
 std::optional<RgbaImage> DecodeXenosDxt(const uint8_t* data, size_t size, int width, int height,
                                         Dxt kind, bool tiled) {

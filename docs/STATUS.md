@@ -103,6 +103,9 @@ Updated at the end of every session. Only record what a build actually did.
   3000; 4000; 5000. The bits follow the game's `pp_Flags1_UpgradeBits` field list, the same as
   Swap Force's. The pictures are the 512x360 upgrade poses in the character's `.arc`, stored upside
   down, read when the view first shows them. The texts' button glyphs `[` `]` `{` become X, Y, B.
+  The card game's element symbols are model textures too and were upside down in the menu
+  (seen by the owner): both are turned now; the collection portraits are UI sprites and come
+  the right way up.
   Checked in the menu: Double Trouble ("Kanalisierer" / "Beschwörer", "Erweiterter
   Geisterstrahl", 1700 Gold) and Scarlet Ninjini ("Schwerter der Macht" / "Alte Dschinn-Magie",
   "Wunschklingen-Kombos: Drücke X, X, HALTE Y für Klingenschwung"). Not yet seen with a figure
