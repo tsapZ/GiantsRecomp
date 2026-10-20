@@ -172,6 +172,31 @@ std::vector<uint64_t> Igz6File::ObjectOffsets() const {
   return out;
 }
 
+std::vector<uint64_t> Igz6File::Objects(std::string_view type) const {
+  std::vector<uint64_t> out;
+  for (uint64_t object : ObjectOffsets()) {
+    const uint32_t index = Be32(object);
+    if (index < types_.size() && types_[index] == type) out.push_back(object);
+  }
+  return out;
+}
+
+std::string Igz6File::StringField(uint64_t object, uint32_t field) const {
+  const auto at = Deserialize(Be32(object + field));
+  return at ? String(*at) : std::string();
+}
+
+std::optional<std::vector<uint8_t>> Igz6File::MemoryField(uint64_t object,
+                                                          uint32_t size_field) const {
+  constexpr uint32_t kMaxSize = 0x1000000;
+  const uint32_t size = Be32(object + size_field) & 0x0FFFFFFF;
+  const auto at = Deserialize(Be32(object + size_field + 4));
+  if (!at || size > kMaxSize || *at + size > length_) return std::nullopt;
+  std::vector<uint8_t> out(size);
+  if (size && !reader_(*at, out.size(), out.data())) return std::nullopt;
+  return out;
+}
+
 std::vector<Igz6File::Image> Igz6File::Images() const {
   std::vector<Image> out;
   for (uint64_t object : ObjectOffsets()) {

@@ -25,6 +25,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -49,6 +50,13 @@ class Igz6File {
   std::vector<Image> Images() const;
   // nullopt for an unknown format or pixels that can't be read.
   std::optional<RgbaImage> Decode(const Image& image) const;
+
+  // Every object of class `type`, in the file's order.
+  std::vector<uint64_t> Objects(std::string_view type) const;
+  // The string a pointer field of `object` points to (empty for none).
+  std::string StringField(uint64_t object, uint32_t field) const;
+  // A memory reference: a u32 size | flags << 28 at `size_field`, the pointer at `size_field` + 4.
+  std::optional<std::vector<uint8_t>> MemoryField(uint64_t object, uint32_t size_field) const;
 
  private:
   struct Fixup {

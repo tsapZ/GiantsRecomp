@@ -23,6 +23,7 @@
 
 #include "dev/input_script.h"
 #include "dev/gpu_diagnostics.h"
+#include "game/game_text.h"
 #include "game/portal_prompt_watch.h"
 #include "game/toy_portraits.h"
 #include "localization.h"
@@ -128,6 +129,8 @@ class GiantsrecompApp : public rex::ReXApp {
     // Pictures for the portal menu from the game's own files: the collection portraits of every
     // Skylander, sidekick and magic item, and the element symbols.
     giantsrecomp::InstallToyPortraits(game_data_root_);
+    // Names of magic items and adventure packs from the game's text, in its language.
+    giantsrecomp::InstallGameText(game_data_root_);
     // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
     // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
     // it themselves.

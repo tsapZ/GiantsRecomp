@@ -85,6 +85,16 @@ Updated at the end of every session. Only record what a build actually did.
   menu: Mini Jini and all twelve Spyro's Adventure items. The character scenes also name the
   upgrade pose pictures (`Cynder_Up1.png` ...), which sit as separate textures in the character's
   `.arc`: material for a details view later.
+- **The game's names for magic items and adventure packs** (`src/game/game_text.cpp`), in the
+  language the game runs in. A scene's StringInfo objects name its text keys; the archive's
+  language pack (`GERMAN.pak`, ..., IGZ 6 with a LanguagePackInfo) holds the texts as UTF-16BE in
+  the same order (checked on global.bld: 908 keys, 908 texts). Each item archive's first
+  `..._String` text is its name; in the menu, German: "Ambossregen", "Düstergruft",
+  "Drachenfeuer-Kanone", "Skorpion-Schläger" and the rest. The golden Dragonfire Cannon, the
+  Platinum Treasure Chest and the sidekicks keep the catalog's names (the game calls Barkley
+  "TreeRexling"). The character scenes have each Skylander's upgrades in the same way
+  (`032_Name(00)` "Cynder-Flug" ... `(11)` the Wow Pow, `032_Upgrade_PathA` with descriptions):
+  the text for an upgrade view later.
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read
