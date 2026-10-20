@@ -292,7 +292,8 @@ std::shared_ptr<const FigureUpgrades> Lookup(uint16_t id, uint16_t variant) {
 }
 
 // Reads one upgrade picture: the .arc entry is an IGZ with a single igImage2.
-std::shared_ptr<const FigureImage> ReadPicture(const std::filesystem::path& arc_path, size_t entry) {
+std::shared_ptr<const FigureImage> ReadPicture(const std::filesystem::path& arc_path,
+                                               size_t entry) {
   auto arc = alchemy::Iga8Archive::Open(arc_path);
   if (!arc) return nullptr;
   auto data = arc->ReadAll(entry);
