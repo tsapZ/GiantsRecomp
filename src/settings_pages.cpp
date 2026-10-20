@@ -151,18 +151,15 @@ SettingsPage FrameRatePage() {
 
 SettingsPage GamePage() {
   SettingsPage page{"Game", "Spiel", {}};
-  // The disc has text and voices in ten languages (text\<lang>, audio\<lang>); the five here
-  // are the Xbox 360 language ids the SDK knows. English and German checked in game (menus,
-  // subtitles, voices). "auto" follows the Windows display language.
+  // This disc has English, French and Spanish (checked on the title screen). "auto" follows the
+  // Windows display language if the disc has it, else English.
   Setting language{"language", "Language", "Sprache",
                    "Text and voices. Automatic: the language of Windows, if the game has it.",
                    "Texte und Stimmen. Automatisch: die Sprache von Windows, wenn das Spiel sie hat.",
                    {{"auto", "Automatic", "Automatisch"},
                     {"english", "English", "English"},
-                    {"german", "Deutsch", "Deutsch"},
                     {"french", "Fran\xC3\xA7" "ais", "Fran\xC3\xA7" "ais"},
-                    {"spanish", "Espa\xC3\xB1ol", "Espa\xC3\xB1ol"},
-                    {"italian", "Italiano", "Italiano"}}};
+                    {"spanish", "Espa\xC3\xB1ol", "Espa\xC3\xB1ol"}}};
   language.restart = true;
   page.settings.push_back(language);
   Setting intro{"skip_intro", "Skip logo movies", "Logo-Videos \xC3\xBC" "berspringen",

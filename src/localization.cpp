@@ -32,18 +32,15 @@ std::string Lower(std::string s) {
   return s;
 }
 
-// The Windows display language as one of the names below; English for any other.
+// The Windows display language if this disc has it (English, French, Spanish); English for any
+// other, so the app's menus and the game speak the same language.
 std::string SystemLanguage() {
 #ifdef _WIN32
   switch (PRIMARYLANGID(GetUserDefaultUILanguage())) {
-    case LANG_GERMAN:
-      return "german";
     case LANG_FRENCH:
       return "french";
     case LANG_SPANISH:
       return "spanish";
-    case LANG_ITALIAN:
-      return "italian";
     default:
       break;
   }
@@ -63,9 +60,9 @@ void ApplyLanguageSetting() {
     return;
   }
 
-  // Xbox 360 XLanguage IDs (include/rex/system/xcontent.h); only these five are confirmed to
-  // match a real console. Dutch/Swedish/Norwegian/Danish/Finnish aren't in that enum at all, even
-  // though this game's disc supports them on real hardware -- use a raw numeric id to try one.
+  // Xbox 360 XLanguage IDs (include/rex/system/xcontent.h). This disc (the North American one)
+  // has English, French and Spanish: checked on its title screen, German and Italian come out
+  // English. The other two names stay accepted for a disc that has them.
   static const std::unordered_map<std::string, uint32_t> kNames = {
       {"english", 1}, {"german", 3}, {"french", 4}, {"spanish", 5}, {"italian", 6},
   };

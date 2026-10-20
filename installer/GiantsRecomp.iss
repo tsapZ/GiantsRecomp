@@ -236,10 +236,8 @@ end;
 function LanguageTomlValue: AnsiString;
 begin
   case LanguageCombo.ItemIndex of
-    1: Result := 'german';
-    2: Result := 'french';
-    3: Result := 'spanish';
-    4: Result := 'italian';
+    1: Result := 'french';
+    2: Result := 'spanish';
   else
     Result := 'english';
   end;
@@ -398,16 +396,12 @@ begin
   LanguageCombo.Parent := SettingsPage.Surface;
   LanguageCombo.Style := csDropDownList;
   LanguageCombo.Items.Add('English');
-  LanguageCombo.Items.Add('Deutsch (German)');
   LanguageCombo.Items.Add('Francais (French)');
   LanguageCombo.Items.Add('Espanol (Spanish)');
-  LanguageCombo.Items.Add('Italiano (Italian)');
-  // Preselects the Windows display language (primary language id).
+  // Preselects the Windows display language if the disc has it (primary language id).
   case GetUILanguage and $3FF of
-    $07: LanguageCombo.ItemIndex := 1;
-    $0C: LanguageCombo.ItemIndex := 2;
-    $0A: LanguageCombo.ItemIndex := 3;
-    $10: LanguageCombo.ItemIndex := 4;
+    $0C: LanguageCombo.ItemIndex := 1;
+    $0A: LanguageCombo.ItemIndex := 2;
   else
     LanguageCombo.ItemIndex := 0;
   end;
