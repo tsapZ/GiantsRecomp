@@ -14,6 +14,6 @@ Giants Recompiled, the second Skylanders game, built the same way as SwapForceRe
 
 | When | What | Who |
 |---|---|---|
-| **Now** | Playing further: levels, saves, the Giants themselves; a second player's prompt (`... P2 ...` states, not tried yet) | me |
+| **Now** | Playing further: levels, saves, the Giants themselves | me |
 | Next | Hats in the details view: names (`HatName(00)` ... in the global scene's texts), icons (`misc/StoreItem_Hat_NNN.bld`, `haticons/sky2/*.png`) and stats (`Hat_Desc_NNN`); the figure's hat number to these still to check with a figure that wears one | me |
 | After all games | The Skylanders hub | both |

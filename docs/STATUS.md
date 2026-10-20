@@ -123,7 +123,10 @@ Updated at the end of every session. Only record what a build actually did.
   The watch finds both variables by class and name, then polls them. Checked by script: the menu
   opens at the first prompt and again after the figure was taken off, closes when Ninjini is
   placed; a second Skylander gives `102_PortalError_TooManyMinions` and the portal check; the
-  pause menu, the title and the autosave notice open nothing.
+  pause menu, the title and the autosave notice open nothing. Player 2 (input script `player 2`,
+  Start, A) gets the prompt with the state `... Idle P2 Only`, and the menu opens for player 2;
+  Stealth Elf placed comes in as player 2 next to Ninjini, and taking him off asks player 2
+  again.
 - **Input script:** `save` (guest memory to a file, for snapshot comparisons), `remove <slot>`,
   and addresses as `hit<n>` (a hit of the last scan) or `*<addr>` (through a pointer), for data
   whose heap address changes from run to run.

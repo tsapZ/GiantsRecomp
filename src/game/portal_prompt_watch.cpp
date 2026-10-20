@@ -18,8 +18,9 @@
 //   "current state name"   the current state of the state machine, an OpDefineMacroSpecialization
 //                          (vtable 0x820DFE40) named after it: "Portal Control - In Game - 0 -
 //                          Idle" in play, "Portal Control - Portal - 0 - Idle P1 Only" at the
-//                          prompt; the script also has "... Idle P2 Only" and "Portal Control -
-//                          Magic Moment - ..." states for a figure coming in
+//                          prompt for player 1, "... Idle P2 Only" for player 2 (measured: player 2
+//                          joining, and taking player 2's figure off), "Portal Control - Magic
+//                          Moment - ..." while a figure comes in
 // The other error keys come from the script's strings; what each screen opens (kErrors) follows
 // their names and is measured only where marked.
 // Several state machines have a "current state name"; the one whose state is a "Portal Control -"
