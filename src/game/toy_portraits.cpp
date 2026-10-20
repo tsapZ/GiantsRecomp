@@ -23,7 +23,9 @@
 // "<its Skylander's portrait>_sidekick" ("landshark_sidekick" for Terrabite, 505), and its id is
 // 500 + that Skylander's id, except Giants' four (kGiantsSidekicks); the items are listed in
 // kItems. The element symbols come from CardGame_Streaming.bld (the card game's
-// "element_icon_<name>"), model textures stored upside down like the upgrade poses.
+// "element_icon_<name>"), model textures stored upside down like the upgrade poses. The portraits
+// are stored upside down as well, every one of them (seen in the play test of 2026-10-21; the hat
+// icons, UI sprites, are not).
 
 #include "toy_portraits.h"
 
@@ -185,6 +187,7 @@ void Load(std::filesystem::path rom) {
           return Has(Lower(image.name), kPortraitPath) && image.width == image.height;
         },
         [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
+          FlipVertically(rgba);  // stored upside down (Double Trouble's teeth above his eyes)
           Portrait portrait{deco, PictureName(image.name), ToFigureImage(std::move(rgba))};
           std::lock_guard<std::mutex> lock(g_mutex);
           g_portraits[id].push_back(std::move(portrait));
@@ -203,6 +206,7 @@ void Load(std::filesystem::path rom) {
                (name.ends_with(kSidekickSuffix) || name.starts_with("magicitem"));
       },
       [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
+        FlipVertically(rgba);  // the same folder, upside down too (the pirate ship's mast below)
         std::lock_guard<std::mutex> lock(g_mutex);
         g_named[PictureName(image.name)] = ToFigureImage(std::move(rgba));
       });
@@ -304,7 +308,7 @@ void InstallToyPortraits(const std::filesystem::path& rom_dir) {
   skylanders::SetArtImageProvider([](const std::string& key) -> std::shared_ptr<const FigureImage> {
     // The upgrade pictures of the details view (toy_upgrades.cpp).
     if (key.starts_with("upgrade:")) return UpgradeImage(key);
-    if (key.starts_with("hat:")) return HatImage(key);
+    if (key.starts_with("hat:") || key.starts_with("stat:")) return HatImage(key);
     std::lock_guard<std::mutex> lock(g_mutex);
     auto it = g_art.find(key);
     return it == g_art.end() ? nullptr : it->second;

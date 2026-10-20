@@ -15,7 +15,8 @@ namespace giantsrecomp {
 // provider. Call once, after the language is applied.
 void InstallToyHats(const std::filesystem::path& rom_dir);
 
-// The picture for a "hat:..." art key of the hats above; nullptr while loading or for none.
+// The picture for a "hat:..." or "stat:..." art key of the hats above; nullptr while loading or
+// for none.
 std::shared_ptr<const skylanders::FigureImage> HatImage(const std::string& key);
 
 }  // namespace giantsrecomp
