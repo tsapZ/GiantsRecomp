@@ -5,3 +5,44 @@
 # TheBiemGamer apply to their own executables only and are checked against this one first.
 #
 # Entries are added as codegen and the runtime report them.
+
+# Four jump tables in the Bink bit-stream decoder whose index is built from masked bits with no
+# bounds check, so codegen guessed too few entries (4, 8, 4, 8) and the generated switch trapped:
+# the first boot ended with 0xC000001D right after the Activision logo. Each table has exactly 11
+# code addresses, read from guest memory with the input script's `dump` (the 12th word is an
+# instruction); the registers are the ones the generated switches use. Found first by
+# TheBiemGamer (GiantsRecomp, MIT, same default.xex), checked here.
+# sub_821658B8: index r7 = bits & 7 for 0..6, (bits & 3) + 7 for 7..10; table at 0x821659A8.
+[[switch_tables]]
+address = 0x821659A4
+register = 7
+labels = [0x821659D4, 0x821659F4, 0x82165B90, 0x82165D2C, 0x82165EC8, 0x82166064, 0x82166200, 0x8216639C, 0x82166538, 0x82166720, 0x82166908]
+
+# sub_82166B30, table at 0x82166BEC.
+[[switch_tables]]
+address = 0x82166BE8
+register = 19
+labels = [0x82166C18, 0x82166C40, 0x82166E24, 0x82167008, 0x821671EC, 0x821673D0, 0x821675B4, 0x82167798, 0x8216797C, 0x82167BAC, 0x82167DDC]
+
+# sub_8216A958, table at 0x8216AA08.
+[[switch_tables]]
+address = 0x8216AA04
+register = 10
+labels = [0x8216AA34, 0x8216AA48, 0x8216AA98, 0x8216AAE8, 0x8216AB38, 0x8216AB88, 0x8216ABD0, 0x8216AC20, 0x8216AC70, 0x8216ACEC, 0x8216AD68]
+
+# sub_82169318, table at 0x821693D4.
+[[switch_tables]]
+address = 0x821693D0
+register = 20
+labels = [0x82169400, 0x82169410, 0x82169598, 0x82169720, 0x821698A8, 0x82169A30, 0x82169BB8, 0x82169D40, 0x82169EC8, 0x8216A074, 0x8216A220]
+
+# 0x82153DB0 is in BinkOpen (sub_82153BE8, Bink 2), right after it reads the 44-byte header into
+# r1+96 and just before the "KB2e" signature compare; the file and the in-memory header path both
+# branch here. Found by TheBiemGamer (GiantsRecomp, MIT, same default.xex), checked in this
+# project's generated code. src/hooks/intro_skip_hook.cpp cuts the logo movies (skip_intro, on)
+# and optionally the opening movie (skip_opening_movie, off) by setting their frame count to 1;
+# other movies pass unchanged.
+[[midasm_hook]]
+address = 0x82153DB0
+name = "BinkHeaderLoaded"
+registers = ["r1"]

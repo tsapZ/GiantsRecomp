@@ -47,6 +47,7 @@ set(GIANTSRECOMP_SOURCES
     src/dev/gpu_diagnostics.cpp
     src/dev/input_script.cpp
     src/dev/write_watch.cpp
+    src/hooks/intro_skip_hook.cpp
 )
 
 if(WIN32)

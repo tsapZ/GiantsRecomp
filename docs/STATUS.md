@@ -9,8 +9,8 @@ Updated at the end of every session. Only record what a build actually did.
 | Repository | scaffolded from SSARecomp: build, app, portal (emulated, USB, hybrid), portal / player / settings menus, input scripts and test tools; none of its game hooks or file readers |
 | Game data | disc extracted into `rom/` (988 files), `default.xex` hash pinned |
 | SDK | our fork `tsapZ/rexglue-sdk`, branch `skylanders`, shared with SwapForceRecomp and SSARecomp |
-| Codegen | not run yet |
-| Boot | not tried yet |
+| Codegen | works: 188 files; four jump tables needed their real size (config/default.toml) |
+| Boot | ✅ to the title screen ("Press A to begin") in about 15 s, logo movies skipped |
 
 ## 2026-10-20: session log
 
@@ -19,4 +19,13 @@ Updated at the end of every session. Only record what a build actually did.
   of it is copied without checking it against this executable.
 - **Scaffold:** SSARecomp's tracked files, renamed; its Spyro's Adventure-specific parts left out.
 - **Disc:** Alchemy engine like Swap Force, archives in an older IGA version:
-  docs/game/giants.md.
+  docs/game/giants.md. TheBiemGamer's GiantsRecomp pins the same `default.xex`, so his
+  addresses apply; each is checked here before use.
+- **Codegen and build:** worked at the first try (188 files). The first boot ended with
+  0xC000001D right after the Activision logo: the generated switches of four jump tables in the
+  Bink bit-stream decoder trapped (codegen saw 4, 8, 4 and 8 entries). Guest memory shows 11 code
+  addresses in each (input script `dump`); with those in `config/default.toml` (also TheBiemGamer's
+  finding) the game reaches its title screen.
+- **Intro skip** (`skip_intro`, on; `skip_opening_movie`, off): his BinkOpen hook address
+  (0x82153DB0) checked in the generated code (the "KB2e" compare after the header read into
+  r1+96), the logos' header values checked against the disc; the opening movie is `FMV01.mov`.
