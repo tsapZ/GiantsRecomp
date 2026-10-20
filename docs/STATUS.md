@@ -65,6 +65,8 @@ Updated at the end of every session. Only record what a build actually did.
   the intro's subtitles keep their pace (screenshots every 4 s); only the loading screen before it
   finishes about 4 s sooner at 144 FPS. The setting is `frame_rate_limit` on F4 > Bildrate,
   0 (30 FPS) by default.
+  Three minutes of scripted play in the first level at 144 (walking in every direction,
+  attacks, jumps): a steady 103-108 FPS, coins and the tutorial prompts work, no errors.
 - **The game's pictures in the portal menu** (`src/game/toy_portraits.cpp`). The archives are
   IGA version 8 (little-endian; `src/game/alchemy/iga8_archive.h`), the scenes in them IGZ
   version 6 (`src/game/alchemy/igz6_file.h`: numbered fixup records instead of fourccs, pointers
