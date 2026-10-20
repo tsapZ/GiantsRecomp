@@ -236,8 +236,10 @@ end;
 function LanguageTomlValue: AnsiString;
 begin
   case LanguageCombo.ItemIndex of
-    1: Result := 'french';
-    2: Result := 'spanish';
+    1: Result := 'german';
+    2: Result := 'french';
+    3: Result := 'spanish';
+    4: Result := 'italian';
   else
     Result := 'english';
   end;
@@ -390,18 +392,22 @@ begin
   LanguageLabel.Caption := 'Game language:';
   LanguageLabel.Top := 0;
 
-  // The European disc has English and German text and voices. Preselect German on a German
-  // Windows (primary language id 0x07).
+  // The disc has the text and voices of all five (German and Italian through the region hook in
+  // src/hooks/language_region_hook.cpp). Preselect the Windows display language.
   LanguageCombo := TNewComboBox.Create(SettingsPage);
   LanguageCombo.Parent := SettingsPage.Surface;
   LanguageCombo.Style := csDropDownList;
   LanguageCombo.Items.Add('English');
+  LanguageCombo.Items.Add('Deutsch (German)');
   LanguageCombo.Items.Add('Francais (French)');
   LanguageCombo.Items.Add('Espanol (Spanish)');
-  // Preselects the Windows display language if the disc has it (primary language id).
+  LanguageCombo.Items.Add('Italiano (Italian)');
+  // Preselects the Windows display language (primary language id).
   case GetUILanguage and $3FF of
-    $0C: LanguageCombo.ItemIndex := 1;
-    $0A: LanguageCombo.ItemIndex := 2;
+    $07: LanguageCombo.ItemIndex := 1;
+    $0C: LanguageCombo.ItemIndex := 2;
+    $0A: LanguageCombo.ItemIndex := 3;
+    $10: LanguageCombo.ItemIndex := 4;
   else
     LanguageCombo.ItemIndex := 0;
   end;

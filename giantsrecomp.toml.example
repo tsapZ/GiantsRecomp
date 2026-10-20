@@ -26,7 +26,7 @@ anisotropic_override = 5                  # texture filtering: 5 = 16x, 3 = 4x, 
 mnk_mode = true                           # enable keyboard/mouse controller emulation
 
 ["Game"]
-# language = "auto"                       # auto (Windows language if the disc has it), english, french, spanish
+# language = "auto"                       # auto (Windows language), english, german, french, spanish, italian
 skip_intro = true                         # skip the Activision and Toys for Bob logo movies
 # skip_opening_movie = true                # skip the opening movie of a new game
 skip_intro = true                         # skip the Activision, XPEC and Toys for Bob logo movies

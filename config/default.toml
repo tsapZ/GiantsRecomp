@@ -46,3 +46,13 @@ labels = [0x82169400, 0x82169410, 0x82169598, 0x82169720, 0x821698A8, 0x82169A30
 address = 0x82153DB0
 name = "BinkHeaderLoaded"
 registers = ["r1"]
+
+# 0x8217F350 is in the tfbXenonApplication setup (sub_8217F2D8), the compare of XGetGameRegion's
+# result (r3) that picks the European or the North American language set; the disc has the text of
+# both. src/hooks/language_region_hook.cpp reports the European region there when German or
+# Italian is chosen, so the game loads GERMAN.pak / ITALIAN.pak instead of falling back to English.
+# Found in the generated code; only this call site sees the changed value.
+[[midasm_hook]]
+address = 0x8217F350
+name = "GameRegionForLanguage"
+registers = ["r3"]

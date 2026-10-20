@@ -18,7 +18,7 @@ What we know about the game and the dump this project targets, and what still ha
 | Title ID | `415608DA` (media ID `52FFE94B`) | XEX execution info |
 | Version | `0.0.0.2` (base version the same), disc 1 of 1 | XEX execution info |
 | Region flags | `0xFFFFFFFF`: region free | XEX security info |
-| Languages | English, French, Spanish (the North American set); German and Italian come out English | the title screen under each `language` |
+| Languages | text and voices of twelve languages on the disc; the game offers English, French, Latin American Spanish, Portuguese for its region, and the European set (German, Italian, ...) only for a PAL console: `src/hooks/language_region_hook.cpp` | archive listings, `sub_8217F2D8`, the title screen under each `language` |
 
 ## Differences that matter
 

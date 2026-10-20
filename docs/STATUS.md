@@ -15,7 +15,7 @@ Updated at the end of every session. Only record what a build actually did.
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
 | Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu |
-| Languages | English, French, Spanish on this disc (German comes out English) |
+| Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
 
 ## 2026-10-20: session log
 
@@ -41,8 +41,19 @@ Updated at the end of every session. Only record what a build actually did.
   Chapter 1 "Time of the Giants" started with her HUD. No further codegen fixes were needed so
   far.
 - **Languages:** the disc is the North American one: English, French, Spanish (title screen
-  under each setting); German and Italian come out English. "auto" picks the Windows language
-  only if the disc has it, so the menus and the game agree.
+  under each setting); German and Italian came out English at first.
+- **German and Italian after all.** The archives carry twelve language packs (GERMAN.pak,
+  ITALIAN.pak, ... in global.bld and every character archive) and voice files in the same
+  languages (`.../german/vo_*.wav`, Eon's narration and hints too). The game picks its language
+  set by console region (`sub_8217F2D8`, the tfbXenonApplication setup): XGetGameRegion 0x201 or
+  0x2FE-0x2FF gives the European set, anything else (the SDK returns 0xFFFF) the North American
+  one, and a language outside the set becomes English. A midasm hook right after that call
+  (`src/hooks/language_region_hook.cpp`, 0x8217F350) reports 0x2FE when German or Italian is
+  chosen. Checked: title, autosave notice, Choose Play and the game slots in German, Choose Play
+  in Italian, the first level's subtitles ("Eon: Doch die eiserne Herrschaft der Arkeyaner...")
+  and the prompt ("Spieler 1: Bitte setze einen Skylander auf das Magische Portal.") in German;
+  English and Spanish unchanged. Whether the voices are German is for a listen (the files are
+  there). The language choice is back to five, "auto" included.
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read

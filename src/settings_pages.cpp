@@ -151,15 +151,17 @@ SettingsPage FrameRatePage() {
 
 SettingsPage GamePage() {
   SettingsPage page{"Game", "Spiel", {}};
-  // This disc has English, French and Spanish (checked on the title screen). "auto" follows the
-  // Windows display language if the disc has it, else English.
+  // The five languages of src/localization.cpp; German and Italian through the region hook.
+  // "auto" follows the Windows display language if it is one of them, else English.
   Setting language{"language", "Language", "Sprache",
                    "Text and voices. Automatic: the language of Windows, if the game has it.",
                    "Texte und Stimmen. Automatisch: die Sprache von Windows, wenn das Spiel sie hat.",
                    {{"auto", "Automatic", "Automatisch"},
                     {"english", "English", "English"},
+                    {"german", "Deutsch", "Deutsch"},
                     {"french", "Fran\xC3\xA7" "ais", "Fran\xC3\xA7" "ais"},
-                    {"spanish", "Espa\xC3\xB1ol", "Espa\xC3\xB1ol"}}};
+                    {"spanish", "Espa\xC3\xB1ol", "Espa\xC3\xB1ol"},
+                    {"italian", "Italiano", "Italiano"}}};
   language.restart = true;
   page.settings.push_back(language);
   Setting intro{"skip_intro", "Skip logo movies", "Logo-Videos \xC3\xBC" "berspringen",
