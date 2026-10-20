@@ -67,6 +67,10 @@ Updated at the end of every session. Only record what a build actually did.
   0 (30 FPS) by default.
   Three minutes of scripted play in the first level at 144 (walking in every direction,
   attacks, jumps): a steady 103-108 FPS, coins and the tutorial prompts work, no errors.
+- **Menus and saves, scripted:** the pause menu's Chapter Select ("1: Zeit der Riesen"),
+  Objectives, Collections and Settings open and close; Continue on save slot 1 ("Skylander: 3")
+  loads, back at Chapter 1's start at 0 %. Battle Mode asks for a controller per player; the
+  input script is one controller, so it waits for a test with two pads.
 - **The game's pictures in the portal menu** (`src/game/toy_portraits.cpp`). The archives are
   IGA version 8 (little-endian; `src/game/alchemy/iga8_archive.h`), the scenes in them IGZ
   version 6 (`src/game/alchemy/igz6_file.h`: numbered fixup records instead of fourccs, pointers
