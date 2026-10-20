@@ -22,6 +22,7 @@
 #include <rex/ui/ui_event.h>
 
 #include "dev/input_script.h"
+#include "dev/write_watch.h"
 #include "dev/gpu_diagnostics.h"
 #include "game/game_text.h"
 #include "game/portal_prompt_watch.h"
@@ -109,6 +110,8 @@ class GiantsrecompApp : public rex::ReXApp {
     // One figure folder for every game (Documents\Skylanders\Figures), like the real figures next
     // to the portal; the first start copies this game's old per-game folder into it.
     skylanders::InstallPortal(skylanders::SharedFiguresDir(user_data_root()));
+    // A real crash logs where in the game it happened (guest call chain and registers).
+    giantsrecomp::InstallCrashReport(runtime()->memory());
     giantsrecomp::InstallInputScript(
         runtime()->input_system(), runtime()->memory(),
         [this]() -> uint64_t {
