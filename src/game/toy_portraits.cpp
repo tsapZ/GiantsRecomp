@@ -42,6 +42,7 @@
 
 #include "game/alchemy/iga8_archive.h"
 #include "game/alchemy/igz6_file.h"
+#include "game/toy_upgrades.h"
 #include "portal_rex/portal_menu.h"
 
 namespace giantsrecomp {
@@ -299,6 +300,8 @@ void InstallToyPortraits(const std::filesystem::path& rom_dir) {
   skylanders::SetFigureImageProvider(
       [](uint16_t id, uint16_t variant) { return Lookup(id, variant); });
   skylanders::SetArtImageProvider([](const std::string& key) -> std::shared_ptr<const FigureImage> {
+    // The upgrade pictures of the details view (toy_upgrades.cpp).
+    if (key.starts_with("upgrade:")) return UpgradeImage(key);
     std::lock_guard<std::mutex> lock(g_mutex);
     auto it = g_art.find(key);
     return it == g_art.end() ? nullptr : it->second;

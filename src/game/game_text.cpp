@@ -131,24 +131,14 @@ std::optional<alchemy::Igz6File> ParseEntry(alchemy::Iga8Archive* archive, size_
       archive->length(index));
 }
 
-// The name text of an item archive: its scene's first "..._String" key in `pack`.
-std::optional<std::string> ItemName(const std::filesystem::path& path, const char* pack) {
+// The name text of an item archive: its scene's first "..._String" text.
+std::optional<std::string> ItemName(const std::filesystem::path& path, const std::string& pack) {
   auto archive = alchemy::Iga8Archive::Open(path);
   if (!archive) return std::nullopt;
-  const auto scene_index = archive->Find(kScene);
-  const auto pack_index = archive->Find(pack);
-  if (!scene_index || !pack_index) return std::nullopt;
-  auto scene = ParseEntry(archive.get(), *scene_index);
-  auto texts_file = ParseEntry(archive.get(), *pack_index);
-  if (!scene || !texts_file) return std::nullopt;
-  const auto info = texts_file->Objects("LanguagePackInfo");
-  if (info.empty()) return std::nullopt;
-  const auto data = texts_file->MemoryField(info.front(), kTextsField);
-  if (!data) return std::nullopt;
-  const std::vector<std::string> texts = SplitTexts(*data);
-  const auto keys = scene->Objects("StringInfo");
-  for (size_t i = 0; i < keys.size() && i < texts.size(); ++i) {
-    if (scene->StringField(keys[i], kKeyField).ends_with(kNameSuffix)) return texts[i];
+  const auto texts = ReadSceneTexts(*archive, pack);
+  if (!texts) return std::nullopt;
+  for (const auto& [key, text] : *texts) {
+    if (key.ends_with(kNameSuffix)) return text;
   }
   return std::nullopt;
 }
@@ -156,7 +146,7 @@ std::optional<std::string> ItemName(const std::filesystem::path& path, const cha
 void Load(std::filesystem::path rom, std::string pack) {
   int found = 0;
   for (const ItemArchive& item : kArchives) {
-    auto name = ItemName(rom / kItemDir / item.file, pack.c_str());
+    auto name = ItemName(rom / kItemDir / item.file, pack);
     if (!name || name->empty()) continue;
     std::lock_guard<std::mutex> lock(g_mutex);
     g_names[item.id] = std::move(*name);
@@ -167,8 +157,31 @@ void Load(std::filesystem::path rom, std::string pack) {
 
 }  // namespace
 
+std::string LanguagePackName() { return PackName(REXCVAR_GET(user_language)); }
+
+std::optional<std::vector<std::pair<std::string, std::string>>> ReadSceneTexts(
+    alchemy::Iga8Archive& archive, const std::string& pack) {
+  const auto scene_index = archive.Find(kScene);
+  const auto pack_index = archive.Find(pack);
+  if (!scene_index || !pack_index) return std::nullopt;
+  auto scene = ParseEntry(&archive, *scene_index);
+  auto texts_file = ParseEntry(&archive, *pack_index);
+  if (!scene || !texts_file) return std::nullopt;
+  const auto info = texts_file->Objects("LanguagePackInfo");
+  if (info.empty()) return std::nullopt;
+  const auto data = texts_file->MemoryField(info.front(), kTextsField);
+  if (!data) return std::nullopt;
+  std::vector<std::string> texts = SplitTexts(*data);
+  const auto keys = scene->Objects("StringInfo");
+  std::vector<std::pair<std::string, std::string>> out;
+  for (size_t i = 0; i < keys.size() && i < texts.size(); ++i) {
+    out.emplace_back(scene->StringField(keys[i], kKeyField), std::move(texts[i]));
+  }
+  return out;
+}
+
 void InstallGameText(const std::filesystem::path& rom_dir) {
-  std::thread(Load, rom_dir, std::string(PackName(REXCVAR_GET(user_language)))).detach();
+  std::thread(Load, rom_dir, LanguagePackName()).detach();
   skylanders::SetFigureNameProvider(
       [](uint16_t id, uint16_t variant) -> std::optional<std::string> {
         if ((variant & kAlternateDeco) ||

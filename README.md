@@ -15,7 +15,7 @@ See [docs/STATUS.md](docs/STATUS.md) and [docs/roadmap.md](docs/roadmap.md).
 | Boot | ✅ title screen, menus |
 | In-game | ✅ first level with a figure |
 | Portal | ✅ emulated portal: figures are read and come into the game |
-| Portal menu | ✅ opens by itself when the game asks for a Skylander; portal check on "too many"; the game's own portraits |
+| Portal menu | ✅ opens by itself when the game asks for a Skylander; portal check on "too many"; the game's own portraits, item names and upgrade screen |
 | Languages | ✅ English, German, French, Spanish, Italian |
 | Frame rate | ✅ 30 FPS like the console, or up to your screen's rate (F4 > Bildrate) |
 

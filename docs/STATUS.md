@@ -14,7 +14,7 @@ Updated at the end of every session. Only record what a build actually did.
 | Menus | ✅ autosave notice, Choose Play (Story, Battle Mode, Settings), game slots, difficulty |
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
-| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander, sidekick and magic item shows the game's collection portrait, the element filters the game's symbols |
+| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander, sidekick and magic item shows the game's collection portrait, the element filters the game's symbols; magic items have the game's names; the details view shows each Skylander's upgrades as the game's upgrade screen does (names, descriptions, prices, pictures) |
 | Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
 | Frame rate | 30 FPS by default as on the console; `frame_rate_limit` (F4 > Bildrate) gives 60.0 and 143.9 FPS on the title screen, 96-97 FPS in the first level with 144 (scale 2); walking speed and the intro's pace unchanged |
 
@@ -93,8 +93,20 @@ Updated at the end of every session. Only record what a build actually did.
   "Drachenfeuer-Kanone", "Skorpion-Schläger" and the rest. The golden Dragonfire Cannon, the
   Platinum Treasure Chest and the sidekicks keep the catalog's names (the game calls Barkley
   "TreeRexling"). The character scenes have each Skylander's upgrades in the same way
-  (`032_Name(00)` "Cynder-Flug" ... `(11)` the Wow Pow, `032_Upgrade_PathA` with descriptions):
-  the text for an upgrade view later.
+  (`032_Name(00)` "Cynder-Flug" ... `(11)` the Wow Pow, `032_Upgrade_PathA` with descriptions).
+- **Upgrades in the details view** (`src/game/toy_upgrades.cpp`), like Swap Force's. The texts
+  come from each Skylander's scene, whose keys are spelled by hand in many ways (counted over all
+  48: `UpgradePath1Name`, `Upgrade_PathA`, `UpgradeBranch_Left`, `Action1PowerName`,
+  `PrimaryAttackName`, ...); the layout is always 00-03 basic, 04-06 first path, 07-09 second
+  path, 10 Soul Gem, 11 Wow Pow (Spyro's Adventure's Skylanders only, shown for Series 2). The
+  prices are the global scene's `UpgradeCost_(01)` ... `(09)`: 500, 700, 900, 1200; 1700, 2200,
+  3000; 4000; 5000. The bits follow the game's `pp_Flags1_UpgradeBits` field list, the same as
+  Swap Force's. The pictures are the 512x360 upgrade poses in the character's `.arc`, stored upside
+  down, read when the view first shows them. The texts' button glyphs `[` `]` `{` become X, Y, B.
+  Checked in the menu: Double Trouble ("Kanalisierer" / "Beschwörer", "Erweiterter
+  Geisterstrahl", 1700 Gold) and Scarlet Ninjini ("Schwerter der Macht" / "Alte Dschinn-Magie",
+  "Wunschklingen-Kombos: Drücke X, X, HALTE Y für Klingenschwung"). Not yet seen with a figure
+  that has upgrades bought (the test copies have none).
 - **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
   CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
   game script, the "Portal Control" state machine. The text "Please put a Skylander" is read
