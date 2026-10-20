@@ -165,3 +165,8 @@ Updated at the end of every session. Only record what a build actually did.
   developer setting `game_clock_log`: game time against real time every 5 s): speed 1.000 at
   230-240 FPS (resolution scale 1, title and level start) and at 125-130 FPS in play. The hook
   changes nothing and stays as the measuring tool.
+- **SDK: vertex data the CPU rewrites in place is uploaded again** (fork `fix/vertex-buffer-cpu-writes`,
+  found in SwapForceRecomp, where the second logo movie drew with the first one's texture
+  coordinates), and **a rebuilt GPU plugin is copied next to the exe** without a relink (fork
+  `fix/stage-gpu-plugin`). Checked: boot with the logo movies, no errors. New RenderDoc script
+  `tools/renderdoc/vsout.py` (vertex shader outputs per vertex).
