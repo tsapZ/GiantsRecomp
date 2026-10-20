@@ -18,6 +18,8 @@
 #include <rex/cvar.h>
 #include <rex/logging.h>
 #include <rex/rex_app.h>
+#include <rex/runtime.h>
+#include <rex/ui/overlay/achievement_notification.h>
 #include <rex/ui/keybinds.h>
 #include <rex/ui/ui_event.h>
 
@@ -30,6 +32,7 @@
 #include "game/toy_portraits.h"
 #include "game/toy_upgrades.h"
 #include "localization.h"
+#include "portal_rex/achievements_ui.h"
 #include "portal_rex/portal_menu.h"
 #include "portal_rex/portal_menu_input.h"
 #include "portal_rex/player_menu.h"
@@ -71,12 +74,23 @@ class GiantsrecompApp : public rex::ReXApp {
   // Override virtual hooks for customization:
   // void OnLoadXexImage(std::string& xex_image) override {}
   // void OnPostLoadXexImage() override {}
-  // std::unique_ptr<rex::ui::ImGuiDialog> CreateAchievementsOverlay() override;
-  // std::unique_ptr<rex::ui::AchievementNotificationDialog>
-  // CreateAchievementNotificationDialog() override;
+
+  // F7: the menus' own achievements list instead of the SDK's overlay; it opens and closes by
+  // itself (and from F4 > Spiel > Erfolge with a controller), so nothing is kept here.
+  std::unique_ptr<rex::ui::ImGuiDialog> CreateAchievementsOverlay() override {
+    skylanders::ToggleAchievementsMenu();
+    return nullptr;
+  }
+  // An unlocked achievement pops up like on the Xbox 360: bottom middle, no sound.
+  std::unique_ptr<rex::ui::AchievementNotificationDialog> CreateAchievementNotificationDialog()
+      override {
+    return skylanders::CreateAchievementToast(imgui_drawer(), immediate_drawer(), runtime());
+  }
+
   void OnShutdown() override {
     giantsrecomp::StopPortalPromptWatch();
     // The menu's textures belong to the immediate drawer, which goes away right after this.
+    skylanders::ShutdownAchievementsMenu();
     skylanders::ShutdownPortalMenu();
     skylanders::ShutdownPlayerMenu();
     skylanders::ShutdownSettingsMenu();
@@ -112,6 +126,12 @@ class GiantsrecompApp : public rex::ReXApp {
     skylanders::InstallPortal(skylanders::SharedFiguresDir(user_data_root()));
     // A real crash logs where in the game it happened (guest call chain and registers).
     giantsrecomp::InstallCrashReport(runtime()->memory());
+    // The achievements list (F7, F4 > Spiel > Erfolge); the kernel's list exists from launch on.
+    skylanders::RegisterAchievementsMenu(
+        imgui_drawer(), immediate_drawer(), &app_context(), runtime(),
+        [this]() -> rex::system::AchievementManager* {
+          return runtime() && runtime()->kernel_state() ? &achievements() : nullptr;
+        });
     giantsrecomp::InstallInputScript(
         runtime()->input_system(), runtime()->memory(),
         [this]() -> uint64_t {

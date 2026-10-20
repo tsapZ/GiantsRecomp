@@ -5,6 +5,8 @@
 
 #include <rex/cvar.h>
 
+#include "portal_rex/achievements_ui.h"
+
 namespace giantsrecomp {
 namespace {
 
@@ -191,6 +193,7 @@ SettingsPage GamePage() {
                            "Er\xC3\xB6" "ffnungsfilm \xC3\xBC" "berspringen",
                            "Skips the long movie at the start of a new game.",
                            "\xC3\x9C" "berspringt den langen Film beim Start eines neuen Spiels."});
+  page.settings.push_back(skylanders::AchievementsSetting());
   return page;
 }
 
