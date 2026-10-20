@@ -1,7 +1,7 @@
 # GiantsRecomp
 
 An unofficial native Windows port of **Skylanders: Giants** (Xbox 360), made with static
-recompilation (ReXGlue). Work in progress: the project is being set up and does not boot yet.
+recompilation (ReXGlue). Work in progress: it boots, and the first level plays with a figure.
 
 You need your own copy of the game: nothing from the game is in this repository.
 
@@ -15,6 +15,7 @@ See [docs/STATUS.md](docs/STATUS.md) and [docs/roadmap.md](docs/roadmap.md).
 | Boot | ✅ title screen, menus |
 | In-game | ✅ first level with a figure |
 | Portal | ✅ emulated portal: figures are read and come into the game |
+| Portal menu | ✅ opens by itself when the game asks for a Skylander; portal check on "too many" |
 
 ## Building
 

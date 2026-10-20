@@ -28,6 +28,14 @@ What we know about the game and the dump this project targets, and what still ha
   with `IGA\x1a`, version 8 with a little-endian header; Swap Force's `.pak` are version 10 with
   a big-endian one, so SwapForceRecomp's archive reader needs adapting before the portal menu can
   use the game's pictures and names.
+- **The portal screens are a game script.** The "Portal Control" state machine (global level
+  includes) runs them: states such as `Portal Control - In Game - 0 - Idle`, `Portal Control -
+  Portal - 0 - Idle P1 Only` (the prompt), `Portal Control - Magic Moment - 4 - Show Minion P1`
+  (a figure coming in), and the variable "portal error string" with the message's text key
+  (`203_PortalError_TagTypeNotOnPortal`, `102_PortalError_TooManyMinions`, ...; "minion" is a
+  Skylander, "tag" a figure). Script variables are named objects (class ScriptReference, +8
+  name, +0x1C value), so they can be found by name. src/game/portal_prompt_watch.cpp has the
+  details.
 - **Scaffolded from SSARecomp** (the newest app: language "auto", the shared figure folder, the
   portal and settings menus); none of its game hooks or file readers, which are for Spyro's
   Adventure's executable and formats.

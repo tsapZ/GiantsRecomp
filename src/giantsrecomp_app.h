@@ -23,6 +23,7 @@
 
 #include "dev/input_script.h"
 #include "dev/gpu_diagnostics.h"
+#include "game/portal_prompt_watch.h"
 #include "localization.h"
 #include "portal_rex/portal_menu.h"
 #include "portal_rex/portal_menu_input.h"
@@ -69,6 +70,7 @@ class GiantsrecompApp : public rex::ReXApp {
   // std::unique_ptr<rex::ui::AchievementNotificationDialog>
   // CreateAchievementNotificationDialog() override;
   void OnShutdown() override {
+    giantsrecomp::StopPortalPromptWatch();
     // The menu's textures belong to the immediate drawer, which goes away right after this.
     skylanders::ShutdownPortalMenu();
     skylanders::ShutdownPlayerMenu();
@@ -117,6 +119,11 @@ class GiantsrecompApp : public rex::ReXApp {
     // the host's presentation rate, which is a different clock than the guest's and would have
     // reported host FPS mislabeled as "Guest".
     SetGuestFrameStats([this] { return ComputeFrameStats(); });
+    // Opens the portal menu by itself when the game shows its "put a Skylander" prompt, and the
+    // portal check on its "too many on the portal" screens.
+    giantsrecomp::StartPortalPromptWatch(runtime()->memory());
+    // Items go on and off the portal only once the player's Skylander is back in the game.
+    skylanders::SetGameBusyProvider([] { return giantsrecomp::PortalPromptActive(); });
     // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
     // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
     // it themselves.

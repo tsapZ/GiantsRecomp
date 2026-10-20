@@ -14,6 +14,7 @@ Updated at the end of every session. Only record what a build actually did.
 | Menus | ✅ autosave notice, Choose Play (Story, Battle Mode, Settings), game slots, difficulty |
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
+| Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu |
 | Languages | English, French, Spanish on this disc (German comes out English) |
 
 ## 2026-10-20: session log
@@ -42,3 +43,20 @@ Updated at the end of every session. Only record what a build actually did.
 - **Languages:** the disc is the North American one: English, French, Spanish (title screen
   under each setting); German and Italian come out English. "auto" picks the Windows language
   only if the disc has it, so the menus and the game agree.
+- **Portal menu by itself at the prompt** (`src/game/portal_prompt_watch.cpp`). Giants has no
+  CMagicMoment (Swap Force) and no prompt object like Spyro's Adventure: its portal screens are a
+  game script, the "Portal Control" state machine. The text "Please put a Skylander" is read
+  once into a widget, so a read watch on it found only the text loader. Guest memory snapshots
+  (new input script command `save`) at the prompt, in play, in the pause menu, in a cutscene and
+  on the title, in two runs, showed that the script heap is laid out the same every time, and that
+  two named script variables change exactly with the prompt: "portal error string" (0, or the
+  text key on screen, `203_PortalError_TagTypeNotOnPortal`) and the state machine's "current
+  state name" (`Portal Control - Portal - 0 - Idle P1 Only` at the prompt). The application's
+  pause stack (tfbXenonApplication) changes for the pause menu too, so it can't tell them apart.
+  The watch finds both variables by class and name, then polls them. Checked by script: the menu
+  opens at the first prompt and again after the figure was taken off, closes when Ninjini is
+  placed; a second Skylander gives `102_PortalError_TooManyMinions` and the portal check; the
+  pause menu, the title and the autosave notice open nothing.
+- **Input script:** `save` (guest memory to a file, for snapshot comparisons), `remove <slot>`,
+  and addresses as `hit<n>` (a hit of the last scan) or `*<addr>` (through a pointer), for data
+  whose heap address changes from run to run.
