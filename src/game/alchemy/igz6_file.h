@@ -57,6 +57,10 @@ class Igz6File {
   std::string StringField(uint64_t object, uint32_t field) const;
   // A memory reference: a u32 size | flags << 28 at `size_field`, the pointer at `size_field` + 4.
   std::optional<std::vector<uint8_t>> MemoryField(uint64_t object, uint32_t size_field) const;
+  // For the bitmap fonts (src/game/game_fonts.cpp): a u32 field and a serialized pointer as a file
+  // offset.
+  uint32_t Field(uint64_t object, uint32_t offset) const { return Be32(object + offset); }
+  std::optional<uint64_t> Pointer(uint32_t value) const { return Deserialize(value); }
 
  private:
   struct Fixup {

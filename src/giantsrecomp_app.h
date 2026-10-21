@@ -27,6 +27,7 @@
 #include "dev/write_watch.h"
 #include "hooks/ultrawide_hook.h"
 #include "dev/gpu_diagnostics.h"
+#include "game/game_fonts.h"
 #include "game/game_text.h"
 #include "game/portal_prompt_watch.h"
 #include "game/toy_hats.h"
@@ -210,6 +211,8 @@ class GiantsrecompApp : public rex::ReXApp {
     }
 #endif
     if (font) ImGui::GetIO().FontDefault = font;
+    // The menus' titles and text in the game's own fonts (its bitmap fonts contemp and simple).
+    skylanders::SetGameFonts(giantsrecomp::LoadGameFonts(game_data_root_));
     skylanders::AddPortalMenuFonts(atlas);
   }
 

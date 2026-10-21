@@ -204,3 +204,10 @@ Updated at the end of every session. Only record what a build actually did.
   FOV kept), so nothing the wider view shows is culled; the app turns the letterbox off. Checked
   by script in a 2560x1080 window: Chop Chop in his proportions, more of the level at both sides
   (the nest on the left, the cliff on the right), nothing missing at the edges; the HUD stretched.
+- **The game's fonts in the portal menu** (src/game/game_fonts.cpp, #24): the titles in the UI's
+  display font "contemp" (permanent/global.bld, size 85), the text in the plain "simple"
+  (permanent/bootstrap.bld, size 45), both igBitmapFont in IGZ version 6 with the later games'
+  layout; their pages are DXT5 with the coverage in the alpha. 177 glyphs each, German's umlauts
+  and ß among them; Segoe UI fills in the rest. Read in 240 ms at start. Checked by script: the
+  portal menu's title in the same letters as the game's "Spieler 1:" behind it, names, tabs,
+  hints and the hat's "Generalsmütze" in the text font.
