@@ -229,3 +229,8 @@ Updated at the end of every session. Only record what a build actually did.
 
 - **Portal library** (cbc71c6, 0eb2564): the later games' cards say "Fahrzeug", "Sensei", "Falle" and "Serie 2" in the German menu; a plain hat symbol where a game has no hat picture.
 - **New issues** for options the other games have: #25 the native 3D scene (its size is neither data nor Spyro's Adventure's constants here; needs a RenderDoc capture), #26 the game's FXAA at the internal resolution, #27 bloom and motion blur strength, #28 the game's controller picture.
+- **Giants decompiled** (new private repository tsapZ/GiantsDecomp): readable C++ for some of this
+  game's functions, built in only when the CMake cache variable `GIANTS_DECOMP_DIR` points at a
+  checkout of it (off by default); each replaces the recompiled function and is checked against it
+  with `--decomp_verify=true`. First one: the figure data CRC (sub_82201FD8), "matches the original
+  (16777216 inputs)"; a run with it in to the title, then the build set back to without.

@@ -71,6 +71,15 @@ endif()
 
 rexglue_setup_target(giantsrecompiled GPU_PLUGINS xenos)
 
+# Giants decompiled (a separate repository, tsapZ/GiantsDecomp): readable C++ for some of the
+# game's functions, each replacing the recompiled one and checked against it
+# (--decomp_verify=true). Off unless GIANTS_DECOMP_DIR points at a checkout of it.
+set(GIANTS_DECOMP_DIR "" CACHE PATH "A checkout of GiantsDecomp to build in (empty: none)")
+if(GIANTS_DECOMP_DIR)
+    include("${GIANTS_DECOMP_DIR}/giants_decomp.cmake")
+    giants_decomp_add(giantsrecompiled)
+endif()
+
 if(REXSDK_DIR)
     # An installed SDK ships imgui's headers next to its own; an in-tree build must point at them.
     target_include_directories(giantsrecompiled PRIVATE "${REXSDK_DIR}/thirdparty/imgui")
