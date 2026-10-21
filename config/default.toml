@@ -69,6 +69,33 @@ address = 0x822F197C
 name = "GameClockMinStepHook"
 registers = ["f0", "f13", "r31"]
 
+# 0x82198530, 0x82198580, 0x82199988 and 0x821999B0 are the calls of the scene camera's set-up
+# (every frame with the camera's FOV; every frame 40 degrees wider; every third frame) to the
+# perspective builder sub_822D0240(r3 = projection matrix, f1 = horizontal FOV, f2 = vertical FOV,
+# f3 = aspect, f4 = near, f5 = far; radians), as in SwapForceRecomp (hook UltrawideFovHook): the
+# builder found by Swap Force's instructions, the call by a probe on all its callers (every frame,
+# 16:9, the camera's FOV). src/hooks/ultrawide_hook.cpp widens f3 (and f1, keeping the vertical FOV)
+# for a window wider than 16:9 with ultrawide_fov on; it only changes these calls' arguments.
+[[midasm_hook]]
+address = 0x82198530
+name = "UltrawideFovHook"
+registers = ["f1", "f2", "f3"]
+
+[[midasm_hook]]
+address = 0x82198580
+name = "UltrawideFovHook"
+registers = ["f1", "f2", "f3"]
+
+[[midasm_hook]]
+address = 0x82199988
+name = "UltrawideFovHook"
+registers = ["f1", "f2", "f3"]
+
+[[midasm_hook]]
+address = 0x821999B0
+name = "UltrawideFovHook"
+registers = ["f1", "f2", "f3"]
+
 [functions]
 # Function starts the analyzer put one instruction late (SSARecomp #33 / GiantsRecomp #23), found in
 # the whole code (a dump of guest memory with the input script's `save`): right after a `blr`, an

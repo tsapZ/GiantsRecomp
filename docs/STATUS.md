@@ -195,3 +195,12 @@ Updated at the end of every session. Only record what a build actually did.
   (character/UI_StatsScreen_Extra.bld), matched to each bonus by the same text in ENGLISH.pak.
 - **The game's gold symbol** (#57 there): the stats screen's coin with the Skylanders S
   (permanent/global.bld `.../ui_main/sprites/stats/coin.png`).
+- **Ultrawide** (#19; src/hooks/ultrawide_hook.cpp, `ultrawide_fov`, on): a window wider than 16:9
+  (`resolution`) shows more to the sides instead of black bars, as in SwapForceRecomp. The
+  perspective builder (sub_822D0240) found by Swap Force's instructions in a dump of this game's
+  code (42 of its first 48 the same); its four callers probed in the first level: 0x82198530 every
+  frame with the camera's FOV, 0x82198580 every frame 40 degrees wider (presumably culling),
+  0x82199988 / 0x821999B0 every third frame. All four get the wider aspect and FOV (the vertical
+  FOV kept), so nothing the wider view shows is culled; the app turns the letterbox off. Checked
+  by script in a 2560x1080 window: Chop Chop in his proportions, more of the level at both sides
+  (the nest on the left, the cliff on the right), nothing missing at the edges; the HUD stretched.

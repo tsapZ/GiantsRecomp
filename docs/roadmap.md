@@ -12,7 +12,7 @@ observed in a real build or a real play test, not inferred.
 | 1 Recompile and boot | ✅ done | 2/2 | – |
 | 2 In-game | 🟡 first level | 2/5 | later levels and the Giants (#7), Battle Mode with two pads (#8), the owner's play test (#21) |
 | 3 Portal | 🟡 almost | 3/4 | the real USB portal (#12) |
-| 4 Menus and polish | 🟡 almost | 6/8 | ultrawide (#19), installer (#20) |
+| 4 Menus and polish | 🟡 almost | 7/8 | installer (#20) |
 
 **Where we are:** the first level plays, in five languages and at up to the screen's frame rate.
 The portal menu opens by itself at the game's portal screens for both players and shows the
@@ -24,7 +24,7 @@ game's own portraits, item names, upgrades and hats.
 |---|---|---|
 | **Now** | Play test (#21): German voices, later levels at 200 FPS, a Giant on the portal, a figure with bought upgrades and one with a hat, Battle Mode with both pads, any wrong picture, the real USB portal | you |
 | Next | Whatever the play test finds | me |
-| Then | Ultrawide (#19), installer (#20) | me |
+| Then | Installer (#20) | me |
 | After all games | The hub, [Skylanders: Core of Light](https://github.com/tsapZ/SkylandersCoreOfLight) | both |
 
 ## Phase 0: repository and scaffold ✅
@@ -67,7 +67,7 @@ game's own portraits, item names, upgrades and hats.
 - [x] Upgrade pictures and element symbols the right way up (#16)
 - [x] Hats in the details view (#17)
 - [x] Frame rate above 30 without changing the game's speed (#18)
-- [ ] Ultrawide (#19)
+- [x] Ultrawide (#19): the 3D view; the HUD is stretched
 - [ ] Installer tested on a clean Windows VM (#20)
 
 **Done when:** the menus show everything the game's own screens do, and the installer works on a

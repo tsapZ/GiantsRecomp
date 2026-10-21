@@ -28,7 +28,7 @@ Session details and known bugs: [docs/STATUS.md](docs/STATUS.md).
 | Portal | ✅ emulated: figures come in with their portal sequence, a second Skylander as player 2; real USB portal still to test (#12) |
 | Portal menu | ✅ opens by itself at "Please put a Skylander" for player 1 and 2; the portal check on "too many"; the game's own portraits for every figure, item names, upgrades like the game's upgrade screen, hats |
 | Settings menu | ✅ F4 or Back + RB: presets, resolution, frame rate, language, portal, controls |
-| Ultrawide | ⬜ planned (#19) |
+| Ultrawide | ✅ the 3D view shows more to the sides (`ultrawide_fov`); the HUD is stretched |
 | Installer tested on a clean PC | ⬜ planned (#20) |
 
 ## Playing

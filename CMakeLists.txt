@@ -59,6 +59,7 @@ set(GIANTSRECOMP_SOURCES
     src/hooks/game_clock_hook.cpp
     src/hooks/intro_skip_hook.cpp
     src/hooks/language_region_hook.cpp
+    src/hooks/ultrawide_hook.cpp
 )
 
 if(WIN32)
