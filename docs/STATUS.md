@@ -224,3 +224,8 @@ Updated at the end of every session. Only record what a build actually did.
   Start: BinkOpen's header hook; end: a hook at the start of BinkClose (sub_82155B08, called only
   from the game's movie close). Checked by script in a 2560x1080 window with skip_intro off: the
   logos 16:9 in the middle, the screen after them fills the window again.
+
+## 2026-10-22: session log (night)
+
+- **Portal library** (cbc71c6, 0eb2564): the later games' cards say "Fahrzeug", "Sensei", "Falle" and "Serie 2" in the German menu; a plain hat symbol where a game has no hat picture.
+- **New issues** for options the other games have: #25 the native 3D scene (its size is neither data nor Spyro's Adventure's constants here; needs a RenderDoc capture), #26 the game's FXAA at the internal resolution, #27 bloom and motion blur strength, #28 the game's controller picture.
