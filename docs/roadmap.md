@@ -72,3 +72,11 @@ game's own portraits, item names, upgrades and hats.
 
 **Done when:** the menus show everything the game's own screens do, and the installer works on a
 clean PC.
+
+## From the play tests (2026-10-21)
+
+- [x] Portraits the right way up (the owner's report)
+- [x] Hat bonuses with their symbol (SwapForceRecomp #58)
+- [x] The game's gold symbol (SwapForceRecomp #57)
+- [x] Controls page with a controller picture (drawn) and a keyboard view
+- [x] Achievements: Xbox 360-style pop-up, list with the controller

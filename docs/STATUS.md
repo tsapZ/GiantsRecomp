@@ -2,7 +2,7 @@
 
 Updated at the end of every session. Only record what a build actually did.
 
-## Current state (2026-10-20)
+## Current state (2026-10-21)
 
 | Area | State |
 |---|---|
@@ -170,3 +170,28 @@ Updated at the end of every session. Only record what a build actually did.
   coordinates), and **a rebuilt GPU plugin is copied next to the exe** without a relink (fork
   `fix/stage-gpu-plugin`). Checked: boot with the logo movies, no errors. New RenderDoc script
   `tools/renderdoc/vsout.py` (vertex shader outputs per vertex).
+
+## 2026-10-21: session log (night)
+
+- **Player menu with two players** (portal library, #56 in SwapForceRecomp): Player 1, Player 2
+  and "Not playing" (guest users 2 and 3, e.g. a third controller) instead of four player columns;
+  left / right moves a controller through the three. Checked by script.
+- **Controls page for every device** (#55 / #29): the game's own Xbox 360 controller picture stays
+  for Xbox pads; any other pad (PlayStation, Nintendo, a generic one like the Logitech Dual Action),
+  and a game without a picture of its own, gets a drawn controller in its layout and with its
+  button names. Used with the keyboard (F4, or a key pressed in the menu) the page shows a keyboard
+  (QWERTZ in German): a button setting marks its key (F6, F5, F9, F4), the overview every menu key
+  and the keys of the keyboard's controller emulation (`keybind_*`) with the button each one
+  stands for ("Laufen" on WASD, "A" on Space). Checked by script on both views.
+- **Achievements like on the Xbox 360** (#59): an unlocked one pops up in the bottom middle (the
+  round icon opens into a dark bar, "Erfolg freigeschaltet", "25G - name", no sound), and the list
+  opens with F7 or from F4 > Spiel > Erfolge with a controller (unlocked first with the date,
+  totals; up / down, LB / RB, B). Both replace the SDK's own.
+- **English checked** (title, portal menu, details, settings) with `--language=english`.
+- **Portraits the right way up** (the owner saw them upside down): every collection
+  portrait (Skylanders, sidekicks, magic items) is stored upside down like the element symbols;
+  flipped when read. The hat icons, UI sprites, were right.
+- **Hat bonuses with their symbol** (#58 in SwapForceRecomp): the stats screen's pictures
+  (character/UI_StatsScreen_Extra.bld), matched to each bonus by the same text in ENGLISH.pak.
+- **The game's gold symbol** (#57 there): the stats screen's coin with the Skylanders S
+  (permanent/global.bld `.../ui_main/sprites/stats/coin.png`).
