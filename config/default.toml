@@ -68,3 +68,22 @@ registers = ["r3"]
 address = 0x822F197C
 name = "GameClockMinStepHook"
 registers = ["f0", "f13", "r31"]
+
+[functions]
+# Function starts the analyzer put one instruction late (SSARecomp #33 / GiantsRecomp #23), found in
+# the whole code (a dump of guest memory with the input script's `save`): right after a `blr`, an
+# instruction that is no known start, followed by one that is. A function the analyzer reached
+# through a branch to its second instruction while its real start is only in a pointer table; such a
+# function, when called, ends the game with "Call to invalid or unregistered function". The same
+# search found the ones SuperChargersRecomp and ImaginatorsRecomp crashed on at boot, and their
+# entries fixed it. A start that was in fact the second half of the function before only splits it,
+# which the generated code handles as a tail call. No size given, the analyzer finds the end.
+0x821D73AC = {}
+0x8245C178 = {}
+0x8248111C = {}
+0x824AE338 = {}
+0x824F7F10 = {}
+0x82508A58 = {}
+0x82580810 = {}
+0x82598FF4 = {}
+0x825990D4 = {}
