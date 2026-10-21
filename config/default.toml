@@ -96,6 +96,18 @@ address = 0x821999B0
 name = "UltrawideFovHook"
 registers = ["f1", "f2", "f3"]
 
+# 0x821910E8 is lfs f0,184(r11) in sub_821910A8, the UI camera's set-up: r11 is the screen object
+# the UI is laid out on (+180 width, +184 height, 1280 x 720), which the set-up then reads into
+# the camera and its orthographic projection (bl sub_822D0100 at 0x82191188, the ortho builder:
+# f1 / f2 left / right, f3 / f4 bottom / top). Found from that call; the approach is
+# GiantsRecomp's by TheBiemGamer. src/hooks/ultrawide_hook.cpp sets the width to the height x the
+# window's aspect with ultrawide_hud and ultrawide_fov on a wider window, so the game lays the UI
+# out to the window's edges; otherwise it puts the game's own width back.
+[[midasm_hook]]
+address = 0x821910E8
+name = "UltrawideHudHook"
+registers = ["r11"]
+
 [functions]
 # Function starts the analyzer put one instruction late (SSARecomp #33 / GiantsRecomp #23), found in
 # the whole code (a dump of guest memory with the input script's `save`): right after a `blr`, an

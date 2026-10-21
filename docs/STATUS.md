@@ -211,3 +211,10 @@ Updated at the end of every session. Only record what a build actually did.
   and ß among them; Segoe UI fills in the rest. Read in 240 ms at start. Checked by script: the
   portal menu's title in the same letters as the game's "Spieler 1:" behind it, names, tabs,
   hints and the hat's "Generalsmütze" in the text font.
+- **The HUD at the window's edges** (`ultrawide_hud`, on, with ultrawide): the owner found the
+  stretched HUD squashed. The UI is laid out on a screen object of 1280 x 720 that the UI camera
+  also takes its orthographic projection from; the hook gives it the window's width at the UI's
+  height (1707 for 21:9), so the game lays its UI out to the window's edges and the projection
+  keeps its proportions (approach from TheBiemGamer's GiantsRecomp, read, not copied). Checked by
+  script in a 2560x1080 window: the portal prompt, the HUD (Ninjini's round portrait at the left
+  edge) and the pause menu in their own proportions.
