@@ -29,6 +29,13 @@
 // stretches back: the HUD keeps its proportions and sits at the window's edges. The hook, before
 // the set-up reads the size (lfs f0,184(r11) at 0x821910E8, r11 = the screen object), writes that
 // width and puts the game's own back when ultrawide is off.
+//
+// Movies: the logos and the opening movie are 16:9 Bink movies drawn into the 16:9 frame, which
+// the presenter would stretch across the window like the 3D picture. While one plays the
+// presenter keeps black bars at the sides instead (present_use_actual_aspect off and
+// present_letterbox on just for that time, not saved). BinkOpen's header hook
+// (intro_skip_hook.cpp) marks the start, the start of BinkClose (sub_82155B08, called only from the
+// game's movie close sub_82334CB0, which then clears the movie's handle) the end.
 
 #include <atomic>
 #include <cmath>
@@ -44,6 +51,7 @@
 #include <rex/memory.h>
 #include <rex/memory/utils.h>
 #include <rex/ppc/context.h>
+#include <rex/ui/flags.h>
 #include <rex/system/kernel_state.h>
 
 REXCVAR_DECLARE(std::string, resolution);
@@ -57,6 +65,11 @@ REXCVAR_DEFINE_BOOL(ultrawide_hud, true, "Graphics",
                     "edges in their own proportions instead of stretched");
 
 namespace {
+
+// True while a movie plays with the presenter's bars turned on for it; the aspect setting it
+// changed for that, to put back.
+std::atomic<bool> g_movie_bars{false};
+std::atomic<bool> g_movie_actual_aspect{true};
 
 constexpr double kGameAspect = 16.0 / 9.0;
 
@@ -78,6 +91,25 @@ namespace giantsrecomp {
 // Whether the picture should fill a wider window (the presenter then must not letterbox).
 bool UltrawideActive() {
   return REXCVAR_GET(ultrawide_fov) && WindowAspect() > kGameAspect * 1.01;
+}
+
+
+void MovieOpened(uint32_t width, uint32_t height) {
+  // Only when the picture fills the wider window (the app turned the bars off for ultrawide).
+  if (!UltrawideActive() || REXCVAR_GET(present_letterbox) || g_movie_bars.exchange(true)) return;
+  // The presenter takes the frame's aspect from the window's size (present_use_actual_aspect),
+  // so the 16:9 frame counts as wide as the window: off for the movie, the console's 16:9 video
+  // mode then gives the aspect and present_letterbox the bars.
+  g_movie_actual_aspect = rex::cvar::Query<bool>("present_use_actual_aspect");
+  rex::cvar::SetFlagByName("present_use_actual_aspect", "false");
+  rex::cvar::SetFlagByName("present_letterbox", "true");
+  REXLOG_INFO("Ultrawide: movie {}x{} with bars at the sides", width, height);
+}
+
+void MovieClosed() {
+  if (!g_movie_bars.exchange(false)) return;
+  rex::cvar::SetFlagByName("present_letterbox", "false");
+  rex::cvar::SetFlagByName("present_use_actual_aspect", g_movie_actual_aspect ? "true" : "false");
 }
 
 }  // namespace giantsrecomp
@@ -129,4 +161,9 @@ void UltrawideHudHook(PPCRegister& r11) {
   written = want;
   static std::atomic<bool> logged{false};
   if (!logged.exchange(true)) REXLOG_INFO("Ultrawide: UI screen {} x {} -> {} wide", width, height, want);
+}
+
+// At the start of BinkClose (sub_82155B08): the movie is over (or skipped).
+void BinkCloseHook() {
+  giantsrecomp::MovieClosed();
 }

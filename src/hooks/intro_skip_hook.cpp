@@ -18,6 +18,8 @@
 #include <rex/ppc/context.h>
 #include <rex/system/kernel_state.h>
 
+#include "ultrawide_hook.h"
+
 REXCVAR_DEFINE_BOOL(skip_intro, true, "Game",
                     "Skip the Activision and Toys for Bob logo movies at startup.");
 REXCVAR_DEFINE_BOOL(skip_opening_movie, false, "Game",
@@ -42,13 +44,16 @@ constexpr Movie kMovies[] = {
 }  // namespace
 
 void BinkHeaderLoaded(PPCRegister& r1) {
+  uint8_t* base = rex::system::kernel_state()->memory()->virtual_membase();
+  uint8_t* header = base + r1.u32 + 96;
+  // Every movie, skipped or not (ultrawide: bars at the sides while it plays).
+  giantsrecomp::MovieOpened(rex::memory::load_and_swap<uint32_t>(header + 0x14),
+                            rex::memory::load_and_swap<uint32_t>(header + 0x18));
   const bool skip_logos = REXCVAR_GET(skip_intro);
   const bool skip_opening = REXCVAR_GET(skip_opening_movie);
   if (!skip_logos && !skip_opening) {
     return;
   }
-  uint8_t* base = rex::system::kernel_state()->memory()->virtual_membase();
-  uint8_t* header = base + r1.u32 + 96;
   // The file stores these fields little-endian, but Bink's reader has already swapped the header
   // into native (big-endian) words by the time it reaches this point.
   const uint32_t size_field = rex::memory::load_and_swap<uint32_t>(header + 4);

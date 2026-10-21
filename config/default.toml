@@ -47,6 +47,16 @@ address = 0x82153DB0
 name = "BinkHeaderLoaded"
 registers = ["r1"]
 
+# 0x82155B08 is the start of BinkClose (the Bink 2 SDK's, the same code in all four later games):
+# found as the one Bink call in the game's movie close (sub_82334CB0), which clears the movie's
+# handle right after it; that close is its only caller. With ultrawide active,
+# src/hooks/ultrawide_hook.cpp turns the presenter's side bars it put up for the movie (at
+# BinkOpen, see BinkHeaderLoaded) off again; it reads and changes no guest state.
+[[midasm_hook]]
+address = 0x82155B08
+name = "BinkCloseHook"
+registers = []
+
 # 0x8217F350 is in the tfbXenonApplication setup (sub_8217F2D8), the compare of XGetGameRegion's
 # result (r3) that picks the European or the North American language set; the disc has the text of
 # both. src/hooks/language_region_hook.cpp reports the European region there when German or
