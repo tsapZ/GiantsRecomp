@@ -126,6 +126,11 @@ class GiantsrecompApp : public rex::ReXApp {
     // follows frame_rate_limit, and it keeps its speed at more frames (measured, docs/STATUS.md).
     // "30 as on the console" in the menu is the limit 30, so it stays when chosen.
     SetDefault("frame_rate_limit", "60");
+    // The final picture sharpened with CAS (the menu's "Quality" preset) unless the settings file
+    // or the command line sets present_effect (the owner asked for the best picture by default,
+    // 2026-10-21). resolution_scale, the preset's other half, belongs to the GPU plugin, which
+    // isn't loaded yet here; the installer's settings file sets it for the screen.
+    SetDefaultIfUnset("present_effect", "cas");
     // Giants reads its own figures and Spyro's Adventure's; later games' figures (of the same
     // characters too) it doesn't know.
     SetDefault("portal_menu_games", "Spyro's Adventure;Giants");
@@ -291,6 +296,15 @@ class GiantsrecompApp : public rex::ReXApp {
   // Sets a setting's default without overriding what the user put in the settings file.
   static void SetDefault(std::string_view name, std::string_view value) {
     if (!rex::cvar::HasNonDefaultValue(name) && !rex::cvar::SetFlagByName(name, value)) {
+      REXLOG_WARN("Could not set {} to {}", name, value);
+    }
+  }
+
+  // The same, but only when nothing set the setting at all, so a choice of the compiled-in value
+  // (e.g. no sharpening, "bilinear") stays chosen.
+  static void SetDefaultIfUnset(std::string_view name, std::string_view value) {
+    if (rex::cvar::GetFlagSource(name) == rex::cvar::Source::kDefault &&
+        !rex::cvar::SetFlagByName(name, value)) {
       REXLOG_WARN("Could not set {} to {}", name, value);
     }
   }
