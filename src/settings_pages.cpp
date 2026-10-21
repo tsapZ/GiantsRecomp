@@ -136,7 +136,7 @@ SettingsPage FrameRatePage() {
        "Das Spiel ist f\xC3\xBCr 30 FPS gemacht und l\xC3\xA4uft mit mehr normal schnell. Am "
        "besten die Bildwiederholrate deines Bildschirms. Schafft dein PC das nicht, l\xC3\xA4uft "
        "das Spiel einfach so schnell, wie er kann.",
-       {{"0", "30 (as on the console)", "30 (wie auf der Konsole)"},
+       {{"30", "30 (as on the console)", "30 (wie auf der Konsole)"},
         {"60", "60", "60"},
         {"120", "120", "120"},
         {"144", "144", "144"},
@@ -294,9 +294,7 @@ SettingsPage ControlsPage() {
        "Which player the keyboard is. Controllers are assigned in the player menu (L3 + R3).",
        "Welcher Spieler die Tastatur ist. Controller teilst du im Spieler-Men\xC3\xBC zu (L3 + R3).",
        {{"1", "Player 1", "Spieler 1"},
-        {"2", "Player 2", "Spieler 2"},
-        {"3", "Player 3", "Spieler 3"},
-        {"4", "Player 4", "Spieler 4"}}});
+        {"2", "Player 2", "Spieler 2"}}});
   return page;
 }
 

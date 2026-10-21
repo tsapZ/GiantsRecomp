@@ -24,8 +24,8 @@
 // 500 + that Skylander's id, except Giants' four (kGiantsSidekicks); the items are listed in
 // kItems. The element symbols come from CardGame_Streaming.bld (the card game's
 // "element_icon_<name>"), model textures stored upside down like the upgrade poses. The portraits
-// are stored upside down as well, every one of them (seen in the play test of 2026-10-21; the hat
-// icons, UI sprites, are not).
+// are stored upside down as well, every one of them (seen in the play test of 2026-10-21), and so
+// are the UI sprites (the hat icons, the stat symbols and the coin, toy_hats.cpp).
 
 #include "toy_portraits.h"
 

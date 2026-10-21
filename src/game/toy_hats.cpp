@@ -33,6 +33,7 @@
 #include "game/alchemy/iga8_archive.h"
 #include "game/alchemy/igz6_file.h"
 #include "game/game_text.h"
+#include "game/xenos_dxt.h"
 
 namespace giantsrecomp {
 namespace {
@@ -96,6 +97,9 @@ void ReadPictures(alchemy::Iga8Archive& archive, Want want, Use use) {
     if (!want(image.name)) continue;
     auto rgba = igz->Decode(image);
     if (!rgba) continue;
+    // Stored upside down like the portraits: the coin's S and its shine (bottom right as
+    // decoded), and the hat icons the owner saw upside down (2026-10-21).
+    FlipVertically(*rgba);
     auto out = std::make_shared<FigureImage>();
     out->width = rgba->width;
     out->height = rgba->height;
