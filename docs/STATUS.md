@@ -234,3 +234,13 @@ Updated at the end of every session. Only record what a build actually did.
   checkout of it (off by default); each replaces the recompiled function and is checked against it
   with `--decomp_verify=true`. First one: the figure data CRC (sub_82201FD8), "matches the original
   (16777216 inputs)"; a run with it in to the title, then the build set back to without.
+
+## 2026-10-22: later the same night
+
+- **The controls page shows the game's controller picture** (item/UI_Options_Item.arc's controls_360.png; the red callout lines filled in straight across, the red the DXT blocks mixed into the edges turned grey), #28 closed.
+- **Both fonts' button symbols left out** ("<" A, ">" B, "]" X, "}" Y, the sticks, Back, Start, the d-pad): the menus drew them as dots where the text has "<" or ">".
+- **Native 3D picture** (src/hooks/scene_size_hook.cpp, F4 > Grafik, experimental, off): the scene's target is made in code at the screen's size but at most 1000x600 (sub_821939E0, and the helpers sub_8218ED90 / sub_8218EDD8 for what follows the scene); found with a RenderDoc capture, checked with another: the scene drawn and resolved at 1264x704. #25 closed. #26 (FXAA): the captured scenes use 2x MSAA and no FXAA pass, see the issue.
+- The settings example and the installer's template set skip_intro twice (an invalid file); fixed, and the example says 60 FPS.
+- **Settings file read even with a repeated key** (SDK fork 96273bb): a key set twice in a table makes the whole TOML file invalid, and the game then ignored every setting in it without a visible error (the error went to a log that didn't exist yet). The SDK now reads such a file with the repeats left out and logs which key was repeated.
+- **`--settings_schema=<file>`** (skylanders-portal 25dec20): the game writes its F4 menu's pages with their values and quits before a window opens; the Core of Light launcher shows them as the game's settings and writes into this game's settings file.
+- **Figure pictures for the launcher** (skylanders-portal e87feb3): while the game runs, every figure picture it reads from the disc goes into `Documents\Skylanders\Pictures\<game>` once, for the launcher's figure library.
