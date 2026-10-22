@@ -115,6 +115,8 @@ target_include_directories(giantsrecomp_verify PRIVATE "${REXSDK_DIR}/thirdparty
 target_sources(giantsrecomp_verify PRIVATE "${REXSDK_DIR}/thirdparty/crypto/sha256.cpp")
 
 target_link_libraries(giantsrecompiled PRIVATE giantsrecomp_verify skylanders_portal_rex)
+# The exe's icon: the game's logo from the owner's disc (rom/nxeart), made at build time (#29).
+skylanders_game_icon(giantsrecompiled "${CMAKE_CURRENT_SOURCE_DIR}/rom")
 target_compile_definitions(giantsrecompiled PRIVATE GIANTSRECOMP_XEX_SHA256="${GIANTSRECOMP_XEX_SHA256}")
 
 enable_testing()
