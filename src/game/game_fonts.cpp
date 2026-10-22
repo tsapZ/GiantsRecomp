@@ -13,6 +13,12 @@
 // "fonts/360/contemp.png" (1024x1024) and "fonts/360/simple.png" (512x512), are DXT5, Xbox 360
 // tiled, the glyphs grey with their coverage in the alpha. Read 2026-10-21 from this disc: 177
 // glyphs each, German's ä ö ü ß Ä Ö Ü among them, upright.
+// Both pages end with a row of the pad's buttons, which the game's texts write as punctuation:
+// "<" and "[" A, ">" and "{" B, "]" X, "}" and "`" Y, "&" and "\" the left and right stick,
+// "*" Back, "=" Start, "_" "|" "~" "^" the d-pad up, down, left, right (looked at 2026-10-22 on
+// both pages, the two fonts alike). Those glyphs are left out, so the menus' own font draws these
+// characters: with them every ">" of the settings menu came out as a dot (the coverage of the
+// button's round shape).
 
 #include "game_fonts.h"
 
@@ -53,6 +59,8 @@ constexpr uint32_t kWidthField = 0x18;
 constexpr uint32_t kHeightField = 0x1C;
 constexpr uint32_t kU0Field = 0x20;
 constexpr uint32_t kV0Field = 0x24;
+// The button symbols' code points (see the top).
+constexpr std::string_view kButtonSymbols = "&*<=>[\\]^_`{|}~";
 
 float F32(const alchemy::Igz6File& igz, uint64_t object, uint32_t field) {
   const uint32_t bits = igz.Field(object, field);
@@ -120,6 +128,9 @@ std::shared_ptr<const GameFont> ReadFont(const std::filesystem::path& archive_pa
     if (!g) continue;
     GameFontGlyph glyph;
     glyph.codepoint = igz->Field(*g, kCodepointField) >> 16;
+    if (glyph.codepoint < 0x80 && kButtonSymbols.find(char(glyph.codepoint)) != std::string_view::npos) {
+      continue;
+    }
     glyph.advance = F32(*igz, *g, kAdvanceField);
     glyph.x_offset = F32(*igz, *g, kOffsetXField);
     glyph.y_offset = F32(*igz, *g, kOffsetYField);
