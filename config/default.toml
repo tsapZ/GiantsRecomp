@@ -118,6 +118,36 @@ address = 0x821910E8
 name = "UltrawideHudHook"
 registers = ["r11"]
 
+# The scene size hooks (src/hooks/scene_size_hook.cpp; experimental, off unless scene_size is
+# set). sub_821939E0 makes the scene's render target at the screen's size, at most 1000x600 (a
+# RenderDoc capture in the first level shows the scene resolved into a 1000x600 texture; this is the
+# only code with that limit). 0x82193A38 is where both paths of the width's limit meet, r29 = the
+# width; 0x82193A60 the same for the height, r5. The hooks put scene_size there when the game chose
+# its own 1000 / 600, before sub_82196150 makes the target with them; r29 and r5 are only that size.
+[[midasm_hook]]
+address = 0x82193A38
+name = "SceneWidthHook"
+registers = ["r29"]
+
+[[midasm_hook]]
+address = 0x82193A60
+name = "SceneHeightHook"
+registers = ["r5"]
+
+# The same limit as two small functions for the other code that sizes things after the scene (the
+# texture it is resolved into, its post effects): sub_8218ED90 returns the screen's width but at
+# most 1000, sub_8218EDD8 its height but at most 600; 0x8218EDC8 and 0x8218EE10 are where both of
+# their paths meet, r3 the value returned. The same hooks put scene_size there.
+[[midasm_hook]]
+address = 0x8218EDC8
+name = "SceneWidthResultHook"
+registers = ["r3"]
+
+[[midasm_hook]]
+address = 0x8218EE10
+name = "SceneHeightResultHook"
+registers = ["r3"]
+
 [functions]
 # Function starts the analyzer put one instruction late (SSARecomp #33 / GiantsRecomp #23), found in
 # the whole code (a dump of guest memory with the input script's `save`): right after a `blr`, an
