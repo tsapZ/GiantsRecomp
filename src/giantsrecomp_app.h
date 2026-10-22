@@ -215,6 +215,8 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::InstallControllerPicture(game_data_root_);
     // 16x texture filtering unless the owner set his own (skylanders-portal settings_schema.h).
     skylanders::ApplyGraphicsDefaults();
+    // An HD texture pack in Documents\Skylanders\Textures\Giants, if there is one.
+    skylanders::UseTexturePack(user_data_root(), "Giants");
     // Estimate the EDRAM extent of draws without clipping by running their vertex shader on the
     // CPU (Xenia's default; the SDK defaults to off). In Swap Force, without it, the faster RTV
     // render target path let a full-screen float pass wrap around the EDRAM onto the lit scene and
