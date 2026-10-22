@@ -44,6 +44,7 @@
 
 #include "game/alchemy/iga8_archive.h"
 #include "game/alchemy/igz6_file.h"
+#include "game/controller_picture.h"
 #include "game/toy_hats.h"
 #include "game/toy_upgrades.h"
 #include "portal_rex/portal_menu.h"
@@ -308,6 +309,8 @@ void InstallToyPortraits(const std::filesystem::path& rom_dir) {
   skylanders::SetArtImageProvider([](const std::string& key) -> std::shared_ptr<const FigureImage> {
     // The upgrade pictures of the details view (toy_upgrades.cpp).
     if (key.starts_with("upgrade:")) return UpgradeImage(key);
+    // The controls page's controller picture (controller_picture.cpp).
+    if (auto pad = ControllerPictureImage(key)) return pad;
     if (key.starts_with("hat:") || key.starts_with("stat:") || key == "ui:gold") {
       return HatImage(key);
     }

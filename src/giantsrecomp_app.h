@@ -30,6 +30,7 @@
 #include "dev/write_watch.h"
 #include "hooks/ultrawide_hook.h"
 #include "dev/gpu_diagnostics.h"
+#include "game/controller_picture.h"
 #include "game/game_fonts.h"
 #include "game/game_text.h"
 #include "game/portal_prompt_watch.h"
@@ -183,6 +184,8 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::InstallToyUpgrades(game_data_root_);
     // The details view's hat: the game's name, picture and bonuses.
     giantsrecomp::InstallToyHats(game_data_root_);
+    // The controls page's picture: the game's own, from its options screen.
+    giantsrecomp::InstallControllerPicture(game_data_root_);
     // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
     // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
     // it themselves.
@@ -266,6 +269,8 @@ class GiantsrecompApp : public rex::ReXApp {
           rex::ui::ProcessKeyEvent(event);
         }),
         settings_path_);
+    // The controls page shows the menu buttons on the game's own controller picture.
+    skylanders::SetControllerPicture(giantsrecomp::ControllerPictureLayout());
     skylanders::RegisterPortalOverlay(drawer);
   }
 

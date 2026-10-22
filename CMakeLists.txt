@@ -44,6 +44,7 @@ set(GIANTSRECOMP_SOURCES
     src/game/alchemy/iga8_archive.cpp
     src/game/alchemy/igz6_file.cpp
     src/game/alchemy/lzma_decoder.cpp
+    src/game/controller_picture.cpp
     src/game/game_fonts.cpp
     src/game/game_text.cpp
     src/game/kernel_stubs.cpp
