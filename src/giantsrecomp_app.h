@@ -201,13 +201,8 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::InstallToyHats(game_data_root_);
     // The controls page's picture: the game's own, from its options screen.
     giantsrecomp::InstallControllerPicture(game_data_root_);
-    // Default to 16x anisotropic filtering (the SDK defaults to 4x): ground and floor textures seen
-    // at a shallow angle stay sharp, for a negligible cost on PC GPUs. Only when the user hasn't set
-    // it themselves.
-    if (!rex::cvar::HasNonDefaultValue("anisotropic_override") &&
-        !rex::cvar::SetFlagByName("anisotropic_override", "5")) {
-      REXLOG_WARN("Could not set anisotropic_override to 16x");
-    }
+    // 16x texture filtering unless the owner set his own (skylanders-portal settings_schema.h).
+    skylanders::ApplyGraphicsDefaults();
     // Estimate the EDRAM extent of draws without clipping by running their vertex shader on the
     // CPU (Xenia's default; the SDK defaults to off). In Swap Force, without it, the faster RTV
     // render target path let a full-screen float pass wrap around the EDRAM onto the lit scene and

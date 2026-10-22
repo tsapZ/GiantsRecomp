@@ -252,3 +252,7 @@ launcher's achievements screen.
   first store (0x8219C9E8) scales it (`src/hooks/post_effects_hook.cpp`). Checked on the title
   screen: at 0 the haze over the sky and the logo is gone, at 3 it is much stronger (mean
   brightness 158 / 166 / 176). Giants has no motion blur pass.
+- **Nothing skipped by default** (the owner's choice, 2026-10-22): `skip_intro` is off, the logo
+  movies play as on the console (the option skips them); the settings templates say so too. The
+  16x texture filter now comes from skylanders-portal (`ApplyGraphicsDefaults`), so the Core of
+  Light launcher shows 16x as the game uses it.
