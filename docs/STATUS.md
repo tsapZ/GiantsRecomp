@@ -246,3 +246,9 @@ Updated at the end of every session. Only record what a build actually did.
 - **Figure pictures for the launcher** (skylanders-portal e87feb3): while the game runs, every figure picture it reads from the disc goes into `Documents\Skylanders\Pictures\<game>` once, for the launcher's figure library; later the same night (skylanders-portal 7f6a34a) also the hats it knows (hats.txt, their pictures) and the upgrade trees of the figures in the figure folder; and
 (skylanders-portal ca65339) the game's achievement list with the title's own pictures, for the
 launcher's achievements screen.
+- **Bloom strength (F4 > Grafik > Leuchten (Bloom)), as in the other games:** Giants has Toys for
+  Bob's own bloom (`tfb_bloom_combine_PS`); `sub_8219C730` draws its combine pass with the effect
+  object's `_bloomIntensity` (+52) as the colour of the pass's constants. A midasm hook at the
+  first store (0x8219C9E8) scales it (`src/hooks/post_effects_hook.cpp`). Checked on the title
+  screen: at 0 the haze over the sky and the logo is gone, at 3 it is much stronger (mean
+  brightness 158 / 166 / 176). Giants has no motion blur pass.

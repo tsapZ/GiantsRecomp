@@ -103,6 +103,16 @@ SettingsPage GraphicsPage() {
        "Filter verschwimmen sie in der Ferne. Empfohlen ist 16x: Das kostet etwa 1 % Bildrate.",
        {{"0", "Off", "Aus"}, {"3", "4x", "4x"}, {"4", "8x", "8x"}, {"5", "16x", "16x"}}});
   page.settings.push_back(
+      {"bloom_strength", "Glow (bloom)", "Leuchten (Bloom)",
+       "The soft glow the game puts around bright areas and lights. Off: a clearer, slightly "
+       "darker picture; strong: more glow. Costs nothing.",
+       "Der weiche Schein, den das Spiel um helle Stellen und Lichter legt. Aus: ein klareres, "
+       "etwas dunkleres Bild; stark: mehr Schein. Kostet nichts.",
+       {{"0", "Off", "Aus"},
+        {"0.5", "Weak", "Schwach"},
+        {"1", "As in the game", "Wie im Spiel"},
+        {"1.5", "Strong", "Stark"}}});
+  page.settings.push_back(
       {"swap_post_effect", "Extra edge smoothing", "Zus\xC3\xA4tzliche Kantengl\xC3\xA4ttung",
        "A second edge smoothing over the whole picture, on top of the game's own. For now it also "
        "makes the picture darker and paler (a known bug). Recommended: off.",

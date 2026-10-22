@@ -148,6 +148,17 @@ address = 0x8218EE10
 name = "SceneHeightResultHook"
 registers = ["r3"]
 
+# 0x8219C9E8 is the first of three stores of the bloom intensity (f8, just loaded from +52 of
+# Toys for Bob's bloom effect object, _bloomIntensity) into the colour vector of the bloom combine
+# pass's shader constants in sub_8219C730 (its stack +80 / +84 / +88). Found from the combine
+# shader's handle (global 0x826ECF70, loaded with "tfb_bloom_combine_PS" by sub_822308F0) and its
+# only drawing user. src/hooks/post_effects_hook.cpp scales f8 by bloom_strength; f8 is not used
+# after the three stores, and the object's field stays as it is.
+[[midasm_hook]]
+address = 0x8219C9E8
+name = "BloomStrengthHook"
+registers = ["f8"]
+
 [functions]
 # Function starts the analyzer put one instruction late (SSARecomp #33 / GiantsRecomp #23), found in
 # the whole code (a dump of guest memory with the input script's `save`): right after a `blr`, an
