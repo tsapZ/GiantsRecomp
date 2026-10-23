@@ -297,3 +297,7 @@ launcher's achievements screen.
   Found by comparing the script heap's variables on "Spiel wählen", on the slot page and after
   one Down. Checked by script on the owner's save copy without input: the cursor went to slot 4,
   the save loaded, the game asked for a Skylander and player 1's figure from Recent went on.
+
+- **Weiterspielen removed again** (the owner's decision the same evening): blind A presses through
+  the menus are too unsafe, and a game is at its title in seconds, where the player picks the right
+  save himself. `src/game/continue_slot.cpp` and the library's continue step are gone again.

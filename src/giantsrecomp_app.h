@@ -30,7 +30,6 @@
 #include "dev/write_watch.h"
 #include "hooks/ultrawide_hook.h"
 #include "dev/gpu_diagnostics.h"
-#include "game/continue_slot.h"
 #include "game/controller_picture.h"
 #include "game/game_fonts.h"
 #include "game/game_text.h"
@@ -206,8 +205,6 @@ class GiantsrecompApp : public rex::ReXApp {
     giantsrecomp::StartPortalPromptWatch(runtime()->memory());
     // Items go on and off the portal only once the player's Skylander is back in the game.
     skylanders::SetGameBusyProvider([] { return giantsrecomp::PortalPromptActive(); });
-    // Weiterspielen: the slot screen's cursor to the save played last before the continue's A.
-    giantsrecomp::StartContinueSlot(runtime()->memory(), user_data_root());
     // Pictures for the portal menu from the game's own files: the collection portraits of every
     // Skylander, sidekick and magic item, and the element symbols.
     giantsrecomp::InstallToyPortraits(game_data_root_);
