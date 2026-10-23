@@ -113,6 +113,9 @@ class GiantsrecompApp : public rex::ReXApp {
   static skylanders::TitleMusicSource TitleMusic() { return {{"level/title.arc", "0x6986a413.wav.hz"}}; }
 
   void OnPreSetup(rex::RuntimeConfig& config) override {
+    // "Fenstergröße: Automatisch" in fullscreen: the screen's size for this start, so an ultrawide
+    // screen gets the wider picture by itself (UltrawideActive below reads `resolution`).
+    skylanders::ResolutionFromScreenIfAutomatic();
     // Before the GPU plugin creates its device (testing only, gpu_crash_diagnostics).
     giantsrecomp::EnableGpuCrashDiagnostics();
     // A wider window with ultrawide_fov: the picture fills it (the camera sees more to the sides)
