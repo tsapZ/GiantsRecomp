@@ -285,3 +285,15 @@ launcher's achievements screen.
   10 s. The game smooths edges with 2x MSAA there. No long-fall check like Swap Force's
   (`_stuckFallingDistanceThreshold`) in this game's executable (strings searched), so nothing to
   fix there.
+
+## 2026-10-23: Weiterspielen into the save played last
+
+- Core of Light's Weiterspielen tile (`--continue_game=true`) gets into the save played last: the
+  "Speicherplatz wählen" list always starts on slot 1 (checked with a copy of the owner's save,
+  slot 4, slots 1-3 empty). `src/game/continue_slot.cpp` takes the slot whose `Save_Slot_<n>.xsg`
+  was written last and, before the continue's A, taps Down until the menu script's "selection
+  cur" is that slot's entry. The slot page is the "current menu" whose member "items" lists four
+  entries ("Spiel wählen" has three); the entries are in order, so the target is known exactly.
+  Found by comparing the script heap's variables on "Spiel wählen", on the slot page and after
+  one Down. Checked by script on the owner's save copy without input: the cursor went to slot 4,
+  the save loaded, the game asked for a Skylander and player 1's figure from Recent went on.
