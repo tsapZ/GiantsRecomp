@@ -49,7 +49,7 @@ marks one to take off, Continue takes them off. See [portal.md](portal.md#portal
 
 - **Graphics:** preset (Performance: scale 1 + FSR; Quality: scale 2 + CAS; Best: scale 3 + CAS),
   internal resolution (`resolution_scale`), sharpening (`present_effect`), texture filtering
-  (`anisotropic_override`), extra edge smoothing (`swap_post_effect`), fullscreen, window size.
+  (`anisotropic_override`), HD textures on or off (`hd_textures`, with a pack installed), extra edge smoothing (`swap_post_effect`), fullscreen, window size.
 - **Frame rate:** `frame_rate_limit` (0 = 30 FPS like the console; higher values let the game run
   at that rate, its speed stays the same), VSync, render path, graphics card, graphics interface
   (D3D12 or Vulkan).
