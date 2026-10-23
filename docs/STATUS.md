@@ -155,7 +155,7 @@ Updated at the end of every session. Only record what a build actually did.
   `save-backup/previous/`; a start after a crash in between puts it back. Checked on a test copy:
   both saves log "saving ... anew" and "saved".
 - **No crash when B closes the portal menu's "real portal is active" message** (portal fork
-  1566231, found in SwapForceRecomp with the USB portal).
+  8f56b05, found in SwapForceRecomp with the USB portal).
 - **Crash report in the log** (`src/dev/write_watch.cpp`, `InstallCrashReport`, from
   SwapForceRecomp): a real crash logs the guest call chain and registers ("Crash: ...").
 - **No speed-up above 120 FPS** (#22). The Cemu packs for the Wii U version patch a clamp against
@@ -227,7 +227,7 @@ Updated at the end of every session. Only record what a build actually did.
 
 ## 2026-10-22: session log (night)
 
-- **Portal library** (cbc71c6, 0eb2564): the later games' cards say "Fahrzeug", "Sensei", "Falle" and "Serie 2" in the German menu; a plain hat symbol where a game has no hat picture.
+- **Portal library** (83cc22e, 141d32e): the later games' cards say "Fahrzeug", "Sensei", "Falle" and "Serie 2" in the German menu; a plain hat symbol where a game has no hat picture.
 - **New issues** for options the other games have: #25 the native 3D scene (its size is neither data nor Spyro's Adventure's constants here; needs a RenderDoc capture), #26 the game's FXAA at the internal resolution, #27 bloom and motion blur strength, #28 the game's controller picture.
 - **Giants decompiled** (new private repository tsapZ/GiantsDecomp): readable C++ for some of this
   game's functions, built in only when the CMake cache variable `GIANTS_DECOMP_DIR` points at a
@@ -241,10 +241,10 @@ Updated at the end of every session. Only record what a build actually did.
 - **Both fonts' button symbols left out** ("<" A, ">" B, "]" X, "}" Y, the sticks, Back, Start, the d-pad): the menus drew them as dots where the text has "<" or ">".
 - **Native 3D picture** (src/hooks/scene_size_hook.cpp, F4 > Grafik, experimental, off): the scene's target is made in code at the screen's size but at most 1000x600 (sub_821939E0, and the helpers sub_8218ED90 / sub_8218EDD8 for what follows the scene); found with a RenderDoc capture, checked with another: the scene drawn and resolved at 1264x704. #25 closed. #26 (FXAA): the captured scenes use 2x MSAA and no FXAA pass, see the issue.
 - The settings example and the installer's template set skip_intro twice (an invalid file); fixed, and the example says 60 FPS.
-- **Settings file read even with a repeated key** (SDK fork 96273bb): a key set twice in a table makes the whole TOML file invalid, and the game then ignored every setting in it without a visible error (the error went to a log that didn't exist yet). The SDK now reads such a file with the repeats left out and logs which key was repeated.
-- **`--settings_schema=<file>`** (skylanders-portal 25dec20): the game writes its F4 menu's pages with their values and quits before a window opens; the Core of Light launcher shows them as the game's settings and writes into this game's settings file.
-- **Figure pictures for the launcher** (skylanders-portal e87feb3): while the game runs, every figure picture it reads from the disc goes into `Documents\Skylanders\Pictures\<game>` once, for the launcher's figure library; later the same night (skylanders-portal 7f6a34a) also the hats it knows (hats.txt, their pictures) and the upgrade trees of the figures in the figure folder; and
-(skylanders-portal ca65339) the game's achievement list with the title's own pictures, for the
+- **Settings file read even with a repeated key** (SDK fork 8761248): a key set twice in a table makes the whole TOML file invalid, and the game then ignored every setting in it without a visible error (the error went to a log that didn't exist yet). The SDK now reads such a file with the repeats left out and logs which key was repeated.
+- **`--settings_schema=<file>`** (skylanders-portal 4521ced): the game writes its F4 menu's pages with their values and quits before a window opens; the Core of Light launcher shows them as the game's settings and writes into this game's settings file.
+- **Figure pictures for the launcher** (skylanders-portal e17786b): while the game runs, every figure picture it reads from the disc goes into `Documents\Skylanders\Pictures\<game>` once, for the launcher's figure library; later the same night (skylanders-portal 6c3c6a3) also the hats it knows (hats.txt, their pictures) and the upgrade trees of the figures in the figure folder; and
+(skylanders-portal f571d26) the game's achievement list with the title's own pictures, for the
 launcher's achievements screen.
 - **Bloom strength (F4 > Grafik > Leuchten (Bloom)), as in the other games:** Giants has Toys for
   Bob's own bloom (`tfb_bloom_combine_PS`); `sub_8219C730` draws its combine pass with the effect
@@ -259,8 +259,8 @@ launcher's achievements screen.
 
 ## 2026-10-23: session log (night)
 
-- **Title music from the disc** for the Core of Light launcher (skylanders-portal 7bd504a,
-  rexglue-sdk 1e74678): `--export_title_music=<file.wav>` decodes the track the title screen
+- **Title music from the disc** for the Core of Light launcher (skylanders-portal 6e5c284,
+  rexglue-sdk 63e87be): `--export_title_music=<file.wav>` decodes the track the title screen
   streams (found with a run logging the game's file reads) from XMA2 with the SDK's FFmpeg and
   quits before a window opens, in under a second; each normal start leaves `title_music.wav` in
   the game's picture folder once. Checked: 0x6986a413.wav.hz of level/title.arc (54.9 s); the title also plays a quiet ambience (0x1385dec8, -15 dB in a recording), left out; identical to FFmpeg 8.1's own decode of the
@@ -269,10 +269,10 @@ launcher's achievements screen.
   starten" (both ask, "Nein" first; restart not offered when the launcher started the game; the
   new instance waits for the old one), the player menu is a row on the Portal page, the settings
   menu's buttons have no "Aus" any more (it locked a pad out), "Alle Einstellungen" says it is for
-  keyboard and mouse (skylanders-portal 60e8eeb).
-- **HD texture packs:** rexglue-sdk f02a4b5 dumps the game's BC1-BC3 textures
+  keyboard and mouse (skylanders-portal 5fff7aa).
+- **HD texture packs:** rexglue-sdk 37d3e77 dumps the game's BC1-BC3 textures
   (`texture_dump_dir`) and loads `<hash>.dds` replacements of any size (`texture_replace_dir`);
-  a pack in `Documents\Skylanders\Textures\Giants` is used by itself (skylanders-portal ebb5e85).
+  a pack in `Documents\Skylanders\Textures\Giants` is used by itself (skylanders-portal 94175f0).
   Checked in Swap Force's hub (see SwapForceRecomp docs/texture-packs.md, #62).
 - **F4 > Grafik:** "Schärfe-Stärke" (CAS's additional sharpness) and "Farbverläufe glätten
   (Dithering)", dithering on by default.
