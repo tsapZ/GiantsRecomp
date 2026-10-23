@@ -3,8 +3,6 @@
 An unofficial native Windows port of **Skylanders: Giants** (2012, Xbox 360), made with
 static recompilation (ReXGlue). Work in progress: the first level plays with a figure on the emulated portal.
 
-![Skylanders: Giants in play](docs/images/play.jpg)
-
 > **Unofficial fan project.** Not affiliated with or endorsed by Activision or Toys for Bob. This
 > repository contains **no game data**: you need your own copy of the game.
 
@@ -44,9 +42,8 @@ started together from [Skylanders: Core of Light](https://github.com/tsapZ/Skyla
 - **Achievements**, shown in the portal menu and in the Core of Light launcher.
 - English and German menus; French, Spanish and Italian as well (the disc has them all, a region hook opens the European ones).
 
-| The portal menu | A figure's upgrades | The settings menu (F4) |
-|---|---|---|
-| ![The portal menu](docs/images/portal-menu.jpg) | ![A figure's upgrades](docs/images/details.jpg) | ![The settings menu (F4)](docs/images/settings.jpg) |
+Screenshots are left out of this repository on purpose: they would show the games' artwork,
+which belongs to Activision.
 
 ## Which disc
 
