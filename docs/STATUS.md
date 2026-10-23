@@ -279,3 +279,9 @@ launcher's achievements screen.
 - **Installer:** its own AppId (all six shared one); `/NOROM=1` installs without the disc for the
   launcher (the settings file is still written); reasons a silent install stops go into its log.
   Silent install from the owner's ISO, start (German title screen), silent uninstall: checked.
+- **#26 (FXAA) closed, not needed:** the loader keeps `tfb_FXAA_PS` in the global 0x826ED040; a
+  read/write watch on it from start through the intro, the title, a figure's arrival and 25 s of
+  play saw no access, while the same watch on the bloom combine shader's global saw 1478 reads in
+  10 s. The game smooths edges with 2x MSAA there. No long-fall check like Swap Force's
+  (`_stuckFallingDistanceThreshold`) in this game's executable (strings searched), so nothing to
+  fix there.
