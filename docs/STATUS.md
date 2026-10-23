@@ -256,3 +256,26 @@ launcher's achievements screen.
   movies play as on the console (the option skips them); the settings templates say so too. The
   16x texture filter now comes from skylanders-portal (`ApplyGraphicsDefaults`), so the Core of
   Light launcher shows 16x as the game uses it.
+
+## 2026-10-23: session log (night)
+
+- **Title music from the disc** for the Core of Light launcher (skylanders-portal 7bd504a,
+  rexglue-sdk 1e74678): `--export_title_music=<file.wav>` decodes the track the title screen
+  streams (found with a run logging the game's file reads) from XMA2 with the SDK's FFmpeg and
+  quits before a window opens, in under a second; each normal start leaves `title_music.wav` in
+  the game's picture folder once. Checked: 0x6986a413.wav.hz of level/title.arc (54.9 s); the title also plays a quiet ambience (0x1385dec8, -15 dB in a recording), left out; identical to FFmpeg 8.1's own decode of the
+  track (-63 dB).
+- **Leaving the game with the pad:** F4 > Spiel ends with "Spiel beenden" and "Spiel neu
+  starten" (both ask, "Nein" first; restart not offered when the launcher started the game; the
+  new instance waits for the old one), the player menu is a row on the Portal page, the settings
+  menu's buttons have no "Aus" any more (it locked a pad out), "Alle Einstellungen" says it is for
+  keyboard and mouse (skylanders-portal 60e8eeb).
+- **HD texture packs:** rexglue-sdk f02a4b5 dumps the game's BC1-BC3 textures
+  (`texture_dump_dir`) and loads `<hash>.dds` replacements of any size (`texture_replace_dir`);
+  a pack in `Documents\Skylanders\Textures\Giants` is used by itself (skylanders-portal ebb5e85).
+  Checked in Swap Force's hub (see SwapForceRecomp docs/texture-packs.md, #62).
+- **F4 > Grafik:** "Schärfe-Stärke" (CAS's additional sharpness) and "Farbverläufe glätten
+  (Dithering)", dithering on by default.
+- **Installer:** its own AppId (all six shared one); `/NOROM=1` installs without the disc for the
+  launcher (the settings file is still written); reasons a silent install stops go into its log.
+  Silent install from the owner's ISO, start (German title screen), silent uninstall: checked.
