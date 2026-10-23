@@ -1,5 +1,5 @@
 #define MyAppName "Giants Recompiled"
-#define MyAppVersion "0.1.0-beta.1"
+#define MyAppVersion "0.1.0-beta.2"
 #define MyAppExeName "giantsrecompiled.exe"
 
 [Setup]
