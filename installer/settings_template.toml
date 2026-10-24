@@ -40,4 +40,4 @@ skip_intro = false                         # true: skip the Activision and Toys 
 # skip_opening_movie = true                # skip the long opening movie of a new game
 
 ["Runtime"]
-# user_data_root = "C:\\path\\to\\folder" # empty = Documents\giantsrecomp
+# user_data_root: on the command line only (--user_data_root=...); default Documents\Skylanders\Giants
