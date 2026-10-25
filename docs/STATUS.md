@@ -337,3 +337,14 @@ launcher's achievements screen.
 - Checked: every game boots to its first menus on fresh scratch data with the new data folder
   code (with --user_data_root, so the copy itself was checked in the launcher on a scratch
   Documents).
+
+## 2026-10-25: 0.2.0-beta.1
+
+- **Portal menu, companions by game** (skylanders-portal 2278b99): what goes on next to a player's
+  Skylander now depends on the game (sidekicks up to Swap Force, traps in Trap Team, vehicles from
+  SuperChargers on). Here the sidekicks behave as before.
+- **Mouse wheel in the menus** (SwapForceRecomp #65; skylanders-portal ccc7009): F4's rows, the
+  portal menu's cards and its variant list scroll a row per notch; the chosen row stays, and the view
+  follows it again once the keys or the pad move it.
+- **A chosen 4x texture filter stays 4x** (Core of Light #21, a colleague's report and fix;
+  skylanders-portal 23be5f2): 4x is the SDK's own default, so it counted as unset and became 16x.
