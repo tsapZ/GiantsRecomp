@@ -37,6 +37,7 @@ namespace {
 
 constexpr uint32_t kGameWidth = 1000;
 constexpr uint32_t kGameHeight = 600;
+constexpr uint32_t kGameEdramTiles = 2048;  // the 360's EDRAM, which the game still plans with
 // The game's screen (back buffer and HUD) size, which the scene must not match exactly (in Swap
 // Force a scene at exactly the screen's size crashed in about half of its save loads).
 constexpr uint32_t kScreenWidth = 1280;
@@ -59,6 +60,17 @@ Size ConfiguredSize() {
     }
   } else if (!text.empty()) {
     REXLOG_WARN("Scene size: '{}' is not WIDTHxHEIGHT; keeping the game's size", text);
+  }
+  // This game still plans its EDRAM as the 360's 2048 tiles (where, isn't found yet): a scene whose
+  // colour and depth surfaces (2x MSAA, tiles of 80x8 pixels) need more draws black in most places
+  // outside (the title, the Junkyard Isles; the owner's report, GiantsRecomp #30). Measured
+  // 2026-10-25: 1000x600, 1024x608 and 1040x608 (1976 tiles) fine; 1120x640, 1264x608 and
+  // 1008x704 (2240 to 2432) black. Such a size keeps the game's own until the planning is moved.
+  if (size.width && 2 * ((size.width + 79) / 80) * ((size.height + 7) / 8) > kGameEdramTiles) {
+    REXLOG_WARN("Scene size: {}x{} doesn't fit this game's EDRAM plan of {} tiles yet (GiantsRecomp #30); "
+                "keeping 1000x600",
+                size.width, size.height, kGameEdramTiles);
+    size = {};
   }
   // A larger scene doesn't fit the 360's EDRAM: without the larger one the game keeps its size.
   if (size.width * size.height > kGameWidth * kGameHeight && !rex::graphics::ActiveEdramLayout().is_extended()) {

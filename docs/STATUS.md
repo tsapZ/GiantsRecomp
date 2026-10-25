@@ -348,3 +348,12 @@ launcher's achievements screen.
   follows it again once the keys or the pad move it.
 - **A chosen 4x texture filter stays 4x** (Core of Light #21, a colleague's report and fix;
   skylanders-portal 23be5f2): 4x is the SDK's own default, so it counted as unset and became 16x.
+
+## 2026-10-25 (night): native 3D picture off for now (#30)
+
+- At native size most outside scenes were black (the title, the Junkyard Isles; the ship's inside
+  fine): the game still plans its EDRAM as the 360's 2048 tiles. Measured by scene size: 1000x600,
+  1024x608, 1040x608 fine (colour + depth at 2x MSAA, 80x8-pixel tiles: 1976 tiles); 1120x640,
+  1264x608, 1008x704 black (2240-2432). The hook keeps 1000x600 for a scene above 2048 tiles and
+  logs it; the F4 row is gone until the planning is found and moved as in Swap Force
+  (SwapForceRecomp src/hooks/scene_size_hook.cpp: planning heap, tiling decision, depth base).
