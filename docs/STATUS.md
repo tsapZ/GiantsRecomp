@@ -401,3 +401,7 @@ launcher's achievements screen.
 - **Hints in the pad's own buttons** (Core of Light #29, skylanders-portal 39ab210): after a press on a
   PlayStation pad the menus' hints show its symbols and L1 / R1 / Options, on a Nintendo pad its
   letters in their places and L / R / ZL / ZR / +; Xbox-like pads stay as they were.
+
+## 2026-10-25: 0.2.0-beta.3
+
+- The setup's version for what came since the last one: the native 3D picture back (#30) and "needs a break" opening the menu. Also in every game: the portal overview holds the game while open, a Skylander out of health gets the menu and a red cross, hats only where the game knows them, F4 opens on "Spiel" with volume and frame rate rows, key names as the keyboard prints them and a reset row, descriptions in short lines, hints in a PlayStation or Nintendo pad's own buttons, and figure changes with an HD pack without the stutter (skylanders-portal 39ab210, rexglue-sdk ce9dbb6).
