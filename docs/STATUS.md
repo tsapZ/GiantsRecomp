@@ -357,3 +357,11 @@ launcher's achievements screen.
   1264x608, 1008x704 black (2240-2432). The hook keeps 1000x600 for a scene above 2048 tiles and
   logs it; the F4 row is gone until the planning is found and moved as in Swap Force
   (SwapForceRecomp src/hooks/scene_size_hook.cpp: planning heap, tiling decision, depth base).
+
+## 2026-10-25: 0.2.0-beta.2
+
+- The setup's version for what came since 0.2.0-beta.1: the native 3D picture is off for now (#30, above). Also in every game: the portal overview (Back + Y / F5: what is on the portal, taken off one by one without lifting the
+  Skylander) and F4 > Controller (button jobs, vibration strength per player; not yet tried with a
+  real controller), skylanders-portal f2c4940 / 6e96c16; an A press right after the menu opened by
+  itself no longer picks a figure (SwapForceRecomp #72); one bad command-line option no longer drops
+  the others (rexglue-sdk 605000d).
