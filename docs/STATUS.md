@@ -398,3 +398,6 @@ launcher's achievements screen.
   sub_822FA6E8 puts the depth at the top of the SDK's 4096-tile EDRAM. Checked: the title at
   1264x704 draws in full (logo, sky, rocks), the log shows the scene's 2816-tile pass untiled and
   its depth at tile 2688. F4 > Grafik offers "Natives 3D-Bild" again. Not yet seen in a level.
+- **Hints in the pad's own buttons** (Core of Light #29, skylanders-portal 39ab210): after a press on a
+  PlayStation pad the menus' hints show its symbols and L1 / R1 / Options, on a Nintendo pad its
+  letters in their places and L / R / ZL / ZR / +; Xbox-like pads stay as they were.
