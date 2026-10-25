@@ -15,7 +15,18 @@
 // same limit is in two small functions the code after the scene asks (sub_8218ED90 the width,
 // sub_8218EDD8 the height, e.g. for the texture the scene is resolved into); their results get the
 // same treatment.
+//
+// The EDRAM (GiantsRecomp #30): the game plans its EDRAM as the 360's 2048 tiles. A scene whose
+// colour and depth surfaces (2x MSAA, tiles of 80x8 pixels) need more drew black in most places
+// outside (the title, the Junkyard Isles): 1000x600, 1024x608 and 1040x608 (1976 tiles) were fine,
+// 1120x640, 1264x608 and 1008x704 (2240 to 2432) black (measured 2026-10-25). As in Swap Force, a
+// pass above 2048 tiles was cut into predicated-tiling strips (sub_822F9B20) and the depth surface
+// put at the top of 2048 tiles (sub_822FA6E8), over the colours. With the SDK's 4096-tile EDRAM the
+// two hooks below let a pass up to 4096 tiles go untiled and put the depth at the top of 4096
+// (config/default.toml has the details). A scene above 4096 tiles (about 1440x816) keeps the game's
+// size.
 
+#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <cstdio>
@@ -61,15 +72,12 @@ Size ConfiguredSize() {
   } else if (!text.empty()) {
     REXLOG_WARN("Scene size: '{}' is not WIDTHxHEIGHT; keeping the game's size", text);
   }
-  // This game still plans its EDRAM as the 360's 2048 tiles (where, isn't found yet): a scene whose
-  // colour and depth surfaces (2x MSAA, tiles of 80x8 pixels) need more draws black in most places
-  // outside (the title, the Junkyard Isles; the owner's report, GiantsRecomp #30). Measured
-  // 2026-10-25: 1000x600, 1024x608 and 1040x608 (1976 tiles) fine; 1120x640, 1264x608 and
-  // 1008x704 (2240 to 2432) black. Such a size keeps the game's own until the planning is moved.
-  if (size.width && 2 * ((size.width + 79) / 80) * ((size.height + 7) / 8) > kGameEdramTiles) {
-    REXLOG_WARN("Scene size: {}x{} doesn't fit this game's EDRAM plan of {} tiles yet (GiantsRecomp #30); "
-                "keeping 1000x600",
-                size.width, size.height, kGameEdramTiles);
+  // Colour and depth at 2x MSAA must fit into the EDRAM the SDK runs (the hooks below move the game's
+  // plan to it; see the top of this file).
+  const uint32_t edram = std::max(kGameEdramTiles, rex::graphics::ActiveEdramLayout().tile_count);
+  if (size.width && 2 * ((size.width + 79) / 80) * ((size.height + 7) / 8) > edram) {
+    REXLOG_WARN("Scene size: {}x{} doesn't fit into {} EDRAM tiles; keeping 1000x600", size.width,
+                size.height, edram);
     size = {};
   }
   // A larger scene doesn't fit the 360's EDRAM: without the larger one the game keeps its size.
@@ -101,6 +109,32 @@ void SceneWidthResultHook(PPCRegister& r3) { SceneWidthHook(r3); }
 void SceneHeightResultHook(PPCRegister& r3) {
   const Size& size = Configured();
   if (size.width && r3.u32 == kGameHeight) r3.u64 = size.height;
+}
+
+// Before 0x822F9C30 (cmpwi cr6,r5,0x800): r5 is the pass's tile count. Between 2048 and the larger
+// EDRAM it becomes 2048, so the comparison takes the "fits" path (r5 isn't read on that path; the
+// strip size it stores is then the whole surface).
+void EdramTilingHook(PPCRegister& r5) {
+  const uint32_t tiles = rex::graphics::ActiveEdramLayout().tile_count;
+  if (tiles <= kGameEdramTiles || r5.u32 <= kGameEdramTiles || r5.u32 > tiles) return;
+  static std::atomic<int> logged{0};
+  if (logged.fetch_add(1) < 4) {
+    REXLOG_INFO("Scene size: a pass of {} tiles fits into the {}-tile EDRAM, no tiling", r5.u32, tiles);
+  }
+  r5.u64 = kGameEdramTiles;
+}
+
+// Before 0x822FA8A8 (cmplwi cr6,r10,0xe10): r9 = 2048 - r11 is the depth surface's EDRAM base, r11
+// its tile count; stw r9,0x80(r23) stores it next. With a 4096-tile EDRAM in use the depth goes to
+// the top of that instead. Only r9 changes, and only when the EDRAM is the larger one.
+void EdramDepthBaseHook(PPCRegister& r9, PPCRegister& r11) {
+  const uint32_t tiles = rex::graphics::ActiveEdramLayout().tile_count;
+  if (tiles <= kGameEdramTiles || r11.u32 > tiles) return;
+  r9.u64 = tiles - r11.u32;
+  static std::atomic<int> logged{0};
+  if (logged.fetch_add(1) < 4) {
+    REXLOG_INFO("Scene size: depth surface of {} tiles at EDRAM tile {} of {}", r11.u32, r9.u32, tiles);
+  }
 }
 
 // loc_82193A60: r5 = the scene's height, the screen's but at most 600.

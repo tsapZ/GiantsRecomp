@@ -390,3 +390,11 @@ launcher's achievements screen.
   the same wording in every game where the setting is the same. The Back + Y row is called
   "Portal-Übersicht" now (it opens the portal overview since skylanders-portal f2c4940).
   skylanders-portal 2a97055.
+- **Native 3D picture back** (#30): the game planned its EDRAM as the 360's 2048 tiles, so a
+  scene above that (1264x704 needs 2816 tiles for colour and depth at 2x MSAA) was cut into
+  predicated-tiling strips and its depth surface put over the colours: the title and the outside
+  scenes drew black. Two mid-asm hooks as in Swap Force (its third, the frame planner heap, isn't
+  in this game): 0x822F9C30 in sub_822F9B20 lets a pass up to 4096 tiles go untiled, 0x822FA8A8 in
+  sub_822FA6E8 puts the depth at the top of the SDK's 4096-tile EDRAM. Checked: the title at
+  1264x704 draws in full (logo, sky, rocks), the log shows the scene's 2816-tile pass untiled and
+  its depth at tile 2688. F4 > Grafik offers "Natives 3D-Bild" again. Not yet seen in a level.

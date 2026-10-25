@@ -100,10 +100,9 @@ SettingsPage GraphicsPage() {
                 {{"", "Off (1000x600)", "Aus (1000x600)"},
                  {"1280x720", "Native (720p)", "Nativ (720p)"}}};
   scene.restart = true;
-  // Not offered for now: at native size most outside scenes are black, as the game still plans its
-  // EDRAM for the 360's 2048 tiles (GiantsRecomp #30); the hook keeps the game's size. The row comes
-  // back once the planning is moved.
-  (void)scene;
+  // Back since the EDRAM hooks (GiantsRecomp #30): the scene's passes go untiled into the SDK's
+  // 4096-tile EDRAM, so the title and the outside scenes no longer draw black.
+  page.settings.push_back(scene);
   page.settings.push_back(
       {"present_effect", "Sharpening", "Sch\xC3\xA4rfe",
        "How the finished picture is scaled to your window.\n"

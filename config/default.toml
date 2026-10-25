@@ -148,6 +148,29 @@ address = 0x8218EE10
 name = "SceneHeightResultHook"
 registers = ["r3"]
 
+# The EDRAM plan for a scene larger than the 360's (GiantsRecomp #30), as Swap Force's two hooks of
+# the same name. Giants allocates EDRAM per render pass only (Swap Force's frame planner heap isn't
+# in this game: no lis r5,0x20 anywhere, and the surfaces' _overrideBase is never set), so two are
+# enough. Found 2026-10-25 by comparing the recompiled code with Swap Force's sub_825138F8 /
+# sub_82514448: sub_822F9B20 and sub_822FA6E8 are the same code instruction for instruction.
+# 0x822F9C30 is cmpwi cr6,r5,0x800 in sub_822F9B20, the tiling decision: r5 = the pass's tiles
+# (mullw at 0x822F9C20), above 2048 it is cut into predicated-tiling strips, which the SDK can't
+# resolve (scenes from 1120x640 on drew black outside). src/hooks/scene_size_hook.cpp lowers r5 to
+# 2048 when the pass fits into the 4096-tile EDRAM the SDK runs; r5 isn't read on that path.
+[[midasm_hook]]
+address = 0x822F9C30
+name = "EdramTilingHook"
+registers = ["r5"]
+
+# 0x822FA8A8 follows subfic r9,r11,0x800 in sub_822FA6E8, the per-pass EDRAM allocation: the depth
+# surface goes to the top of a 2048-tile EDRAM, 2048 minus its tiles (r11), stored by stw
+# r9,0x80(r23) one instruction on (_edramBase). With the 4096-tile EDRAM the hook puts it at the top
+# of that instead, so a larger scene's colours and depth don't overlap; r9 is only read by that store.
+[[midasm_hook]]
+address = 0x822FA8A8
+name = "EdramDepthBaseHook"
+registers = ["r9", "r11"]
+
 # 0x8219C9E8 is the first of three stores of the bloom intensity (f8, just loaded from +52 of
 # Toys for Bob's bloom effect object, _bloomIntensity) into the colour vector of the bloom combine
 # pass's shader constants in sub_8219C730 (its stack +80 / +84 / +88). Found from the combine
