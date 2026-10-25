@@ -43,7 +43,8 @@ polls them every 30 ms:
 |---|---|---|
 | `203_PortalError_TagTypeNotOnPortal` | Please put a Skylander on the Portal of Power (measured) | the menu for the player of the state |
 | `301_PortalError_ToyMissing` | a figure is missing | the menu |
-| `102_PortalError_TooManyMinions`, `304_..._NeedsRemoval_Minion` | too many Skylanders (102 measured) | the check for Skylanders |
+| `102_PortalError_TooManyMinions` | too many Skylanders (measured) | the check for Skylanders |
+| `304_..._NeedsRemoval_Minion` | the Skylander needs a break (out of health) | that player's menu, the figure marked tired |
 | `103_..._TooManyItems`, `105_..._RemoveItems` | too many magic items | the check for items |
 | `101_`, `106_`, `111_`, `112_`, `305_` | other portal errors (locations, figure data) | the check with its general title |
 

@@ -92,7 +92,9 @@ constexpr ErrorAction kErrors[] = {
     {"301_", true, 0},                               // ToyMissing
     {"101_", false, kCheckReasonOther},              // TooManyTags_Gen
     {"102_", false, kCheckReasonTooManySkylanders},  // TooManyMinions
-    {"304_", false, kCheckReasonTooManySkylanders},  // NeedsRemoval_Minion
+    // NeedsRemoval_Minion, "this Skylander needs a break" (out of health): the menu, to swap it for
+    // another in one go (the owner, 2026-10-25), rather than the check to take it off first.
+    {"304_", true, 0},
     {"103_", false, kCheckReasonTooManyItems},       // TooManyItems
     {"105_", false, kCheckReasonTooManyItems},       // RemoveItems
     {"106_", false, kCheckReasonOther},              // RemoveLocations
@@ -266,6 +268,11 @@ void Watch(rex::memory::Memory* memory) {
     // The prompt is player 2's in the "... P2 ..." states, else player 1's.
     std::optional<uint32_t> player;
     if (action && action->ask) player = state.find(" P2") != std::string::npos ? 1u : 0u;
+    // "Needs a break": that player's Skylander is out of health, marked in the menu.
+    static bool tired_shown = false;
+    const bool tired = error.starts_with("304_");
+    if (tired && !tired_shown && player) skylanders::PlayerSkylanderTired(*player);
+    tired_shown = tired;
     if (player != waiting_for) {
       if (waiting_for && opened) skylanders::CloseAutoOpenedPortalMenu();
       waiting_for = player;
