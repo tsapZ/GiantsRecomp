@@ -10,10 +10,10 @@ the game runs in.
 |---|---|---|---|
 | Portal menu: put Skylanders, sidekicks and items on the portal | Guide (Xbox), Back + Start, hold Back | F6 | `portal_menu_open_buttons`, `bind_portal_menu` |
 | Portal overview: what is on the portal, taken off one by one (the item too) without lifting the Skylander | Back + Y | F5 | `portal_item_off_buttons`, `bind_portal_item_off` |
-| Player menu: which controller is which player | L3 + R3, or F4 > Portal > "Spieler-Menü öffnen" | F9 | `player_menu_buttons`, `bind_player_menu` |
+| Player menu: which controller is which player | L3 + R3, or F4 > Portal > "Open the player menu" | F9 | `player_menu_buttons`, `bind_player_menu` |
 | Settings menu | Back + RB | F4 | `settings_menu_buttons`, `bind_settings_menu` |
-| Achievements | F4 > Spiel > Erfolge | F7 | `bind_achievements` |
-| Quit or restart the game (both ask first, "Nein" chosen) | F4 > Spiel > "Spiel beenden" / "Spiel neu starten" | Alt+F4 | |
+| Achievements | F4 > Game > Achievements | F7 | `bind_achievements` |
+| Quit or restart the game (both ask first, "No" chosen) | F4 > Game > "Quit the game" / "Restart the game" | Alt+F4 | |
 | All settings (developer list of the SDK) | from the settings menu, last page | F10 | `bind_settings` |
 | Debug overlay (FPS) | | F3 | `bind_debug_overlay` |
 
