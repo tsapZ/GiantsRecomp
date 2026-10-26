@@ -422,3 +422,8 @@ launcher's achievements screen.
 ## 2026-10-26: 0.2.0-beta.4
 
 - The setup's version for what came since the last one: "Nightmare from the start" (F4 > Game, off by default, the save isn't changed). Also in every game: no crash at start when the window moves to another monitor (rexglue-sdk 07f1106), and the portal menu no longer lifts a Skylander the game is still loading from the portal (skylanders-portal d4ce7b6).
+
+## 2026-10-26: night
+
+- rexglue-sdk 90f3bad: an XMA input counts as used up only once its output is out (the cut-off ends of Trap Team's portal lines, TrapTeamRecomp #15).
+- skylanders-portal 8cbf30d: the picture cache also leaves the game's element symbols for the launcher's figure library (SkylandersCoreOfLight #38). Checked: all eight.
