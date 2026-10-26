@@ -418,3 +418,7 @@ launcher's achievements screen.
   three up to "Schwergewicht (Schwer)". The save isn't touched.
 - rexglue-sdk 07f1106: no null read in the presenter's vblank thread when the window moves to
   another monitor at start.
+
+## 2026-10-26: 0.2.0-beta.4
+
+- The setup's version for what came since the last one: "Nightmare from the start" (F4 > Game, off by default, the save isn't changed). Also in every game: no crash at start when the window moves to another monitor (rexglue-sdk 07f1106), and the portal menu no longer lifts a Skylander the game is still loading from the portal (skylanders-portal d4ce7b6).
