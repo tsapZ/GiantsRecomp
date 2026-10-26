@@ -431,3 +431,7 @@ launcher's achievements screen.
 ## 2026-10-26: 0.2.0-beta.5
 
 - The setup's version for what came since the last one: In every game: a sound the game stops right at its end keeps its last 1024 samples (rexglue-sdk 90f3bad), and the game leaves its element symbols for the launcher (skylanders-portal 8cbf30d).
+
+## 2026-10-27: night
+
+- rexglue-sdk 5201aa3: an option for the pixel position shaders read at resolution scale 2 and up (each host pixel's centre instead of its corner), off by default and here: this game's title screen lines up with scale 1 as it is (SSARecomp #40).
