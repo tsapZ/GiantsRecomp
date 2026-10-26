@@ -36,6 +36,17 @@ address = 0x821693D0
 register = 20
 labels = [0x82169400, 0x82169410, 0x82169598, 0x82169720, 0x821698A8, 0x82169A30, 0x82169BB8, 0x82169D40, 0x82169EC8, 0x8216A074, 0x8216A220]
 
+# 0x821C8990 is mr r4,r30 in sub_821C8930, a script's OpMacroParameter being bound to its
+# macro's parameter, on the path for a value (a ValueRHSVariant): r3 is the value the next call
+# (bl 0x821E42D8) evaluates, r31 the parameter. Found from the front end's new-game script ("Difficulty
+# UI - Show Difficulty Menu" called with "allow nightmare" = system flag 3) to the ops' execute
+# functions. src/hooks/nightmare_hook.cpp swaps r3 for the call's literal 1 for that one parameter
+# when nightmare_from_start is on (off by default); r3 is only that call's argument.
+[[midasm_hook]]
+address = 0x821C8990
+name = "NightmareParamHook"
+registers = ["r3", "r31"]
+
 # 0x82153DB0 is in BinkOpen (sub_82153BE8, Bink 2), right after it reads the 44-byte header into
 # r1+96 and just before the "KB2e" signature compare; the file and the in-memory header path both
 # branch here. Found by TheBiemGamer (GiantsRecomp, MIT, same default.xex), checked in this

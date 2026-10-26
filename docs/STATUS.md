@@ -405,3 +405,16 @@ launcher's achievements screen.
 ## 2026-10-25: 0.2.0-beta.3
 
 - The setup's version for what came since the last one: the native 3D picture back (#30) and "needs a break" opening the menu. Also in every game: the portal overview holds the game while open, a Skylander out of health gets the menu and a red cross, hats only where the game knows them, F4 opens on "Spiel" with volume and frame rate rows, key names as the keyboard prints them and a reset row, descriptions in short lines, hints in a PlayStation or Nintendo pad's own buttons, and figure changes with an HD pack without the stutter (skylanders-portal 39ab210, rexglue-sdk ce9dbb6).
+
+## 2026-10-26
+
+- **Nightmare from the start** (`nightmare_from_start`, F4 > Game, off; SwapForceRecomp #74, as in
+  Swap Force and Imaginators): the new-game script in Title.bld reads system flag 3 and calls
+  "Difficulty UI - Show Difficulty Menu" with "allow nightmare" = that value; the game's own other
+  call (from the pause menu) passes 0, so the menu's check stays as it is. A mid-asm hook where a
+  macro parameter is bound (0x821C8990 in sub_821C8930, src/hooks/nightmare_hook.cpp) gives that
+  one call's parameter the call's literal 1 ("force default option" next to it). Checked on empty
+  scratch data: on, the menu shows four and "Entfesselter Kaos (Albtraum)" can be chosen; off,
+  three up to "Schwergewicht (Schwer)". The save isn't touched.
+- rexglue-sdk 07f1106: no null read in the presenter's vblank thread when the window moves to
+  another monitor at start.

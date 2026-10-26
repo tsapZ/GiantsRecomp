@@ -66,6 +66,7 @@ set(GIANTSRECOMP_SOURCES
     src/dev/write_watch.cpp
     src/hooks/game_clock_hook.cpp
     src/hooks/intro_skip_hook.cpp
+    src/hooks/nightmare_hook.cpp
     src/hooks/post_effects_hook.cpp
     src/hooks/language_region_hook.cpp
     src/hooks/scene_size_hook.cpp
