@@ -435,3 +435,8 @@ launcher's achievements screen.
 ## 2026-10-27: night
 
 - rexglue-sdk 5201aa3: an option for the pixel position shaders read at resolution scale 2 and up (each host pixel's centre instead of its corner), off by default and here: this game's title screen lines up with scale 1 as it is (SSARecomp #40).
+
+## 2026-10-27: shadows, start-up
+
+- **Softer shadows and blur at resolution scale 2 and up** (ImaginatorsRecomp #12): skylanders-portal afba1dd sets draw_resolution_scaled_texture_offsets = false unless it was set. The SDK divided texture fetch offsets by the resolution scale, so the games' fixed blur kernels (the shadow mask's 9-tap blur, bloom) shrank with the scale. Compared here at scale 2, on and off: the menus' 3D background unchanged; no level compared yet (the script didn't reach the save's slot), but Spyro's Adventure, same engine, was. Scale 1 is the same either way.
+- **A start-up crash less** (rexglue-sdk 807af87): SDL's audio subsystem starts on the UI thread before the game's audio driver asks for it. Started from the audio thread it could race SDL_UpdateAudio in the UI thread's event pump and end in exception C0000264 (once in Trap Team, 2026-10-27).
