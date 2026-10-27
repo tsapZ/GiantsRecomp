@@ -47,9 +47,6 @@ endif()
 # Sources
 set(GIANTSRECOMP_SOURCES
     src/main.cpp
-    src/game/alchemy/iga8_archive.cpp
-    src/game/alchemy/igz6_file.cpp
-    src/game/alchemy/lzma_decoder.cpp
     src/game/controller_picture.cpp
     src/game/game_fonts.cpp
     src/game/game_text.cpp
@@ -58,12 +55,8 @@ set(GIANTSRECOMP_SOURCES
     src/game/toy_hats.cpp
     src/game/toy_portraits.cpp
     src/game/toy_upgrades.cpp
-    src/game/xenos_dxt.cpp
     src/localization.cpp
     src/settings_pages.cpp
-    src/dev/gpu_diagnostics.cpp
-    src/dev/input_script.cpp
-    src/dev/write_watch.cpp
     src/hooks/game_clock_hook.cpp
     src/hooks/intro_skip_hook.cpp
     src/hooks/nightmare_hook.cpp
@@ -101,46 +94,13 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/giantsrecomp.toml")
     file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/giantsrecomp.toml.example" "${CMAKE_BINARY_DIR}/giantsrecomp.toml")
 endif()
 
-# --- Pinned game executable -------------------------------------------------
-set(GIANTSRECOMP_XEX_HASH_FILE "${CMAKE_CURRENT_SOURCE_DIR}/docs/game/default.xex.sha256")
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${GIANTSRECOMP_XEX_HASH_FILE}")
-file(READ "${GIANTSRECOMP_XEX_HASH_FILE}" GIANTSRECOMP_XEX_HASH_TEXT)
-string(REGEX MATCH "^[0-9a-fA-F]+" GIANTSRECOMP_XEX_SHA256 "${GIANTSRECOMP_XEX_HASH_TEXT}")
-string(LENGTH "${GIANTSRECOMP_XEX_SHA256}" GIANTSRECOMP_XEX_SHA256_LEN)
-if(NOT GIANTSRECOMP_XEX_SHA256_LEN EQUAL 64)
-    message(FATAL_ERROR "docs/game/default.xex.sha256 must start with a 64-character hex SHA-256 (found ${GIANTSRECOMP_XEX_SHA256_LEN} hex characters)")
-endif()
-
-add_library(giantsrecomp_verify STATIC src/xex_verify.cpp)
-target_include_directories(giantsrecomp_verify PUBLIC src)
-# Uses the SDK's vendored, portable SHA-256 (thirdparty/crypto) instead of a platform crypto API
-# (BCrypt on Windows has no Linux/macOS equivalent), so this one implementation covers every preset.
-if(NOT REXSDK_DIR)
-    message(FATAL_ERROR "REXSDK_DIR must be set (giantsrecomp_verify needs its vendored SHA-256 implementation)")
-endif()
-target_include_directories(giantsrecomp_verify PRIVATE "${REXSDK_DIR}/thirdparty")
-target_sources(giantsrecomp_verify PRIVATE "${REXSDK_DIR}/thirdparty/crypto/sha256.cpp")
-
-target_link_libraries(giantsrecompiled PRIVATE giantsrecomp_verify skylanders_portal_rex)
+target_link_libraries(giantsrecompiled PRIVATE skylanders_portal_rex skylanders_alchemy)
 # The exe's icon: the game's logo from the owner's disc (rom/nxeart), made at build time (#29).
 skylanders_game_icon(giantsrecompiled "${CMAKE_CURRENT_SOURCE_DIR}/rom")
-target_compile_definitions(giantsrecompiled PRIVATE GIANTSRECOMP_XEX_SHA256="${GIANTSRECOMP_XEX_SHA256}")
 
-enable_testing()
-add_executable(giantsrecomp_tests tests/xex_verify_test.cpp)
-target_link_libraries(giantsrecomp_tests PRIVATE giantsrecomp_verify)
-add_test(NAME xex_verify COMMAND giantsrecomp_tests)
-
-add_executable(giantsrecomp_xexcheck src/tools/xex_check_cli.cpp)
-target_link_libraries(giantsrecomp_xexcheck PRIVATE giantsrecomp_verify)
-target_compile_definitions(giantsrecomp_xexcheck PRIVATE GIANTSRECOMP_XEX_SHA256="${GIANTSRECOMP_XEX_SHA256}")
-
-# Process-boundary test: runs the actual built giantsrecomp_xexcheck.exe against a non-ASCII path to
-# catch argv narrowing (a plain main(argc, char**) loses characters outside the system code page on
-# Windows). Depends on giantsrecomp_xexcheck existing in the same output directory at test time.
-add_executable(xex_check_cli_argv_test tests/xex_check_cli_argv_test.cpp)
-add_test(NAME xex_check_cli_argv COMMAND xex_check_cli_argv_test)
-
-add_executable(xex_check_exit_code_test tests/xex_check_exit_code_test.cpp)
-target_include_directories(xex_check_exit_code_test PRIVATE src)
-add_test(NAME xex_check_exit_code COMMAND xex_check_exit_code_test)
+# --- Pinned game executable -------------------------------------------------
+# The disc check (skylanders-portal src/xex, cmake/game_xex.cmake): the supported discs' SHA-256
+# from docs/game/default.xex.sha256 in the game and in giantsrecomp_xexcheck, the installer's check,
+# with their tests.
+skylanders_game_xex(TARGET giantsrecompiled PREFIX giantsrecomp TITLE "Skylanders: Giants"
+                    HASH_FILE "${CMAKE_CURRENT_SOURCE_DIR}/docs/game/default.xex.sha256")

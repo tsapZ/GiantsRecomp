@@ -42,14 +42,17 @@
 
 #include <rex/logging.h>
 
-#include "game/alchemy/iga8_archive.h"
-#include "game/alchemy/igz6_file.h"
+#include "alchemy/iga8_archive.h"
+#include "alchemy/igz6_file.h"
 #include "game/controller_picture.h"
 #include "game/toy_hats.h"
 #include "game/toy_upgrades.h"
 #include "portal_rex/portal_menu.h"
 
 namespace giantsrecomp {
+
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 namespace {
 
 using Clock = std::chrono::steady_clock;
@@ -129,7 +132,7 @@ std::string PictureName(const std::string& path) {
   return name;
 }
 
-std::shared_ptr<const FigureImage> ToFigureImage(RgbaImage&& image) {
+std::shared_ptr<const FigureImage> ToFigureImage(alchemy::RgbaImage&& image) {
   auto out = std::make_shared<FigureImage>();
   out->width = image.width;
   out->height = image.height;
@@ -187,8 +190,9 @@ void Load(std::filesystem::path rom) {
         [](const alchemy::Igz6File::Image& image) {
           return Has(Lower(image.name), kPortraitPath) && image.width == image.height;
         },
-        [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
-          FlipVertically(rgba);  // stored upside down (Double Trouble's teeth above his eyes)
+        [&](const alchemy::Igz6File::Image& image, alchemy::RgbaImage&& rgba) {
+          // Stored upside down (Double Trouble's teeth above his eyes).
+          alchemy::FlipVertically(rgba);
           Portrait portrait{deco, PictureName(image.name), ToFigureImage(std::move(rgba))};
           std::lock_guard<std::mutex> lock(g_mutex);
           g_portraits[id].push_back(std::move(portrait));
@@ -206,8 +210,9 @@ void Load(std::filesystem::path rom) {
         return Has(Lower(image.name), kPortraitPath) && image.width == image.height &&
                (name.ends_with(kSidekickSuffix) || name.starts_with("magicitem"));
       },
-      [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
-        FlipVertically(rgba);  // the same folder, upside down too (the pirate ship's mast below)
+      [&](const alchemy::Igz6File::Image& image, alchemy::RgbaImage&& rgba) {
+        // The same folder, upside down too (the pirate ship's mast below).
+        alchemy::FlipVertically(rgba);
         std::lock_guard<std::mutex> lock(g_mutex);
         g_named[PictureName(image.name)] = ToFigureImage(std::move(rgba));
       });
@@ -216,10 +221,11 @@ void Load(std::filesystem::path rom) {
       [](const alchemy::Igz6File::Image& image) {
         return PictureName(image.name).starts_with(kElementPrefix);
       },
-      [&](const alchemy::Igz6File::Image& image, RgbaImage&& rgba) {
+      [&](const alchemy::Igz6File::Image& image, alchemy::RgbaImage&& rgba) {
         const std::string element = PictureName(image.name).substr(kElementPrefix.size());
         if (auto it = kElements.find(element); it != kElements.end()) {
-          FlipVertically(rgba);  // a model texture, stored upside down (skull's teeth on top)
+          // A model texture, stored upside down (skull's teeth on top).
+          alchemy::FlipVertically(rgba);
           std::lock_guard<std::mutex> lock(g_mutex);
           g_art["element:" + it->second] = ToFigureImage(std::move(rgba));
         }

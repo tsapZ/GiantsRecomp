@@ -28,13 +28,16 @@
 #include <rex/cvar.h>
 #include <rex/logging.h>
 
-#include "game/alchemy/iga8_archive.h"
-#include "game/alchemy/igz6_file.h"
+#include "alchemy/iga8_archive.h"
+#include "alchemy/igz6_file.h"
 #include "portal_rex/portal_menu.h"
 
 REXCVAR_DECLARE(uint32_t, user_language);
 
 namespace giantsrecomp {
+
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 namespace {
 
 constexpr char kItemDir[] = "item";

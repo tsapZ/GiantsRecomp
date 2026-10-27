@@ -33,11 +33,14 @@
 
 #include <rex/logging.h>
 
-#include "game/alchemy/iga8_archive.h"
-#include "game/alchemy/igz6_file.h"
-#include "game/xenos_dxt.h"
+#include "alchemy/iga8_archive.h"
+#include "alchemy/igz6_file.h"
+#include "alchemy/xenos_dxt.h"
 
 namespace giantsrecomp {
+
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 namespace {
 
 using skylanders::FigureImage;
@@ -79,7 +82,7 @@ void Grow(std::vector<uint8_t>& mask, int w, int h, int n) {
   }
 }
 
-std::shared_ptr<FigureImage> Clean(const RgbaImage& in) {
+std::shared_ptr<FigureImage> Clean(const alchemy::RgbaImage& in) {
   const int w = in.width, h = in.height;
   if (w != kWidth || h != kHeight || in.pixels.size() < size_t(w) * h * 4) return nullptr;
   const uint8_t* src = in.pixels.data();
@@ -174,7 +177,7 @@ std::shared_ptr<FigureImage> Read(const std::filesystem::path& rom_dir) {
     if (!igz) return nullptr;
     for (const auto& image : igz->Images()) {
       if (auto rgba = igz->Decode(image)) {
-        FlipVertically(*rgba);  // stored upside down
+        alchemy::FlipVertically(*rgba);  // stored upside down
         return Clean(*rgba);
       }
     }

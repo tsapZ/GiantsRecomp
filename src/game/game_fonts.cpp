@@ -31,10 +31,13 @@
 
 #include <rex/logging.h>
 
-#include "game/alchemy/iga8_archive.h"
-#include "game/alchemy/igz6_file.h"
+#include "alchemy/iga8_archive.h"
+#include "alchemy/igz6_file.h"
 
 namespace giantsrecomp {
+
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 namespace {
 
 using skylanders::GameFont;

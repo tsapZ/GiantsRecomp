@@ -26,8 +26,8 @@ What we know about the game and the dump this project targets, and what still ha
   folders `character\`, `item\`, `level\`, `misc\`, `movies\`, `outfit\`, `permanent\` with
   `.arc` / `.bld` files (596 `.bld`, 295 `.arc`), movies as Bink 2 `.mov`. The archives are
   `IGA\x1a` version 8 with a little-endian header (Swap Force's `.pak`: version 10, big-endian):
-  `src/game/alchemy/iga8_archive.h`. A `.bld` holds a scene (`level.bld`, IGZ version 6:
-  `src/game/alchemy/igz6_file.h`) and the language packs (`ENGLISH.pak`, `GERMAN.pak`, ...); a
+  `thirdparty/skylanders-portal/src/alchemy/iga8_archive.h`. A `.bld` holds a scene (`level.bld`, IGZ version 6:
+  `thirdparty/skylanders-portal/src/alchemy/igz6_file.h`) and the language packs (`ENGLISH.pak`, `GERMAN.pak`, ...); a
   `.arc` the streamed files (voices as `.wav.enc` per language, textures as `.png.igb.tex.igz`).
 - **Figures:** `character\NNN_<model>[_<deco>].bld` per Skylander, NNN its figure id; the scene
   has its collection portraits (`.../collections/sky2/portraits/<name>.png`), the text key

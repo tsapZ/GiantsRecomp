@@ -30,12 +30,15 @@
 
 #include <rex/logging.h>
 
-#include "game/alchemy/iga8_archive.h"
-#include "game/alchemy/igz6_file.h"
+#include "alchemy/iga8_archive.h"
+#include "alchemy/igz6_file.h"
 #include "game/game_text.h"
-#include "game/xenos_dxt.h"
+#include "alchemy/xenos_dxt.h"
 
 namespace giantsrecomp {
+
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 namespace {
 
 using skylanders::FigureImage;
@@ -99,7 +102,7 @@ void ReadPictures(alchemy::Iga8Archive& archive, Want want, Use use) {
     if (!rgba) continue;
     // Stored upside down like the portraits: the coin's S and its shine (bottom right as
     // decoded), and the hat icons the owner saw upside down (2026-10-21).
-    FlipVertically(*rgba);
+    alchemy::FlipVertically(*rgba);
     auto out = std::make_shared<FigureImage>();
     out->width = rgba->width;
     out->height = rgba->height;

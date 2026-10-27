@@ -9,11 +9,14 @@
 #include <utility>
 #include <vector>
 
+namespace skylanders::alchemy {
+class Iga8Archive;
+}  // namespace skylanders::alchemy
+
 namespace giantsrecomp {
 
-namespace alchemy {
-class Iga8Archive;
-}  // namespace alchemy
+// The games' shared Alchemy readers (skylanders-portal src/alchemy).
+namespace alchemy = skylanders::alchemy;
 
 // The language pack the game runs with ("GERMAN.pak"; see game_text.cpp).
 std::string LanguagePackName();
