@@ -444,3 +444,7 @@ launcher's achievements screen.
 ## 2026-10-27: 0.2.0-beta.6
 
 - The setup's version for what came since the last one: softer shadows and blur at resolution scale 2 and up (texture fetch offsets in the console's texels, skylanders-portal afba1dd) and SDL's audio started on the UI thread against a rare start-up crash (rexglue-sdk 807af87).
+
+## 2026-10-27: morning
+
+- The texture offset change of 0.2.0-beta.6 compared in the first level since (scale 2, on and off, the same input both times): no artefacts, the bridge's and the cliff's shadows as before within the camera's small difference.
