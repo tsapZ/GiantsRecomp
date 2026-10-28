@@ -26,3 +26,6 @@
 # Python caches (they keep the source file's full path)
 __pycache__/
 *.py[cod]
+
+# A local preset for the developer kit build (SKYLANDERS_DEVKIT_DIR), never committed
+CMakeUserPresets.json

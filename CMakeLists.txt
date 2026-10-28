@@ -74,13 +74,14 @@ endif()
 
 rexglue_setup_target(giantsrecompiled GPU_PLUGINS xenos)
 
-# Giants decompiled (a separate repository, tsapZ/GiantsDecomp): readable C++ for some of the
-# game's functions, each replacing the recompiled one and checked against it
-# (--decomp_verify=true). Off unless GIANTS_DECOMP_DIR points at a checkout of it.
-set(GIANTS_DECOMP_DIR "" CACHE PATH "A checkout of GiantsDecomp to build in (empty: none)")
-if(GIANTS_DECOMP_DIR)
-    include("${GIANTS_DECOMP_DIR}/giants_decomp.cmake")
-    giants_decomp_add(giantsrecompiled)
+# The developer kit (a separate private repository, tsapZ/SkylandersDevKit): level loading and
+# level sweeps for test runs. Built only into a developer build folder (a local
+# CMakeUserPresets.json preset), never into a release. Off unless SKYLANDERS_DEVKIT_DIR points at
+# a checkout of it.
+set(SKYLANDERS_DEVKIT_DIR "" CACHE PATH "A checkout of SkylandersDevKit to build in (empty: none)")
+if(SKYLANDERS_DEVKIT_DIR)
+    include("${SKYLANDERS_DEVKIT_DIR}/games/giants/devkit.cmake")
+    skylanders_devkit_add(giantsrecompiled)
 endif()
 
 if(REXSDK_DIR)

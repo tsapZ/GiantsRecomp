@@ -24,9 +24,6 @@
 #include <rex/ui/ui_event.h>
 
 #include "dev/input_script.h"
-#if defined(GIANTS_DECOMP)
-#include "decomp.h"
-#endif
 #include "dev/write_watch.h"
 #include "hooks/ultrawide_hook.h"
 #include "dev/gpu_diagnostics.h"
@@ -179,10 +176,6 @@ class GiantsrecompApp : public rex::ReXApp {
                                       skylanders::SharedPicturesDir(user_data_root(), "Giants"));
     // A real crash logs where in the game it happened (guest call chain and registers).
     skylanders::dev::InstallCrashReport(runtime()->memory());
-#if defined(GIANTS_DECOMP)
-    // The decompiled functions (GIANTS_DECOMP_DIR) and their checks (--decomp_verify=true).
-    giants_decomp::OnPostSetup(runtime()->memory()->TranslateVirtual<uint8_t*>(0));
-#endif
     // The achievements list (F7, F4 > Spiel > Erfolge); the kernel's list exists from launch on.
     skylanders::RegisterAchievementsMenu(
         imgui_drawer(), immediate_drawer(), &app_context(), runtime(),
