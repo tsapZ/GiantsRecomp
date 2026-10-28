@@ -6,6 +6,16 @@
 #
 # Entries are added as codegen and the runtime report them.
 
+# The CRT's setjmp (0x82608880: stores f14-f31, r13-r31, v64-v127, LR and CR into the buffer in r3)
+# and longjmp (0x825DD6A0: loads them back from it), found by their shape (the same CRT code as
+# SSARecomp's). Recompiled as is, longjmp only sets the guest registers and returns to its caller,
+# so whatever setjmp guards (in SSARecomp the game's Lua errors inside a pcall) ran on into exit(1)
+# and crashed in the exit handlers (SSARecomp #42). With the addresses set, codegen turns the calls
+# into the host setjmp/longjmp of the generated header (ppc_setjmp/ppc_longjmp), which also restore
+# the guest registers. Safe: setjmp and longjmp have no other job, and every register lives in ctx.
+setjmp_address = 0x82608880
+longjmp_address = 0x825DD6A0
+
 # Four jump tables in the Bink bit-stream decoder whose index is built from masked bits with no
 # bounds check, so codegen guessed too few entries (4, 8, 4, 8) and the generated switch trapped:
 # the first boot ended with 0xC000001D right after the Activision logo. Each table has exactly 11
