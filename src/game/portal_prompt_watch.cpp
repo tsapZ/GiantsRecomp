@@ -89,7 +89,7 @@ struct ErrorAction {
 // The game's portal screens, by text key ("NNN_PortalError_<name>").
 constexpr ErrorAction kErrors[] = {
     {"203_", true, 0},                               // TagTypeNotOnPortal (measured)
-    {"301_", true, 0},                               // ToyMissing
+    {"301_", true, 0},                               // ToyMissing (measured, see wanted below)
     {"101_", false, kCheckReasonOther},              // TooManyTags_Gen
     {"102_", false, kCheckReasonTooManySkylanders},  // TooManyMinions
     // NeedsRemoval_Minion, "this Skylander needs a break" (out of health): the menu, to swap it for
@@ -273,6 +273,13 @@ void Watch(rex::memory::Memory* memory) {
     const bool tired = error.starts_with("304_");
     if (tired && !tired_shown && player) skylanders::PlayerSkylanderTired(*player);
     tired_shown = tired;
+    // "Put the Skylander back on the portal": taken off in a shop or a talk (seen 2026-10-29 at
+    // Persephone's "buy an upgrade?"), the game wants that one back and takes no other, as on the
+    // console. The menu says so and puts it back.
+    static bool wanted_shown = false;
+    const bool wanted = error.starts_with("301_");
+    if (wanted && !wanted_shown && player) skylanders::PlayerSkylanderWantedBack(*player);
+    wanted_shown = wanted;
     if (player != waiting_for) {
       if (waiting_for && opened) skylanders::CloseAutoOpenedPortalMenu();
       waiting_for = player;
