@@ -524,3 +524,7 @@ launcher's achievements screen.
 ## 2026-10-31: shared libraries
 
 - Files the game overwrites are cut short in place instead of deleted and made anew: safer on exFAT/FAT drives such as USB sticks (portable data).
+
+## 2026-10-31: shared libraries
+
+- The FidelityFX library is built into each build folder (a test build's could end up in another one).
