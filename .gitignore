@@ -29,3 +29,7 @@ __pycache__/
 
 # A local preset for the developer kit build (SKYLANDERS_DEVKIT_DIR), never committed
 CMakeUserPresets.json
+
+# Profile-guided builds: counts of instrumented runs, merged profiles (made from the owner's saves)
+*.profraw
+*.profdata
