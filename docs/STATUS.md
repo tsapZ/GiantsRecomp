@@ -532,3 +532,7 @@ launcher's achievements screen.
 ## 2026-10-31: 0.3.0-beta.9
 
 - The setup's version for what came since the last one: files overwritten in place (safer on USB sticks), a profile-guided build (faster where the CPU is the limit)
+
+## 2026-10-31: Other pressings
+
+- The disc check also compares the code: another pressing with the same code (another language set) runs too, and a refused disc's message names its title, region and hash.
