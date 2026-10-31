@@ -6,6 +6,7 @@
 #include <rex/cvar.h>
 
 #include "portal_rex/achievements_ui.h"
+#include "portal_rex/discord_presence.h"
 #include "portal_rex/player_menu.h"
 #include "portal_rex/settings_schema.h"
 
@@ -321,6 +322,7 @@ SettingsPage GamePage() {
        "Dein Spielstand bleibt, wie er ist: Aus, ist Albtraum wieder gesperrt, bis du ihn "
        "freispielst."});
   page.settings.push_back(skylanders::AchievementsSetting());
+  page.settings.push_back(skylanders::DiscordPresenceSetting());
   // Spiel beenden / neu starten: a controller alone can't press Alt+F4.
   skylanders::AddQuitSettings(page);
   return page;

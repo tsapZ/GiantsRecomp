@@ -37,6 +37,7 @@
 #include "game/toy_upgrades.h"
 #include "localization.h"
 #include "portal_rex/achievements_ui.h"
+#include "portal_rex/discord_presence.h"
 #include "portal_rex/portal_menu.h"
 #include "portal_rex/portal_menu_input.h"
 #include "portal_rex/player_menu.h"
@@ -175,6 +176,8 @@ class GiantsrecompApp : public rex::ReXApp {
     // And the title music, once (title_music.h).
     skylanders::StartTitleMusicExport(game_data_root(), TitleMusic(),
                                       skylanders::SharedPicturesDir(user_data_root(), "Giants"));
+    // The Discord status, when the player switched it on (F4 > Spiel).
+    skylanders::StartDiscordPresence("Giants");
     // A real crash logs where in the game it happened (guest call chain and registers).
     skylanders::dev::InstallCrashReport(runtime()->memory());
     // And where the player was (the level and position), in the log and with a problem note.
