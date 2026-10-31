@@ -1,4 +1,5 @@
-// The game's names for magic items and adventure packs, in its language, for the portal menu.
+// The game's names for magic items and adventure packs, in its language, for the portal menu,
+// and the levels' names for the Discord status.
 //
 // Text in this game: a scene (a .bld's level.bld, IGZ 6) has a StringInfo object for every text it
 // uses, +0x08 pointing to its key ("Anvil_String"). The same archive has a language pack per
@@ -19,6 +20,7 @@
 
 #include "game_text.h"
 
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -30,6 +32,7 @@
 
 #include "alchemy/iga8_archive.h"
 #include "alchemy/igz6_file.h"
+#include "portal_rex/discord_presence.h"
 #include "portal_rex/portal_menu.h"
 
 REXCVAR_DECLARE(uint32_t, user_language);
@@ -43,6 +46,10 @@ namespace {
 constexpr char kItemDir[] = "item";
 constexpr char kScene[] = "level.bld";
 constexpr std::string_view kNameSuffix = "_String";
+constexpr char kGlobalArchive[] = "permanent/global.bld";
+constexpr std::string_view kLevelPrefix = "Level_";  // "Level_214_Tutorial_2"
+constexpr std::string_view kHubPrefix = "Level_Hub";
+constexpr std::string_view kShipNameKey = "ShipName_Default";
 constexpr uint32_t kKeyField = 0x08;
 constexpr uint32_t kTextsField = 0x18;
 constexpr uint16_t kAlternateDeco = 0x400;
@@ -156,6 +163,31 @@ void Load(std::filesystem::path rom, std::string pack) {
     ++found;
   }
   REXLOG_INFO("Game text: {} item names from {}", found, pack);
+  // The levels' names for the Discord status, from global.bld: "Level_<number>_<name>" (the
+  // level's name: "Level_214_Tutorial_2" = "Junkyard Isles" / "Schrottplatzinseln"; keys whose text
+  // is a file name, "Level_207" = "Level_207_Arkus_Adventure", are left out), and the ship, the
+  // hub's stages (Level_Hub_2_Stage_1 to 4), as "ShipName_Default" ("Dreadyacht").
+  auto names = std::make_shared<std::unordered_map<std::string, std::string>>();
+  std::string ship;
+  if (auto global = alchemy::Iga8Archive::Open(rom / kGlobalArchive)) {
+    if (const auto texts = ReadSceneTexts(*global, pack)) {
+      for (const auto& [key, text] : *texts) {
+        if (key == kShipNameKey) ship = text;
+        if (!key.starts_with(kLevelPrefix) || text.starts_with(kLevelPrefix)) continue;
+        const size_t number = kLevelPrefix.size(), end = key.find('_', number);
+        if (end == std::string::npos || end == number) continue;
+        names->emplace(key.substr(number, end - number), text);
+      }
+    }
+  }
+  REXLOG_INFO("Game text: {} level names", names->size());
+  skylanders::SetDiscordLevelNames([names, ship](const std::string& level) {
+    if (level.starts_with(kHubPrefix)) return ship;
+    if (!level.starts_with(kLevelPrefix)) return std::string();
+    const size_t number = kLevelPrefix.size(), end = level.find('_', number);
+    const auto it = names->find(level.substr(number, end == std::string::npos ? end : end - number));
+    return it == names->end() ? std::string() : it->second;
+  });
 }
 
 }  // namespace
