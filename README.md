@@ -98,7 +98,7 @@ What's being worked on: [docs/roadmap.md](docs/roadmap.md). Known bugs and the d
 ## Help
 
 **The setup says it's the wrong disc.** This port is made for one version of the game (see
-[Which disc](#which-disc)). If you have another one, open an issue with its name.
+[Which disc](#which-disc)). If you have another one, open an issue with the message (it names the disc's title, region and hash).
 
 **It runs slowly.** Press F4, go to Graphics and pick *Performance*, or a lower internal resolution.
 
@@ -112,7 +112,7 @@ new PC.
 
 The North American Xbox 360 disc: region-free `default.xex` (title `415608DA`), twelve languages on
 the disc. Its SHA-256 is in [docs/game/default.xex.sha256](docs/game/default.xex.sha256); the setup,
-the game and the launcher check it. Other pressings haven't been compared yet.
+the game and the launcher check it. Another pressing with the same code (another language set, for example) works as well: they also compare the code part of the file ([docs/game/default.xex.code](docs/game/default.xex.code)).
 
 ## Reporting a problem
 
