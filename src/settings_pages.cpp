@@ -310,17 +310,6 @@ SettingsPage GamePage() {
                            "Er\xC3\xB6" "ffnungsfilm \xC3\xBC" "berspringen",
                            "Skips the long movie at the start of a new game.",
                            "\xC3\x9C" "berspringt den langen Film beim Start eines neuen Spiels."});
-  // As in Swap Force (#74): src/hooks/nightmare_hook.cpp.
-  page.settings.push_back(
-      {"nightmare_from_start", "Nightmare from the start", "Albtraum von Anfang an",
-       "The hardest difficulty can be picked right away, without finishing Story Mode first.\n"
-       "\n"
-       "Your save stays as it is: turned off, Nightmare is locked again until you unlock it.",
-       "Der schwerste Schwierigkeitsgrad ist sofort w\xC3\xA4hlbar, ohne den Story-Modus erst "
-       "durchzuspielen.\n"
-       "\n"
-       "Dein Spielstand bleibt, wie er ist: Aus, ist Albtraum wieder gesperrt, bis du ihn "
-       "freispielst."});
   page.settings.push_back(skylanders::AchievementsSetting());
   page.settings.push_back(skylanders::DiscordPresenceSetting());
   // Spiel beenden / neu starten: a controller alone can't press Alt+F4.
@@ -458,9 +447,27 @@ SettingsPage ControlsPage() {
 
 }  // namespace
 
+// Extras: the Nightmare unlock and, as they come, cheats (skylanders::CheatSetting: achievements
+// don't unlock while one is on). The unlock is no cheat: Nightmare makes the game harder.
+SettingsPage ExtrasPage() {
+  SettingsPage page{"Extras", "Extras", {}};
+  // As in Swap Force (#74): src/hooks/nightmare_hook.cpp.
+  page.settings.push_back(
+      {"nightmare_from_start", "Nightmare from the start", "Albtraum von Anfang an",
+       "The hardest difficulty can be picked right away, without finishing Story Mode first.\n"
+       "\n"
+       "Your save stays as it is: turned off, Nightmare is locked again until you unlock it.",
+       "Der schwerste Schwierigkeitsgrad ist sofort w\xC3\xA4hlbar, ohne den Story-Modus erst "
+       "durchzuspielen.\n"
+       "\n"
+       "Dein Spielstand bleibt, wie er ist: Aus, ist Albtraum wieder gesperrt, bis du ihn "
+       "freispielst."});
+  return page;
+}
+
 std::vector<SettingsPage> BuildSettingsPages(std::function<void()> open_all_settings) {
   std::vector<SettingsPage> pages = {GraphicsPage(), FrameRatePage(), GamePage(), PortalPage(),
-                                     ControlsPage()};
+                                     ControlsPage(), ExtrasPage()};
   SettingsPage advanced{"Advanced", "Erweitert", {}};
   Setting all;
   all.en = "All settings (developers, keyboard and mouse)";
