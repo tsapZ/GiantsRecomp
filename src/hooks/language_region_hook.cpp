@@ -10,14 +10,19 @@
 // the set becomes English (6). The SDK's XGetGameRegion returns 0xFFFF, so German came out
 // English. The midasm hook at 0x8217F350 (config/default.toml), the compare of that call's result
 // in r3, reports the European region 0x2FE when the chosen language is only in the European set,
-// and leaves the result alone otherwise, so Spanish keeps this disc's Latin American text. Only
-// this call site sees the changed value. Found in the generated code (2026-10-20).
+// or is Spain's Spanish: the disc carries both Spanish sets, Spain's (SPANISH.pak, spanish/vo_*)
+// for the European set's Spanish and the Latin American one (HISPANIC.pak, hispanic/vo_*) for the
+// North American set's, and without the hook Spanish always came out Latin American
+// (GiantsRecomp #31). Latin American Spanish (language = spanish_latam) leaves the result alone.
+// Only this call site sees the changed value. Found in the generated code (2026-10-20).
 
 #include <cstdint>
 
 #include <rex/cvar.h>
 #include <rex/logging.h>
 #include <rex/ppc/context.h>
+
+#include "../localization.h"
 
 REXCVAR_DECLARE(uint32_t, user_language);
 
@@ -26,13 +31,16 @@ namespace {
 // XLanguage ids (include/rex/system/xcontent.h) that only the European language set has.
 constexpr uint32_t kGerman = 3;
 constexpr uint32_t kItalian = 6;
+// Spanish is in both sets; the European set's is Spain's.
+constexpr uint32_t kSpanish = 5;
 constexpr uint32_t kEuropeRegion = 0x2FE;
 
 }  // namespace
 
 void GameRegionForLanguage(PPCRegister& r3) {
   const uint32_t language = REXCVAR_GET(user_language);
-  if (language != kGerman && language != kItalian) return;
+  const bool spain_spanish = language == kSpanish && !giantsrecomp::LatinAmericanSpanish();
+  if (language != kGerman && language != kItalian && !spain_spanish) return;
   REXLOG_INFO("Language: reporting region {:X} instead of {:X}, for the European language set",
               kEuropeRegion, r3.u32);
   r3.u64 = kEuropeRegion;

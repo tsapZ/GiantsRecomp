@@ -15,8 +15,8 @@
 // The game's names win over the catalog's for the plain variants only: the golden Dragonfire
 // Cannon (alternate deco) and the Platinum Treasure Chest (deco 2 of Hidden Treasure) keep theirs.
 // Sidekicks keep the catalog's too: the game calls Barkley "TreeRexling".
-// The pack is the one the game shows: GERMAN and ITALIAN through the region hook, HISPANIC for
-// Spanish (this disc's Latin American text), PORTUGUESE, FRENCH, else ENGLISH.
+// The pack is the one the game shows: GERMAN, ITALIAN and SPANISH (Spain's) through the region
+// hook, HISPANIC for Latin American Spanish, PORTUGUESE, FRENCH, else ENGLISH.
 
 #include "game_text.h"
 
@@ -30,6 +30,7 @@
 #include <rex/cvar.h>
 #include <rex/logging.h>
 
+#include "../localization.h"
 #include "alchemy/iga8_archive.h"
 #include "alchemy/igz6_file.h"
 #include "portal_rex/discord_presence.h"
@@ -84,7 +85,7 @@ const char* PackName(uint32_t language) {
     case 4:
       return "FRENCH.pak";
     case 5:
-      return "HISPANIC.pak";
+      return LatinAmericanSpanish() ? "HISPANIC.pak" : "SPANISH.pak";
     case 6:
       return "ITALIAN.pak";
     case 9:

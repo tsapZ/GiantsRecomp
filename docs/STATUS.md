@@ -15,7 +15,7 @@ Updated at the end of every session. Only record what a build actually did.
 | In-game | ✅ new game: the in-engine intro with Eon's voice plays through, the portal prompt, Chapter 1 with the HUD |
 | Portal | ✅ emulated portal: Scarlet Ninjini placed at the prompt, her portal sequence, then play |
 | Portal menu | ✅ opens by itself at "Please put a Skylander", closes when a figure is on; the portal check opens on "too many Skylanders"; nothing in the pause menu. Every Skylander, sidekick and magic item shows the game's collection portrait, the element filters the game's symbols; magic items have the game's names; the details view shows each Skylander's upgrades as the game's upgrade screen does (names, descriptions, prices, pictures) |
-| Languages | English, German, French, Spanish (Latin American), Italian: menus and subtitles checked; German and Italian through a region hook |
+| Languages | English, German, French, Spanish (Spain and Latin America), Italian: menus and subtitles checked; German, Italian and Spain's Spanish through a region hook |
 | Frame rate | 30 FPS by default as on the console; `frame_rate_limit` (F4 > Bildrate) gives 60.0 and 143.9 FPS on the title screen, 96-97 FPS in the first level with 144 (scale 2); walking speed and the intro's pace unchanged |
 | Audio | works; the game mixes real 5.1: voices on the center, bass effects on the LFE, the rear channels in use (measured 2026-10-20 with a temporary per-channel peak log of the guest's 6-channel render frames). With Windows' output device set to 5.1 the SDK passes the six channels through, otherwise it folds them to stereo |
 
@@ -56,6 +56,12 @@ Updated at the end of every session. Only record what a build actually did.
   and the prompt ("Spieler 1: Bitte setze einen Skylander auf das Magische Portal.") in German;
   English and Spanish unchanged. Whether the voices are German is for a listen (the files are
   there). The language choice is back to five, "auto" included.
+- **Spain's Spanish (#31).** Spanish came out Latin American: the archives have two Spanish sets,
+  SPANISH.pak with `spanish/vo_*` (Spain, the European set's Spanish) and HISPANIC.pak with
+  `hispanic/vo_*` (Latin America, the North American set's), and without the region hook the game
+  takes the North American set. The hook now reports the European region for Spanish too;
+  "Español (Latinoamérica)" (`language = spanish_latam`) keeps the Latin American set, and
+  "auto" picks it on a Latin American Spanish Windows.
 - **Frame rate.** The game measured 30.0 FPS on the title and in the first level. Its D3D swap
   queue (`sub_823D9758`, the same 107 instructions as Swap Force's `sub_82F5C258`) already gets
   presentation interval 1 (swap word 0x100, logged by a test hook), so unlike Swap Force no hook

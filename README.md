@@ -59,7 +59,7 @@ The setup isn't signed, so Windows may say "Windows protected your PC": click **
 - **Achievements.**
 - **A Discord status,** if you switch it on: the game, your Skylander and the level.
 - **HD texture packs** work too ([how](https://github.com/tsapZ/SwapForceRecomp/blob/main/docs/texture-packs.md)).
-- **Languages:** English, German, French, Spanish and Italian.
+- **Languages:** English, German, French, Spanish (Spain and Latin America) and Italian.
 
 <img src=".github/images/settings.png" alt="The game's settings in Core of Light">
 

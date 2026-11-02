@@ -286,7 +286,8 @@ SettingsPage FrameRatePage() {
 
 SettingsPage GamePage() {
   SettingsPage page{"Game", "Spiel", {}};
-  // The five languages of src/localization.cpp; German and Italian through the region hook.
+  // The languages of src/localization.cpp; German, Italian and Spain's Spanish through the region
+  // hook (Latin American Spanish is the disc's North American set).
   // "auto" follows the Windows display language if it is one of them, else English.
   Setting language{"language", "Language", "Sprache",
                    "Text and voices.\n"
@@ -297,7 +298,8 @@ SettingsPage GamePage() {
                     {"english", "English", "English"},
                     {"german", "Deutsch", "Deutsch"},
                     {"french", "Fran\xC3\xA7" "ais", "Fran\xC3\xA7" "ais"},
-                    {"spanish", "Espa\xC3\xB1ol", "Espa\xC3\xB1ol"},
+                    {"spanish", "Espa\xC3\xB1ol (Espa\xC3\xB1" "a)", "Espa\xC3\xB1ol (Espa\xC3\xB1" "a)"},
+                    {"spanish_latam", "Espa\xC3\xB1ol (Latinoam\xC3\xA9rica)", "Espa\xC3\xB1ol (Latinoam\xC3\xA9rica)"},
                     {"italian", "Italiano", "Italiano"}}};
   language.restart = true;
   page.settings.push_back(language);

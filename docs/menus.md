@@ -53,7 +53,7 @@ marks one to take off, Continue takes them off. See [portal.md](portal.md#portal
 - **Frame rate:** `frame_rate_limit` (0 = 30 FPS like the console; higher values let the game run
   at that rate, its speed stays the same), VSync, render path, graphics card, graphics interface
   (D3D12 or Vulkan).
-- **Game:** language (automatic, English, German, French, Spanish, Italian), skip the logo movies,
+- **Game:** language (automatic, English, German, French, Spanish (Spain), Spanish (Latin America), Italian), skip the logo movies,
   skip the opening movie, Nightmare from the start (`nightmare_from_start`, off; the save isn't
   changed).
 - **Portal:** virtual / both / USB / none (`portal_mode`), the portal menu opening by itself, only
