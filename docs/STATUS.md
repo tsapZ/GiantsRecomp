@@ -558,3 +558,23 @@ launcher's achievements screen.
 ## 2026-11-01: 0.4.0-beta.3
 
 - The setup's version for what came since the last one: A bit faster renderer (unchanged shader constants skipped, only changed textures reloaded); Trap Team also gets the villain time cheat (#18)
+
+## 2026-11-02: no health loss
+
+- **No health loss** (`cheat_no_health_loss`, F4 > Extras, off; the same setting name as Spyro's
+  Adventure's and Trap Team's, a cheat). Health is a script value, as in Trap Team: "Combat - Hurt
+  Creature" does `creature info temp.hp = creature info temp.hp - damage` for every creature,
+  enemies included (found by decoding a Level_214 heap snapshot; Trap Team's offsets, other
+  vtables). The set-value op hands sub_821E42D8 the hurt creature's own hp variable (r4), one object
+  per creature for all its hits. A player's creature is learned when it joins: the set-reference op
+  `joined scratch.hp -> joined scratch.creature info.hp` (sub_821D8408, hook right before the
+  setter, r3 = the reference, r28 = the hp variable) runs for players only; a hit counts as a
+  player's while that reference (its +0x1C) still points at the hit's target, so a freed variable an
+  enemy gets later doesn't count. Such a hit's subtraction (sub_821E4C18, three paths) subtracts 0.
+- Two tries before that failed: the path walker's current-object word (a slot the next walk
+  reuses, not the variable) and a first version of the join hook that read names on every
+  set-reference op (those run all the time: 1 FPS).
+- Tested (kit sweep Level_201, Level_203_The_Machine, Level_206, 300 s each of random play, cheat
+  on): all 23 hits on the player's Skylander kept off, its hp stayed at 467, the first hit too;
+  every enemy hit landed (one hit each, as without the cheat); about 60 FPS. Without the cheat the
+  same run took the player from 467 to 139 in 16 hits (runs\health\giants_v5_long).

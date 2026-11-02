@@ -464,6 +464,13 @@ SettingsPage ExtrasPage() {
        "\n"
        "Dein Spielstand bleibt, wie er ist: Aus, ist Albtraum wieder gesperrt, bis du ihn "
        "freispielst."});
+  // As in Spyro's Adventure and Trap Team, same setting name: src/hooks/health_hook.cpp keeps a
+  // hit's damage off the player's health in the On Hurt script. Achievements don't unlock while it's
+  // on (skylanders::CheatSetting).
+  page.settings.push_back(skylanders::CheatSetting(
+      {"cheat_no_health_loss", "No health loss", "Keine Lebenspunkte verlieren",
+       "Your Skylanders don't lose health when they get hit.",
+       "Deine Skylander verlieren keine Lebenspunkte, wenn sie getroffen werden."}));
   return page;
 }
 

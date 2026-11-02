@@ -53,9 +53,10 @@ marks one to take off, Continue takes them off. See [portal.md](portal.md#portal
 - **Frame rate:** `frame_rate_limit` (0 = 30 FPS like the console; higher values let the game run
   at that rate, its speed stays the same), VSync, render path, graphics card, graphics interface
   (D3D12 or Vulkan).
-- **Game:** language (automatic, English, German, French, Spanish (Spain), Spanish (Latin America), Italian), skip the logo movies,
-  skip the opening movie, Nightmare from the start (`nightmare_from_start`, off; the save isn't
-  changed).
+- **Game:** language (automatic, English, German, French, Spanish (Spain), Spanish (Latin America),
+  Italian), skip the logo movies, skip the opening movie.
+- **Extras:** Nightmare from the start (`nightmare_from_start`, off; the save isn't changed); no
+  health loss (`cheat_no_health_loss`, off; a cheat: achievements don't unlock while it's on).
 - **Portal:** virtual / both / USB / none (`portal_mode`), the portal menu opening by itself, only
   my figures.
 - **Controls:** the menu buttons, each with a few choices, keyboard and mouse, which player the

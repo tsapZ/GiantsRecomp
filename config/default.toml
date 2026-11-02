@@ -57,6 +57,47 @@ address = 0x821C8990
 name = "NightmareParamHook"
 registers = ["r3", "r31"]
 
+# sub_821E4C18 is the scripts' subtraction: it evaluates the expression in r3 (kept in r30; its left
+# value into the result at r31, its right value onto the stack at r1+80) and stores left - right on
+# one of three paths picked by the two values' types: 0x821E4C8C subf r8,r9,r11 (two ints, r9 the
+# right), 0x821E4CCC fsubs f12,f0,f13 (two floats, f13 the right) and 0x821E4CF8 fsubs f10,f0,f11
+# (a float minus an int, f11 the int made a float). Found 2026-11-02 from the player's "On Hurt"
+# script (decoded from a Level_214 snapshot: "creature info temp.hp - damage") to the function its
+# expression points to, the same function as Trap Team's sub_822880B0. src/hooks/health_hook.cpp
+# sets the right value to 0 for exactly that expression with cheat_no_health_loss on (off by
+# default). The registers aren't read after the instruction.
+[[midasm_hook]]
+address = 0x821E4C8C
+name = "ScriptSubtractIntsHook"
+registers = ["r30", "r9"]
+
+[[midasm_hook]]
+address = 0x821E4CCC
+name = "ScriptSubtractFloatHook"
+registers = ["r30", "f13"]
+
+[[midasm_hook]]
+address = 0x821E4CF8
+name = "ScriptSubtractIntRightHook"
+registers = ["r30", "f11"]
+
+# Telling the players' creatures (health_hook.cpp): 0x821D84B4 is in sub_821D8408, the
+# set-reference op's execute (vtable 820DF988 slot 27), right before it calls the target variable's
+# setter: r3 = where the reference is kept, r28 = the resolved source, r31 = the op. For "joined
+# scratch.hp -> joined scratch.creature info.hp" (a Skylander joining) the source is the player's hp
+# variable. sub_821E42D8 is called by the set-value op's execute (sub_821E1168) with r3 = the
+# expression and r4 = its target variable: for "Combat - Hurt Creature" the hurt creature's hp. Found
+# 2026-11-02 (runs\health\giants_v5_long). Both hooks only read.
+[[midasm_hook]]
+address = 0x821D84B4
+name = "ScriptSetReferenceHook"
+registers = ["r3", "r28", "r31"]
+
+[[midasm_hook]]
+address = 0x821E42D8
+name = "ScriptAssignEntryHook"
+registers = ["r3", "r4"]
+
 # 0x82153DB0 is in BinkOpen (sub_82153BE8, Bink 2), right after it reads the 44-byte header into
 # r1+96 and just before the "KB2e" signature compare; the file and the in-memory header path both
 # branch here. Found by TheBiemGamer (GiantsRecomp, MIT, same default.xex), checked in this
