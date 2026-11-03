@@ -461,6 +461,8 @@ SettingsPage ControlsPage() {
 // don't unlock while one is on). The unlock is no cheat: Nightmare makes the game harder.
 SettingsPage ExtrasPage() {
   SettingsPage page{"Extras", "Extras", {}};
+  // The owner's wish (2026-11-03): every cheat below can be hidden (and is switched off then).
+  page.settings.push_back(skylanders::ShowCheatsSetting());
   // As in Swap Force (#74): src/hooks/nightmare_hook.cpp.
   page.settings.push_back(
       {"nightmare_from_start", "Nightmare from the start", "Albtraum von Anfang an",
