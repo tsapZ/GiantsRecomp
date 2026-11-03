@@ -578,3 +578,7 @@ launcher's achievements screen.
   on): all 23 hits on the player's Skylander kept off, its hp stayed at 467, the first hit too;
   every enemy hit landed (one hit each, as without the cheat); about 60 FPS. Without the cheat the
   same run took the player from 467 to 139 in 16 hits (runs\health\giants_v5_long).
+
+## 2026-11-03: shared libraries
+
+- Xbox 360 portal over WinUSB: each read can hold two 32-byte frames (the portal sends full packets), each now goes to the game; the first 12 commands are logged (TrapTeamRecomp #19)
