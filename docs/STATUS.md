@@ -698,3 +698,7 @@ launcher's achievements screen.
 ## 2026-11-05: 0.4.2-beta.4
 
 - The setup's version for what came since the last one: The setup's version for what came since the last one: Far fewer copies to the graphics card (the hubs 9 to 37 % faster where the CPU is the limit); Imaginators: every crystal and chest file in the portal menu (#18)
+
+## 2026-11-05: shared libraries
+
+- Less CPU work per draw (SDK a0fa267: render state register blocks stored in one go, the scaled resolve answer kept per texture): Spyro's Adventure Level_036 80.8 -> 84.3, Level_006 91.1 -> 94.8 FPS at scale 2; the dev kit's shot <name> full (portal 0599229)
