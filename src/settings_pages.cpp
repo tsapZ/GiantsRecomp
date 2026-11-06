@@ -492,6 +492,9 @@ SettingsPage ExtrasPage() {
        "Your Skylanders get their element's bonus in every area, as if each area were theirs.",
        "Deine Skylander bekommen den Bonus ihres Elements in jedem Gebiet, als w\xC3\xA4re jedes "
        "Gebiet ihres."}));
+  // CoL #48: src/hooks/multiplier_cheats_hook.cpp, the Award Money / Award Experience scripts.
+  page.settings.push_back(skylanders::GoldMultiplierCheatSetting());
+  page.settings.push_back(skylanders::XpMultiplierCheatSetting());
   return page;
 }
 

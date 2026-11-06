@@ -81,6 +81,47 @@ address = 0x821E4CF8
 name = "ScriptSubtractIntRightHook"
 registers = ["r30", "f11"]
 
+# sub_821E4908 and sub_821E4F20 are the scripts' addition and multiplication, built as the
+# subtraction above: the expression in r30, the left value into the result at r31, the right value
+# from r1+80, and three paths picked by the values' types: two ints (0x821E497C add r8,r10,r11 and
+# 0x821E4F94 mullw r8,r11,r9: r11 / r9 the right), two floats or an int made a float plus a float
+# (0x821E49C0 fadds f12,f0,f13 and 0x821E4FD4 fmuls f12,f0,f13: f13 the right) and a float with an
+# int (0x821E49EC fadds f10,f11,f0 and 0x821E5000 fmuls f10,f11,f0: f11 the int made a float).
+# Found 2026-11-06 from "Game - Award Money" (amount = val + amount) and "Game - Award
+# Experience" (amount = Difficulty XP Multiplier * amount), decoded from a Level_214 snapshot.
+# src/hooks/multiplier_cheats_hook.cpp scales the right value of exactly those two expressions by
+# cheat_gold_multiplier / cheat_xp_multiplier (1, off, by default). The registers aren't read after
+# the instruction.
+[[midasm_hook]]
+address = 0x821E497C
+name = "ScriptAddIntsHook"
+registers = ["r30", "r11"]
+
+[[midasm_hook]]
+address = 0x821E49C0
+name = "ScriptAddFloatHook"
+registers = ["r30", "f13"]
+
+[[midasm_hook]]
+address = 0x821E49EC
+name = "ScriptAddIntRightHook"
+registers = ["r30", "f11"]
+
+[[midasm_hook]]
+address = 0x821E4F94
+name = "ScriptMultiplyIntsHook"
+registers = ["r30", "r9"]
+
+[[midasm_hook]]
+address = 0x821E4FD4
+name = "ScriptMultiplyFloatHook"
+registers = ["r30", "f13"]
+
+[[midasm_hook]]
+address = 0x821E5000
+name = "ScriptMultiplyIntRightHook"
+registers = ["r30", "f11"]
+
 # Telling the players' creatures (health_hook.cpp): 0x821D84B4 is in sub_821D8408, the
 # set-reference op's execute (vtable 820DF988 slot 27), right before it calls the target variable's
 # setter: r3 = where the reference is kept, r28 = the resolved source, r31 = the op. For "joined

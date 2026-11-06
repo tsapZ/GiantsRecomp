@@ -37,6 +37,7 @@
 #include <rex/ppc/context.h>
 #include <rex/system/kernel_state.h>
 
+#include "multiplier_cheats_hook.h"
 #include "script_objects.h"
 
 REXCVAR_DEFINE_BOOL(cheat_no_health_loss, false, "Extras",
@@ -164,8 +165,9 @@ void ScriptSetReferenceHook(PPCRegister& r3, PPCRegister& r28, PPCRegister& r31)
 
 // sub_821E42D8's entry: r3 = the expression, r4 = its target variable. Does nothing while the cheat
 // is off; the players are learned all the same (ScriptSetReferenceHook), so turning it on mid-game
-// works at once.
+// works at once. The gold and XP multipliers (multiplier_cheats_hook.cpp) look at the same entry.
 void ScriptAssignEntryHook(PPCRegister& r3, PPCRegister& r4) {
+  giantsrecomp::multipliers::OnAssign(r3.u32);
   g_skip_expression = 0;
   if (!REXCVAR_GET(cheat_no_health_loss) || !IsPlayerDamageCached(r3.u32)) return;
   if (IsPlayerHp(r4.u32)) g_skip_expression = r3.u32;
