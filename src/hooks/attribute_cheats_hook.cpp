@@ -35,7 +35,7 @@
 // answer kept by op address. Nothing is written to the game's memory.
 
 #include <cstdint>
-#include <unordered_map>
+#include <memory>
 
 #include <rex/cvar.h>
 #include <rex/logging.h>
@@ -157,19 +157,23 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
   if (!REXCVAR_GET(cheat_always_crit) && !REXCVAR_GET(cheat_elemental_power)) return;
   uint8_t* base = rex::system::kernel_state()->memory()->virtual_membase();
   // Each op's answer is kept by its address, with its left and right side's pointers to tell a new
-  // script's op at the same address (another level) from it.
-  struct Seen {
-    uint64_t sides;
+  // script's op at the same address (another level) from it. Every check op of every script passes
+  // here, so the answers sit in a direct-mapped table (a hash map's lookups cost the hub about 1 % in
+  // the multipliers' hook, multiplier_cheats_hook.cpp, 2026-11-06); a slot two ops share is only
+  // worked out again, and Classify's cheap tests keep that cheap.
+  struct Slot {
+    uint32_t op;
     Kind kind;
+    uint64_t sides;
   };
-  thread_local std::unordered_map<uint32_t, Seen> seen;
+  constexpr uint32_t kSlots = 16384;  // the index below is the hash's top 14 bits
+  // Made on first use: a thread_local array would be reserved in every thread of the process.
+  thread_local std::unique_ptr<Slot[]> table;
+  if (!table) table.reset(new Slot[kSlots]());
   const uint32_t op = r31.u32;
   const uint64_t sides =
       (uint64_t(load_and_swap<uint32_t>(base + op + 0x1C)) << 32) | load_and_swap<uint32_t>(base + op + 0x24);
-  auto it = seen.find(op);
-  if (it == seen.end() || it->second.sides != sides) {
-    if (seen.size() > 65536) seen.clear();
-    it = seen.insert_or_assign(op, Seen{sides, Classify(base, op)}).first;
-  }
-  if (it->second.kind != Kind::kNone) Apply(it->second.kind, r3);
+  Slot& slot = table[(op * 2654435761u) >> 18];
+  if (slot.op != op || slot.sides != sides) slot = {op, Classify(base, op), sides};
+  if (slot.kind != Kind::kNone) Apply(slot.kind, r3);
 }
