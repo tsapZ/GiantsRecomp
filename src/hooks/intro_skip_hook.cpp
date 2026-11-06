@@ -19,6 +19,7 @@
 #include <rex/system/kernel_state.h>
 
 #include "ultrawide_hook.h"
+#include "portal_rex/movie_skip.h"
 
 // Off by default (the owner's choice, 2026-10-22): the game starts as on the console, with its
 // logo movies; skipping them is the option.
@@ -70,4 +71,9 @@ void BinkHeaderLoaded(PPCRegister& r1) {
     }
     return;
   }
+}
+
+// The movie skip: the game's own check whether the movie is over (config/default.toml).
+void MovieEndCheckHook(PPCRegister& r31) {
+  skylanders::MovieEndCheck(rex::system::kernel_state()->memory()->virtual_membase(), r31.u32);
 }
