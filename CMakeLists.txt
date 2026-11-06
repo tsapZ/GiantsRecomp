@@ -62,6 +62,7 @@ set(GIANTSRECOMP_SOURCES
     src/game/toy_upgrades.cpp
     src/localization.cpp
     src/settings_pages.cpp
+    src/hooks/attribute_cheats_hook.cpp
     src/hooks/game_clock_hook.cpp
     src/hooks/health_hook.cpp
     src/hooks/intro_skip_hook.cpp

@@ -56,7 +56,8 @@ The setup isn't signed, so Windows may say "Windows protected your PC": click **
   each one is backed up before the game first saves over it: the portal menu puts an older version back.
 - **Quick swap:** one button puts the Skylander you played before back on the portal.
 - **A settings menu** in the game: graphics, frame rate, language, portal, controls, and *Extras*
-  (no health loss, full gold; off by default, and *Show cheats* hides the lot).
+  (no health loss, full gold, always crit, elemental power everywhere; off by default, and *Show
+  cheats* hides the lot).
 - **Real 5.1 sound** on a 5.1 device (voices on the center, the rear channels in use), stereo
   otherwise.
 - **Achievements.**

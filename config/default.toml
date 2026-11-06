@@ -98,6 +98,17 @@ address = 0x821E42D8
 name = "ScriptAssignEntryHook"
 registers = ["r3", "r4"]
 
+# 0x821E2490 is cmpwi cr6,r3,1 in sub_821E2438, the check value op's execute (vtable 820E1448 slot
+# 27), right after its compare (bl 0x821E4410): r3 is the result (below 1 skips the op's next +0x1A
+# ops), r31 the op. Found 2026-11-06 from "Combat - Hurt Creature"'s crit and elemental zone checks
+# (decoded from a Level_214 snapshot) to their ops' vtable, as Trap Team's 0x82285CE0.
+# src/hooks/attribute_cheats_hook.cpp sets r3 for those checks only, with cheat_always_crit or
+# cheat_elemental_power on (both off by default); r3 is read only by the compare right after.
+[[midasm_hook]]
+address = 0x821E2490
+name = "AttributeCheckHook"
+registers = ["r3", "r31"]
+
 # 0x82153DB0 is in BinkOpen (sub_82153BE8, Bink 2), right after it reads the 44-byte header into
 # r1+96 and just before the "KB2e" signature compare; the file and the in-memory header path both
 # branch here. Found by TheBiemGamer (GiantsRecomp, MIT, same default.xex), checked in this

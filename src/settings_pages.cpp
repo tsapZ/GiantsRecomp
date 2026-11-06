@@ -482,6 +482,16 @@ SettingsPage ExtrasPage() {
        "Your Skylanders don't lose health when they get hit.",
        "Deine Skylander verlieren keine Lebenspunkte, wenn sie getroffen werden."}));
   page.settings.push_back(skylanders::FullGoldCheatSetting());
+  // CoL #48: src/hooks/attribute_cheats_hook.cpp, the Hurt Creature script's crit and zone checks.
+  page.settings.push_back(skylanders::CheatSetting(
+      {"cheat_always_crit", "Always crit", "Immer kritisch",
+       "Every hit of your Skylanders is a critical hit.",
+       "Jeder Treffer deiner Skylander ist ein kritischer Treffer."}));
+  page.settings.push_back(skylanders::CheatSetting(
+      {"cheat_elemental_power", "Elemental power everywhere", "Elementarkraft \xC3\xBC" "berall",
+       "Your Skylanders get their element's bonus in every area, as if each area were theirs.",
+       "Deine Skylander bekommen den Bonus ihres Elements in jedem Gebiet, als w\xC3\xA4re jedes "
+       "Gebiet ihres."}));
   return page;
 }
 
