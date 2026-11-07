@@ -78,7 +78,7 @@ The setup isn't signed, so Windows may say "Windows protected your PC": click **
 - **Real 5.1 sound** on a 5.1 device (voices on the center, the rear channels in use), stereo
   otherwise.
 - **Achievements.**
-- **A Discord status,** if you switch it on: the game, your Skylander and the level.
+- **A Discord status:** the game, your Skylander and the level, while the Discord app runs. F4 > Game turns it off.
 - **HD texture packs** work too ([how](https://github.com/tsapZ/SwapForceRecomp/blob/main/docs/texture-packs.md)).
 - **Languages:** English, German, French, Spanish (Spain and Latin America) and Italian.
 
