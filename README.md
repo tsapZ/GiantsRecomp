@@ -111,10 +111,10 @@ puts their Skylander on the same way.
 
 ## How far it is
 
-The intro with Eon's narration and Chapter 1 play all the way, and so far nothing has stopped
-anyone further in. Nobody has played the whole game to the end yet, though. Battle Mode needs two
-controllers. If something breaks, please [tell me](https://github.com/tsapZ/GiantsRecomp/issues/new/choose).
-
+The intro with Eon's narration and Chapter 1 play all the way, and in automated test runs all 24
+story levels load without a crash. Nobody has played the whole game to the end yet, though. Battle
+Mode needs two controllers. If something breaks, please [tell
+me](https://github.com/tsapZ/GiantsRecomp/issues/new/choose).
 What's being worked on: [docs/roadmap.md](docs/roadmap.md). Known bugs and the details:
 [docs/STATUS.md](docs/STATUS.md).
 
