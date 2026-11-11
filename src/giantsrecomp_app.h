@@ -162,6 +162,16 @@ class GiantsrecompApp : public rex::ReXApp {
     // pictures (2026-11-09). The SDK's switch (Xenia Canary's draw_resolution_scale_threshold,
     // D3D12 only); only when nothing set it.
     SetDefaultIfUnset("draw_resolution_scale_threshold", "640");
+    // Native surfaces: the SDK leaves a render target's pixels where the game drew them instead of
+    // copying them through its EDRAM model each time another target takes the same EDRAM, except
+    // the copies this game needs (gpu_native_surfaces_keep, in gpu_transfer_report's names).
+    // Giants keeps its depth -> colour copies as Swap Force and Trap Team need theirs (same engine;
+    // drawn with 2x MSAA, so the kind is D0x2); its colour -> colour and colour -> depth ones go. In
+    // the hub at 3x, uncapped: 122.6 -> 133.5 FPS (+8.9 %; at 2x the processor is the limit); a story
+    // sweep of every level and pictures at a fixed spot looked the same as without (2026-11-10). Both
+    // only when nothing set them.
+    SetDefaultIfUnset("gpu_native_surfaces", "true");
+    SetDefaultIfUnset("gpu_native_surfaces_keep", "D0x2->C0x2");
     // Giants reads its own figures and Spyro's Adventure's; later games' figures (of the same
     // characters too) it doesn't know.
     SetDefault("portal_menu_games", "Spyro's Adventure;Giants");
