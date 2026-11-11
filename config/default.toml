@@ -232,8 +232,8 @@ address = 0x821910E8
 name = "UltrawideHudHook"
 registers = ["r11"]
 
-# The scene size hooks (src/hooks/scene_size_hook.cpp; experimental, off unless scene_size is
-# set). sub_821939E0 makes the scene's render target at the screen's size, at most 1000x600 (a
+# The scene size hooks (src/hooks/scene_size_hook.cpp; on by default with scene_size =
+# 1280x720, off when it is empty). sub_821939E0 makes the scene's render target at the screen's size, at most 1000x600 (a
 # RenderDoc capture in the first level shows the scene resolved into a 1000x600 texture; this is the
 # only code with that limit). 0x82193A38 is where both paths of the width's limit meet, r29 = the
 # width; 0x82193A60 the same for the height, r5. The hooks put scene_size there when the game chose

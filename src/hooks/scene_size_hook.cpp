@@ -37,8 +37,8 @@
 #include <rex/logging.h>
 #include <rex/ppc/context.h>
 
-REXCVAR_DEFINE_STRING(scene_size, "", "Graphics",
-                      "EXPERIMENTAL: draw the 3D scene at this size instead of the Xbox 360's "
+REXCVAR_DEFINE_STRING(scene_size, "1280x720", "Graphics",
+                      "Draw the 3D scene at this size instead of the Xbox 360's "
                       "1000x600, e.g. 1280x720. Needs the larger emulated EDRAM, which it turns on "
                       "(edram_tile_count 4096, D3D12 and resolution_scale up to 5 only; otherwise "
                       "the game's size stays). Empty: the game's size")
