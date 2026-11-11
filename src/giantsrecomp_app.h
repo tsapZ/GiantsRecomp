@@ -155,6 +155,13 @@ class GiantsrecompApp : public rex::ReXApp {
     // Dithering the 10-bit picture to the window's 8 bits, against bands in skies and fog (F4 >
     // Grafik, the dithering row): noise too fine to see, nothing to lose.
     SetDefaultIfUnset("present_dither", "true");
+    // Render targets up to 640 pixels wide (the console's half and quarter size bloom, blur and
+    // depth of field passes) stay at the console's size while the rest is scaled up: they are
+    // blurred by design, so the picture looks the same, and they cost a quarter at 2x. In the hub
+    // at 2x, uncapped: unchanged at 2x (the processor is the limit there), at 3x 92.8 -> 122.1 FPS (+32 %); story sweeps of every level with and without gave alike
+    // pictures (2026-11-09). The SDK's switch (Xenia Canary's draw_resolution_scale_threshold,
+    // D3D12 only); only when nothing set it.
+    SetDefaultIfUnset("draw_resolution_scale_threshold", "640");
     // Giants reads its own figures and Spyro's Adventure's; later games' figures (of the same
     // characters too) it doesn't know.
     SetDefault("portal_menu_games", "Spyro's Adventure;Giants");
