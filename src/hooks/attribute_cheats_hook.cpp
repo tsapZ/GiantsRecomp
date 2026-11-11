@@ -44,6 +44,7 @@
 #include <rex/ppc/context.h>
 #include <rex/system/kernel_state.h>
 
+#include "figure_intro_hook.h"
 #include "script_objects.h"
 
 REXCVAR_DEFINE_BOOL(cheat_always_crit, false, "Extras",
@@ -154,16 +155,22 @@ void Apply(Kind kind, PPCRegister& r3) {
 }  // namespace
 
 void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
-  if (!REXCVAR_GET(cheat_always_crit) && !REXCVAR_GET(cheat_elemental_power)) return;
+  const bool cheats_on = REXCVAR_GET(cheat_always_crit) || REXCVAR_GET(cheat_elemental_power);
+  // figure_intro_hook.cpp: the arrival sequence's waits, true or false (it times the sequence).
+  const bool intro_on = giantsrecomp::figure_intro::On();
+  if (!cheats_on && !intro_on) return;
   uint8_t* base = rex::system::kernel_state()->memory()->virtual_membase();
   // Each op's answer is kept by its address, with its left and right side's pointers to tell a new
   // script's op at the same address (another level) from it. Every check op of every script passes
   // here, so the answers sit in a direct-mapped table (a hash map's lookups cost the hub about 1 % in
   // the multipliers' hook, multiplier_cheats_hook.cpp, 2026-11-06); a slot two ops share is only
-  // worked out again, and Classify's cheap tests keep that cheap.
+  // worked out again, and the classifiers' cheap tests keep that cheap. Each answer is worked out
+  // only once an option that needs it is on (`known` bits).
   struct Slot {
     uint32_t op;
     Kind kind;
+    giantsrecomp::figure_intro::Wait intro;
+    uint8_t known;  // 1 cheats, 2 intro
     uint64_t sides;
   };
   constexpr uint32_t kSlots = 16384;  // the index below is the hash's top 14 bits
@@ -174,6 +181,20 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
   const uint64_t sides =
       (uint64_t(load_and_swap<uint32_t>(base + op + 0x1C)) << 32) | load_and_swap<uint32_t>(base + op + 0x24);
   Slot& slot = table[(op * 2654435761u) >> 18];
-  if (slot.op != op || slot.sides != sides) slot = {op, Classify(base, op), sides};
-  if (slot.kind != Kind::kNone) Apply(slot.kind, r3);
+  if (slot.op != op || slot.sides != sides) {
+    slot = {op, Kind::kNone, giantsrecomp::figure_intro::Wait::kNone, 0, sides};
+  }
+  if (cheats_on && !(slot.known & 1)) {
+    slot.kind = Classify(base, op);
+    slot.known |= 1;
+  }
+  if (intro_on && !(slot.known & 2)) {
+    slot.intro = giantsrecomp::figure_intro::Classify(base, op);
+    slot.known |= 2;
+  }
+  if (intro_on && slot.intro != giantsrecomp::figure_intro::Wait::kNone) {
+    giantsrecomp::figure_intro::Apply(slot.intro, r3);
+    return;
+  }
+  if (cheats_on && slot.kind != Kind::kNone) Apply(slot.kind, r3);
 }

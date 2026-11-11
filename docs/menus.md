@@ -55,7 +55,8 @@ marks one to take off, Continue takes them off. See [portal.md](portal.md#portal
   at that rate, its speed stays the same), VSync, render path, graphics card, graphics interface
   (D3D12 or Vulkan).
 - **Game:** language (automatic, English, German, French, Spanish (Spain), Spanish (Latin America),
-  Italian), skip the logo movies, skip the opening movie.
+  Italian), skip the logo movies, skip the opening movie, the figure intro ("Short":
+  `figure_intro_seconds`).
 - **Extras:** Nightmare from the start (`nightmare_from_start`, off; the save isn't changed); no
   health loss (`cheat_no_health_loss`, off; a cheat: achievements don't unlock while it's on).
 - **Portal:** virtual / both / USB / none (`portal_mode`), the portal menu opening by itself, only

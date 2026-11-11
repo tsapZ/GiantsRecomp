@@ -144,7 +144,9 @@ registers = ["r3", "r4"]
 # ops), r31 the op. Found 2026-11-06 from "Combat - Hurt Creature"'s crit and elemental zone checks
 # (decoded from a Level_214 snapshot) to their ops' vtable, as Trap Team's 0x82285CE0.
 # src/hooks/attribute_cheats_hook.cpp sets r3 for those checks only, with cheat_always_crit or
-# cheat_elemental_power on (both off by default); r3 is read only by the compare right after.
+# cheat_elemental_power on, and for the portal's arrival sequence's waits ("UI Update - 4. Loading
+# Tag Complete Seq") once it ran figure_intro_seconds (src/hooks/figure_intro_hook.cpp), all off by
+# default; r3 is read only by the compare right after.
 [[midasm_hook]]
 address = 0x821E2490
 name = "AttributeCheckHook"
