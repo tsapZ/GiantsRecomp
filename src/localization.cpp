@@ -19,7 +19,7 @@ REXCVAR_DECLARE(uint32_t, user_language);
 REXCVAR_DEFINE_STRING(language, "auto", "Game",
                       "Game text/voice language: auto (the Windows display language if it is one "
                       "of the following, else English), english, french, german, spanish (Spain), "
-                      "spanish_latam (Latin America), italian. A raw Xbox 360 language ID (a "
+                      "spanish_latam (Latin America), italian, portuguese. A raw Xbox 360 language ID (a "
                       "number) also works, for languages the disc supports that aren't confirmed here yet.");
 
 namespace giantsrecomp {
@@ -49,6 +49,8 @@ std::string SystemLanguage() {
     }
     case LANG_ITALIAN:
       return "italian";
+    case LANG_PORTUGUESE:
+      return "portuguese";
     default:
       break;
   }
@@ -77,6 +79,8 @@ void ApplyLanguageSetting() {
   // hispanic/vo_*) in the North American set for "spanish_latam" (GiantsRecomp #31).
   static const std::unordered_map<std::string, uint32_t> kNames = {
       {"english", 1}, {"german", 3}, {"french", 4}, {"spanish", 5}, {"spanish_latam", 5}, {"italian", 6},
+      // Portuguese (id 9): on the disc too, "Nível" in the HUD (2026-11-11, Core of Light #75).
+      {"portuguese", 9},
   };
 
   std::string setting = Lower(REXCVAR_GET(language));

@@ -331,7 +331,8 @@ SettingsPage GamePage() {
                     {"french", "Fran\xC3\xA7" "ais", "Fran\xC3\xA7" "ais"},
                     {"spanish", "Espa\xC3\xB1ol (Espa\xC3\xB1" "a)", "Espa\xC3\xB1ol (Espa\xC3\xB1" "a)"},
                     {"spanish_latam", "Espa\xC3\xB1ol (Latinoam\xC3\xA9rica)", "Espa\xC3\xB1ol (Latinoam\xC3\xA9rica)"},
-                    {"italian", "Italiano", "Italiano"}}};
+                    {"italian", "Italiano", "Italiano"},
+                    {"portuguese", "Portugu\xC3\xAAs", "Portugu\xC3\xAAs"}}};
   language.restart = true;
   page.settings.push_back(language);
   Setting intro{"skip_intro", "Skip logo movies", "Logo-Videos \xC3\xBC" "berspringen",
