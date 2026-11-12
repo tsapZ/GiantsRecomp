@@ -806,3 +806,10 @@ launcher's achievements screen.
 ## 2026-11-11: shorter Skylander intro
 
 - **Skylander intro: Short** (F4 > Game, `figure_intro_seconds` 1.5, off by default; Core of Light #65, as in Swap Force, Trap Team, SuperChargers and Imaginators): the figure's show on the portal (its pose, name and battle cry) ends 1.5 s in and the jump into the level follows. Giants shows it in its portal UI script ("UI Update - 4. Loading Tag Complete Seq"): states that wait for `time >= ui data.ui mode timer`, for the figure's animation and for the battle cry; the scripts' check-value hook (0x821E2490, src/hooks/figure_intro_hook.cpp) makes those waits come out as over once the sequence ran that long. The animation check is one op shared with the portal's ambient mode, so it is ended only in a frame the sequence runs in. Measured on the ship with Stealth Elf put on in Chop Chop's place (dev kit, player 1's position every quarter second with the stick held): walking 7.25 s after the placement as in the game, 5.5 s with Short; the loading before the show and the jump keep their time, the HUD as usual.
+
+## 2026-11-12: what's tested, for the README
+
+The README's "What's tested" table (bundle/next4). Story sweep with the developer kit the night before: all 24 story
+levels loaded, none failed, pictures alike to the night before. Smoke (the save route and the menus) on D3D12 and on
+Vulkan with the SDK's native-surfaces fix (Core of Light #76): both ok. The other rows come from the entries
+above and docs/roadmap.md.

@@ -117,6 +117,17 @@ The intro with Eon's narration and Chapter 1 play all the way, and in automated 
 story levels load without a crash. Nobody has played the whole game to the end yet, though. Battle
 Mode needs two controllers. If something breaks, please [tell
 me](https://github.com/tsapZ/GiantsRecomp/issues/new/choose).
+
+**What's tested** (as of 2026-11-12):
+
+| | |
+|---|---|
+| Every story level loads | all 24, by script |
+| Played by hand | not much yet; the start of Chapter 1 by script |
+| Real USB portal | not confirmed yet ([#12](https://github.com/tsapZ/GiantsRecomp/issues/12)): tell me if yours works |
+| Two players | player 2 joins, by script; Battle Mode with two controllers is still to do |
+| Graphics | D3D12 and Vulkan, by script |
+
 What's being worked on, for all six games and the launcher: the [roadmap
 board](https://github.com/users/tsapZ/projects/1), and [docs/roadmap.md](docs/roadmap.md) for this
 game. Questions and ideas: [Discussions](https://github.com/tsapZ/SkylandersCoreOfLight/discussions). Known bugs and the details:
