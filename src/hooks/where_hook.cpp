@@ -38,6 +38,7 @@
 #include <rex/system/xmemory.h>
 
 #include "dev/where.h"
+#include "portal_rex/soul_gems.h"
 
 namespace {
 
@@ -83,6 +84,14 @@ std::string LevelOfArchive(std::string_view path) {
   return it != g_spelling.end() ? it->second : name;
 }
 
+// The Soul Gem movies (skylanders-portal soul_gems.h): movies\<Name>.mov, one per Skylander
+// (Bash.mov, TreeRex.mov); only the catalog's names count (not ATVInewlogo_640, FMV01).
+std::string SoulGemOf(std::string_view path) {
+  if (!skylanders::InFolder(path, "movies")) return {};
+  const std::string_view stem = skylanders::FileStem(path, ".mov");
+  return stem.empty() ? std::string() : skylanders::SkylanderNamed(stem);
+}
+
 }  // namespace
 
 namespace giantsrecomp {
@@ -96,6 +105,7 @@ void InstallWhere(const std::filesystem::path& game_data_root) {
     }
   }
   skylanders::dev::WatchLevelArchives(&LevelOfArchive);
+  skylanders::WatchSoulGems(&SoulGemOf);
 }
 
 }  // namespace giantsrecomp
