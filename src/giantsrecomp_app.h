@@ -300,6 +300,9 @@ class GiantsrecompApp : public rex::ReXApp {
 
   void OnCreateDialogs(rex::ui::ImGuiDrawer* drawer) override {
     skylanders::RegisterPortalMenu(drawer, &app_context(), immediate_drawer());
+    // Giants writes the gold to the toy only at area changes: lifting the Skylander when the portal menu
+    // opens and putting it back with B lost the gold collected since (Core of Light #99).
+    skylanders::KeepSkylanderOnWhileMenuOpen(true);
     // The portal menu's options (shown games, only my figures) go into the settings file.
     skylanders::SetPortalMenuConfigPath(settings_path_);
     // L3 + R3 or F9: which controller plays as which player.
