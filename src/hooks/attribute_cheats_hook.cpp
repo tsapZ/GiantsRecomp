@@ -34,6 +34,8 @@
 // variable instance (type 820DF500) at +8. Each op is classified once by its variables' names and the
 // answer kept by op address. Nothing is written to the game's memory.
 
+#include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 
@@ -52,11 +54,60 @@ REXCVAR_DEFINE_BOOL(cheat_always_crit, false, "Extras",
 REXCVAR_DEFINE_BOOL(cheat_elemental_power, false, "Extras",
                     "Your Skylanders get their element's bonus in every area, as if each area were "
                     "theirs");
+// The owner's #18 (2026-11-17, as in Spyro's Adventure and Trap Team): talks and cutscenes skippable
+// with the skip button. Read 2026-11-17 from the Level_214 snapshot (kit giants_op_context.py): the
+// cutscene update asks only after a player's controller pressed (a "find subset" over the joined
+// players' controllers) and the scene has run a second:
+//
+//   check [current cutscene.cutscene definition.skippable] == 0      (skip the next 10 ops if false)
+//     check [... skippable in replays] > 0 and [adventure data.complete] > 0: skippable on a replay
+//     else the press is turned down
+//
+// and a talk's line the same way: `check [dialogue ui.text data.skippable] == 0` jumps past the
+// skip, else the debounce timer, the activating controllers and "Dialogue Internal - Skip Dialogue
+// UI". With skip_talks on, a check of a cutscene definition's or a talk line's "skippable" against
+// the literal 0 comes out as if it were 1 (== 0 false; != 0 and > 0 true), so a press skips every
+// scene and line; nothing is skipped without a press, and the scenes' own data stays as it is.
+REXCVAR_DEFINE_BOOL(skip_talks, false, "Game",
+                    "Every cutscene and talk can be skipped, also those the game only lets you skip "
+                    "on a replay");
 
 namespace {
 
 using giantsrecomp::script::NameIs;
 using rex::memory::load_and_swap;
+
+// A check of a cutscene definition's or a talk line's "skippable" against the literal 0 (skip_talks):
+// the result that makes it skippable (0 for ==, 1 for != and >), plus 2 for a cutscene's (a talk
+// line's check runs every frame of the talk, a cutscene's only on a press), or -1 for any other check.
+int SkippableResult(uint8_t* base, uint32_t op) {
+  const uint32_t oper = load_and_swap<uint32_t>(base + op + 0x20);
+  if (oper != 1 && oper != 4 && oper != 5) return -1;
+  const uint32_t rhs = load_and_swap<uint32_t>(base + op + 0x24);
+  const uint32_t stack = rhs ? load_and_swap<uint32_t>(base + rhs + 8) : 0;
+  if (!stack || load_and_swap<uint32_t>(base + stack + 8) != 0 ||
+      load_and_swap<uint32_t>(base + stack + 0x20) != 0) {
+    return -1;
+  }
+  // Cheap tests first, reading only what the game has just used (the op's path stack, its count and
+  // items, the last item's type, as Classify): while the option is on, every "== 0" check of every script
+  // comes here, and the name compares below ask the memory's protection (system calls). With them for
+  // every such check Giants ran at 15-18 FPS in a crash run (2026-11-17). Both checks have a path of three
+  // variables (type 820DFA78; Level_214 snapshot): "current cutscene.cutscene definition.skippable" and
+  // "dialogue ui.text data.skippable".
+  const uint32_t path = load_and_swap<uint32_t>(base + op + 0x1C);
+  const uint32_t count = path ? load_and_swap<uint32_t>(base + path + 8) : 0;
+  const uint32_t items = path ? load_and_swap<uint32_t>(base + path + 0x14) : 0;
+  if (count != 3 || !items) return -1;
+  const uint32_t owner = load_and_swap<uint32_t>(base + items + 4);
+  const uint32_t last = load_and_swap<uint32_t>(base + items + 8);
+  if (!last || !owner || load_and_swap<uint32_t>(base + last) != 0x820DFA78) return -1;
+  if (!NameIs(base, last + 0x1C, "skippable")) return -1;
+  const int result = oper == 1 ? 0 : 1;
+  if (NameIs(base, owner + 0x1C, "cutscene definition")) return result | 2;
+  if (NameIs(base, owner + 0x1C, "text data")) return result;
+  return -1;
+}
 
 enum class Kind : uint8_t {
   kNone,
@@ -158,7 +209,8 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
   const bool cheats_on = REXCVAR_GET(cheat_always_crit) || REXCVAR_GET(cheat_elemental_power);
   // figure_intro_hook.cpp: the arrival sequence's waits, true or false (it times the sequence).
   const bool intro_on = giantsrecomp::figure_intro::On();
-  if (!cheats_on && !intro_on) return;
+  const bool skip_on = REXCVAR_GET(skip_talks);
+  if (!cheats_on && !intro_on && !skip_on) return;
   uint8_t* base = rex::system::kernel_state()->memory()->virtual_membase();
   // Each op's answer is kept by its address, with its left and right side's pointers to tell a new
   // script's op at the same address (another level) from it. Every check op of every script passes
@@ -170,7 +222,8 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
     uint32_t op;
     Kind kind;
     giantsrecomp::figure_intro::Wait intro;
-    uint8_t known;  // 1 cheats, 2 intro
+    uint8_t known;  // 1 cheats, 2 intro, 4 skippable
+    int8_t skippable;  // SkippableResult
     uint64_t sides;
   };
   constexpr uint32_t kSlots = 16384;  // the index below is the hash's top 14 bits
@@ -182,7 +235,7 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
       (uint64_t(load_and_swap<uint32_t>(base + op + 0x1C)) << 32) | load_and_swap<uint32_t>(base + op + 0x24);
   Slot& slot = table[(op * 2654435761u) >> 18];
   if (slot.op != op || slot.sides != sides) {
-    slot = {op, Kind::kNone, giantsrecomp::figure_intro::Wait::kNone, 0, sides};
+    slot = {op, Kind::kNone, giantsrecomp::figure_intro::Wait::kNone, 0, -1, sides};
   }
   if (cheats_on && !(slot.known & 1)) {
     slot.kind = Classify(base, op);
@@ -195,6 +248,36 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
   if (intro_on && slot.intro != giantsrecomp::figure_intro::Wait::kNone) {
     giantsrecomp::figure_intro::Apply(slot.intro, r3);
     return;
+  }
+  if (skip_on) {
+    if (!(slot.known & 4)) {
+      slot.skippable = int8_t(SkippableResult(base, op));
+      slot.known |= 4;
+    }
+    if (slot.skippable >= 0) {
+      const uint64_t skippable = uint64_t(slot.skippable & 1);
+      if (slot.skippable & 2) {
+        // Read after a player's press (the "find subset" over the joined players' controllers before
+        // it); at most a line every 2 seconds, in case a scene asks on more frames.
+        static std::atomic<int64_t> last_ms{-10000};
+        const int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::steady_clock::now().time_since_epoch())
+                                .count();
+        if (now - last_ms.load() >= 2000) {
+          last_ms.store(now);
+          REXLOG_INFO("Skip talks: a cutscene's skip check ({})",
+                      r3.u64 == skippable ? "the game allows it anyway" : "the game alone wouldn't");
+        }
+      } else {
+        static bool logged = false;
+        if (!logged) {
+          logged = true;
+          REXLOG_INFO("Skip talks: a talk's lines can be skipped");
+        }
+      }
+      r3.u64 = skippable;
+      return;
+    }
   }
   if (cheats_on && slot.kind != Kind::kNone) Apply(slot.kind, r3);
 }
