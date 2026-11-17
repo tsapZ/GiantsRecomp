@@ -73,6 +73,7 @@ REXCVAR_DEFINE_BOOL(skip_talks, false, "Game",
 namespace {
 
 using giantsrecomp::script::NameIs;
+using rex::memory::load_and_swap;
 
 // A check of a cutscene definition's or a talk line's "skippable" against the literal 0 (skip_talks):
 // the result that makes it skippable (0 for ==, 1 for != and >), or -1 for any other check.
@@ -93,7 +94,6 @@ int SkippableResult(uint8_t* base, uint32_t op) {
   }
   return oper == 1 ? 0 : 1;
 }
-using rex::memory::load_and_swap;
 
 enum class Kind : uint8_t {
   kNone,
