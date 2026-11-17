@@ -34,6 +34,8 @@
 // variable instance (type 820DF500) at +8. Each op is classified once by its variables' names and the
 // answer kept by op address. Nothing is written to the game's memory.
 
+#include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 
@@ -76,7 +78,8 @@ using giantsrecomp::script::NameIs;
 using rex::memory::load_and_swap;
 
 // A check of a cutscene definition's or a talk line's "skippable" against the literal 0 (skip_talks):
-// the result that makes it skippable (0 for ==, 1 for != and >), or -1 for any other check.
+// the result that makes it skippable (0 for ==, 1 for != and >), plus 2 for a cutscene's (a talk
+// line's check runs every frame of the talk, a cutscene's only on a press), or -1 for any other check.
 int SkippableResult(uint8_t* base, uint32_t op) {
   const uint32_t oper = load_and_swap<uint32_t>(base + op + 0x20);
   if (oper != 1 && oper != 4 && oper != 5) return -1;
@@ -88,11 +91,11 @@ int SkippableResult(uint8_t* base, uint32_t op) {
   }
   const uint32_t last = giantsrecomp::script::LastItem(base, op + 0x1C);
   const uint32_t owner = giantsrecomp::script::StackItem(base, op + 0x1C, -2);
-  if (!last || !owner || !NameIs(base, last + 0x1C, "skippable") ||
-      !(NameIs(base, owner + 0x1C, "cutscene definition") || NameIs(base, owner + 0x1C, "text data"))) {
-    return -1;
-  }
-  return oper == 1 ? 0 : 1;
+  if (!last || !owner || !NameIs(base, last + 0x1C, "skippable")) return -1;
+  const int result = oper == 1 ? 0 : 1;
+  if (NameIs(base, owner + 0x1C, "cutscene definition")) return result | 2;
+  if (NameIs(base, owner + 0x1C, "text data")) return result;
+  return -1;
 }
 
 enum class Kind : uint8_t {
@@ -241,12 +244,27 @@ void AttributeCheckHook(PPCRegister& r3, PPCRegister& r31) {
       slot.known |= 4;
     }
     if (slot.skippable >= 0) {
-      static bool logged = false;
-      if (!logged) {
-        logged = true;
-        REXLOG_INFO("Skip talks: a cutscene's or talk's skippable check read as skippable");
+      const uint64_t skippable = uint64_t(slot.skippable & 1);
+      if (slot.skippable & 2) {
+        // Read after a player's press (the "find subset" over the joined players' controllers before
+        // it); at most a line every 2 seconds, in case a scene asks on more frames.
+        static std::atomic<int64_t> last_ms{-10000};
+        const int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::steady_clock::now().time_since_epoch())
+                                .count();
+        if (now - last_ms.load() >= 2000) {
+          last_ms.store(now);
+          REXLOG_INFO("Skip talks: a cutscene's skip check ({})",
+                      r3.u64 == skippable ? "the game allows it anyway" : "the game alone wouldn't");
+        }
+      } else {
+        static bool logged = false;
+        if (!logged) {
+          logged = true;
+          REXLOG_INFO("Skip talks: a talk's lines can be skipped");
+        }
       }
-      r3.u64 = uint64_t(slot.skippable);
+      r3.u64 = skippable;
       return;
     }
   }
