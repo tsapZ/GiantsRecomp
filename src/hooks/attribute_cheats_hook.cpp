@@ -89,9 +89,20 @@ int SkippableResult(uint8_t* base, uint32_t op) {
       load_and_swap<uint32_t>(base + stack + 0x20) != 0) {
     return -1;
   }
-  const uint32_t last = giantsrecomp::script::LastItem(base, op + 0x1C);
-  const uint32_t owner = giantsrecomp::script::StackItem(base, op + 0x1C, -2);
-  if (!last || !owner || !NameIs(base, last + 0x1C, "skippable")) return -1;
+  // Cheap tests first, reading only what the game has just used (the op's path stack, its count and
+  // items, the last item's type, as Classify): while the option is on, every "== 0" check of every script
+  // comes here, and the name compares below ask the memory's protection (system calls). With them for
+  // every such check Giants ran at 15-18 FPS in a crash run (2026-11-17). Both checks have a path of three
+  // variables (type 820DFA78; Level_214 snapshot): "current cutscene.cutscene definition.skippable" and
+  // "dialogue ui.text data.skippable".
+  const uint32_t path = load_and_swap<uint32_t>(base + op + 0x1C);
+  const uint32_t count = path ? load_and_swap<uint32_t>(base + path + 8) : 0;
+  const uint32_t items = path ? load_and_swap<uint32_t>(base + path + 0x14) : 0;
+  if (count != 3 || !items) return -1;
+  const uint32_t owner = load_and_swap<uint32_t>(base + items + 4);
+  const uint32_t last = load_and_swap<uint32_t>(base + items + 8);
+  if (!last || !owner || load_and_swap<uint32_t>(base + last) != 0x820DFA78) return -1;
+  if (!NameIs(base, last + 0x1C, "skippable")) return -1;
   const int result = oper == 1 ? 0 : 1;
   if (NameIs(base, owner + 0x1C, "cutscene definition")) return result | 2;
   if (NameIs(base, owner + 0x1C, "text data")) return result;
