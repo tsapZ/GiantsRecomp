@@ -817,3 +817,7 @@ above and docs/roadmap.md.
 ## 2026-11-18: 0.6.0-beta.5
 
 - The setup's version for what came since the last one: The game pauses behind the portal menu again (Start on open, B on close).
+
+## 2026-11-19: shared libraries
+
+- The menus' stone frame and nicer settings rows; controller in the background with real pads.
