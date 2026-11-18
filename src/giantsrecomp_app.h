@@ -303,6 +303,8 @@ class GiantsrecompApp : public rex::ReXApp {
     // Giants writes the gold to the toy only at area changes: lifting the Skylander when the portal menu
     // opens and putting it back with B lost the gold collected since (Core of Light #99).
     skylanders::KeepSkylanderOnWhileMenuOpen(true);
+    // With the Skylander kept on, the game no longer paused by itself: its own pause menu behind the menu.
+    skylanders::PauseGameWhileMenuOpen(true);
     // The portal menu's options (shown games, only my figures) go into the settings file.
     skylanders::SetPortalMenuConfigPath(settings_path_);
     // L3 + R3 or F9: which controller plays as which player.
