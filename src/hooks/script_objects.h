@@ -15,18 +15,23 @@
 
 #include <rex/memory.h>
 #include <rex/memory/utils.h>
+#include <rex/system/kernel_state.h>
+#include <rex/system/xmemory.h>
 
 namespace giantsrecomp::script {
 
-// The guest bytes at `address`, or null when they aren't all readable.
+// The guest bytes at `address`, or null when they aren't all readable. Asked of the guest memory's
+// own page table (its heap's QueryProtect: a lock and a table lookup), not of the host system, whose
+// QueryProtect is a system call: the hooks ask on every expression a level's scripts run for the
+// first time, two calls per pointer they follow. The table is what the game's allocations and frees
+// change (the host pages follow it), so a page it calls readable is mapped.
 inline const uint8_t* Readable(uint8_t* base, uint32_t address, uint32_t size) {
   if (address < 0x10000 || address > 0xFFFFFFFFu - size) return nullptr;
+  rex::memory::Memory* memory = rex::system::kernel_memory();
   for (const uint32_t at : {address, address + size - 1}) {
-    size_t length = 1;
-    rex::memory::PageAccess access = rex::memory::PageAccess::kNoAccess;
-    if (!rex::memory::QueryProtect(base + at, length, access) || access == rex::memory::PageAccess::kNoAccess) {
-      return nullptr;
-    }
+    rex::memory::BaseHeap* heap = memory ? memory->LookupHeap(at) : nullptr;
+    uint32_t protect = 0;
+    if (!heap || !heap->QueryProtect(at, &protect) || !(protect & rex::memory::kMemoryProtectRead)) return nullptr;
   }
   return base + address;
 }
