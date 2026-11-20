@@ -826,3 +826,7 @@ above and docs/roadmap.md.
 
 - On Vulkan at a resolution scale above 1 the depth-of-field no longer reads a pixel off (a haze round the characters).
 - On Vulkan, depth a shader writes itself into a float24 depth target is no longer twice too large (Imaginators' hub light cone was missing).
+
+## 2026-11-20: shared libraries
+
+- Laytonator2's PlayStation button prompts (Core of Light #112).
