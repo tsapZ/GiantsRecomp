@@ -72,6 +72,7 @@ set(GIANTSRECOMP_SOURCES
     src/hooks/language_region_hook.cpp
     src/hooks/multiplier_cheats_hook.cpp
     src/hooks/scene_size_hook.cpp
+    src/hooks/soul_gem_hook.cpp
     src/hooks/ultrawide_hook.cpp
     src/hooks/where_hook.cpp
 )
