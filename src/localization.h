@@ -13,4 +13,8 @@ void ApplyLanguageSetting();
 // ApplyLanguageSetting.
 bool LatinAmericanSpanish();
 
+// Whether the language is Dutch or one of the Nordic four: English with the console's country, which the game has
+// only in its European language set (the region hook reports Europe then). Valid after ApplyLanguageSetting.
+bool CountryLanguage();
+
 }  // namespace giantsrecomp
