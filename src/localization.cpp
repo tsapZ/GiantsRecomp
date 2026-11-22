@@ -16,18 +16,36 @@
 
 // Defined in the SDK (xam_user.cpp); both XGetLanguage and ExGetXConfigSetting read this.
 REXCVAR_DECLARE(uint32_t, user_language);
+// The console's country (the SDK's xam_locale.cpp), XGetCountry and the XConfig setting.
+REXCVAR_DECLARE(uint32_t, user_country);
 
 REXCVAR_DEFINE_STRING(language, "auto", "Game",
                       "Game text/voice language: auto (the Windows display language if it is one "
                       "of the following, else English), english, french, german, spanish (Spain), "
-                      "spanish_latam (Latin America), italian, portuguese. A raw Xbox 360 language ID (a "
-                      "number) also works, for languages the disc supports that aren't confirmed here yet.");
+                      "spanish_latam (Latin America), italian, portuguese, dutch, swedish, norwegian, "
+                      "danish, finnish. A raw Xbox 360 language ID (a number) also works, for experiments.");
 
 namespace giantsrecomp {
 
 namespace {
 
 bool g_latin_american_spanish = false;
+bool g_country_language = false;
+
+// Dutch and the Nordic four aren't Xbox 360 language ids: as Spyro's Adventure (its localization.cpp, SSA #47),
+// Giants takes them from English and the console's country, and only in its European language set (the region
+// hook's mask: Danish, Dutch, Finnish, Norwegian, Swedish); every disc carries all twelve language packs
+// (global.bld, the character archives). Core of Light #118. The countries are XC_COUNTRY ids.
+const std::unordered_map<std::string, uint32_t>& CountryLanguages() {
+  static const std::unordered_map<std::string, uint32_t> kLanguages = {
+      {"dutch", 74u},      // XC_COUNTRY_NL
+      {"swedish", 90u},    // XC_COUNTRY_SE
+      {"norwegian", 75u},  // XC_COUNTRY_NO
+      {"danish", 25u},     // XC_COUNTRY_DK
+      {"finnish", 32u},    // XC_COUNTRY_FI
+  };
+  return kLanguages;
+}
 
 std::string Lower(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
@@ -52,6 +70,16 @@ std::string SystemLanguage() {
       return "italian";
     case LANG_PORTUGUESE:
       return "portuguese";
+    case LANG_DUTCH:
+      return "dutch";
+    case LANG_SWEDISH:
+      return "swedish";
+    case LANG_NORWEGIAN:
+      return "norwegian";
+    case LANG_DANISH:
+      return "danish";
+    case LANG_FINNISH:
+      return "finnish";
     default:
       break;
   }
@@ -59,7 +87,7 @@ std::string SystemLanguage() {
 #else
   const std::string lang = skylanders::PosixSystemLanguage(true);
   if (lang == "german" || lang == "french" || lang == "spanish" || lang == "spanish_latam" ||
-      lang == "italian" || lang == "portuguese") {
+      lang == "italian" || lang == "portuguese" || CountryLanguages().count(lang) != 0) {
     return lang;
   }
   return "english";
@@ -102,6 +130,17 @@ void ApplyLanguageSetting() {
     REXLOG_INFO("Language: {} (id {})", setting, it->second);
     return;
   }
+  // Dutch and the Nordic four: English with their country, in the European set (the region hook asks
+  // CountryLanguage()). A country set directly (--user_country) stays.
+  if (auto it = CountryLanguages().find(setting); it != CountryLanguages().end()) {
+    g_country_language = true;
+    REXCVAR_SET(user_language, 1u);
+    if (!rex::cvar::HasNonDefaultValue("user_country")) {
+      REXCVAR_SET(user_country, it->second);
+    }
+    REXLOG_INFO("Language: {} (English with the country {})", setting, REXCVAR_GET(user_country));
+    return;
+  }
 
   uint32_t numeric_id = 0;
   auto [ptr, ec] = std::from_chars(setting.data(), setting.data() + setting.size(), numeric_id);
@@ -117,5 +156,7 @@ void ApplyLanguageSetting() {
 }
 
 bool LatinAmericanSpanish() { return g_latin_american_spanish; }
+
+bool CountryLanguage() { return g_country_language; }
 
 }  // namespace giantsrecomp

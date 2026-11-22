@@ -40,7 +40,8 @@ constexpr uint32_t kEuropeRegion = 0x2FE;
 void GameRegionForLanguage(PPCRegister& r3) {
   const uint32_t language = REXCVAR_GET(user_language);
   const bool spain_spanish = language == kSpanish && !giantsrecomp::LatinAmericanSpanish();
-  if (language != kGerman && language != kItalian && !spain_spanish) return;
+  // Dutch and the Nordic four (English with their country, localization.cpp) are in the European set only.
+  if (language != kGerman && language != kItalian && !spain_spanish && !giantsrecomp::CountryLanguage()) return;
   REXLOG_INFO("Language: reporting region {:X} instead of {:X}, for the European language set",
               kEuropeRegion, r3.u32);
   r3.u64 = kEuropeRegion;
