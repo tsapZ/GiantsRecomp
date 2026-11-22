@@ -39,13 +39,27 @@ constexpr char kGemMacro[] = "System - Achievements - Check Soul Gem Achievement
 std::array<std::atomic<uint32_t>, 4> g_gem{};
 std::array<std::atomic<uint32_t>, 8192> g_other{};
 
+// The definition's name compared straight, without script_objects.h's checked reads: those ask the system for the
+// page protection twice per read, and this runs for every macro use of every script. With the cache below missing
+// (more definitions than slots: they are per object), that cost Trap Team 0.6.0-beta.5 up to 40 % of its frame rate
+// (CoL #71, a player's report 2026-11-21; dev kit A/B 176 -> 110 FPS in the Academy, 145 -> 85 in Level_313). The
+// op is the one the game is running, so its definition and the definition's name are live; a name pointer outside
+// the guest's heap and image is taken as no name. The first byte decides most of them.
+bool NameIsGemMacro(uint8_t* base, uint32_t def) {
+  const uint32_t name = rex::memory::load_and_swap<uint32_t>(base + def + 8) & ~1u;  // the tag bit off
+  constexpr uint32_t kSize = uint32_t(sizeof(kGemMacro));                             // with the terminator
+  if (name < 0x40000000u || name > 0xC0000000u - kSize) return false;
+  const uint8_t* text = base + name;
+  return text[0] == uint8_t(kGemMacro[0]) && std::memcmp(text, kGemMacro, kSize) == 0;
+}
+
 bool IsGemMacro(uint8_t* base, uint32_t def) {
   for (const auto& g : g_gem) {
     if (g.load(std::memory_order_relaxed) == def) return true;
   }
   std::atomic<uint32_t>& other = g_other[(def >> 2) % g_other.size()];
   if (other.load(std::memory_order_relaxed) == def) return false;
-  if (!giantsrecomp::script::NameIs(base, def + 8, kGemMacro)) {
+  if (!NameIsGemMacro(base, def)) {
     other.store(def, std::memory_order_relaxed);
     return false;
   }
@@ -59,10 +73,11 @@ bool IsGemMacro(uint8_t* base, uint32_t def) {
 void MacroUsed(uint8_t* base, uint32_t op) {
   if (op < 0x10000 || op > 0xFFFFFF00u) return;
   const uint32_t def = rex::memory::load_and_swap<uint32_t>(base + op + 0x3C);
+  if (def < 0x40000000u || def > 0xBFFFFF00u) return;  // (the name is read at +8)
 #if defined(SKYLANDERS_DEVKIT)
   // The developer kit says once that the hook runs (no pickup needed to see it work).
   static std::atomic<bool> told{false};
-  if (!told.exchange(true)) {
+  if (!told.load(std::memory_order_relaxed) && !told.exchange(true)) {  // (no atomic write per call)
     uint32_t name = 0;
     const uint8_t* text = giantsrecomp::script::ReadU32(base, def + 8, name)
                               ? giantsrecomp::script::Readable(base, name & ~1u, 1)
