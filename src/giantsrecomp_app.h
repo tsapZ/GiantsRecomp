@@ -125,12 +125,12 @@ class GiantsrecompApp : public rex::ReXApp {
     // A wider window with ultrawide_fov: the picture fills it (the camera sees more to the sides)
     // instead of the presenter's black bars, unless present_letterbox was set by hand.
     if (giantsrecomp::UltrawideActive() && !rex::cvar::HasNonDefaultValue("present_letterbox")) {
-      rex::cvar::SetFlagByName("present_letterbox", "false");
+      rex::cvar::SetFlagAsProgramDefault("present_letterbox", "false");
     }
     // A 3D scene larger than the 360's needs more EDRAM than it has (scene_size_hook.cpp), unless
     // edram_tile_count was set by hand.
     if (!REXCVAR_GET(scene_size).empty() && !rex::cvar::HasNonDefaultValue("edram_tile_count")) {
-      rex::cvar::SetFlagByName("edram_tile_count", "4096");
+      rex::cvar::SetFlagAsProgramDefault("edram_tile_count", "4096");
     }
     // The Xenos GPU plugin renders the Xbox 360 command stream; without it nothing is drawn.
     if (config.gpu_plugin.empty()) config.gpu_plugin = "xenos";
@@ -256,7 +256,7 @@ class GiantsrecompApp : public rex::ReXApp {
     // every character composited from it turned black (SwapForceRecomp docs/STATUS.md,
     // 2026-10-17). Kept here as the safe default until this game is checked.
     if (!rex::cvar::HasNonDefaultValue("execute_unclipped_draw_vs_on_cpu") &&
-        !rex::cvar::SetFlagByName("execute_unclipped_draw_vs_on_cpu", "true")) {
+        !rex::cvar::SetFlagAsProgramDefault("execute_unclipped_draw_vs_on_cpu", "true")) {
       REXLOG_WARN("Could not enable execute_unclipped_draw_vs_on_cpu");
     }
   }
@@ -367,7 +367,9 @@ class GiantsrecompApp : public rex::ReXApp {
  private:
   // Sets a setting's default without overriding what the user put in the settings file.
   static void SetDefault(std::string_view name, std::string_view value) {
-    if (!rex::cvar::HasNonDefaultValue(name) && !rex::cvar::SetFlagByName(name, value)) {
+    // A skip because the settings file or the command line set it (a higher source) is no failure.
+    if (!rex::cvar::HasNonDefaultValue(name) && !rex::cvar::SetFlagAsProgramDefault(name, value) &&
+        rex::cvar::GetFlagSource(name) <= rex::cvar::Source::kProgram) {
       REXLOG_WARN("Could not set {} to {}", name, value);
     }
   }
@@ -376,7 +378,7 @@ class GiantsrecompApp : public rex::ReXApp {
   // (e.g. no sharpening, "bilinear") stays chosen.
   static void SetDefaultIfUnset(std::string_view name, std::string_view value) {
     if (rex::cvar::GetFlagSource(name) == rex::cvar::Source::kDefault &&
-        !rex::cvar::SetFlagByName(name, value)) {
+        !rex::cvar::SetFlagAsProgramDefault(name, value)) {
       REXLOG_WARN("Could not set {} to {}", name, value);
     }
   }
