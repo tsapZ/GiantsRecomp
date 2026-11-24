@@ -98,8 +98,11 @@ The setup above is the Windows one. On Linux the same checkout builds natively:
   On ARM64, `just` uses `linux-arm64-release` and names the tarball
   `dist/GiantsRecomp-linux-arm64.tar.gz`; on SteamOS, enable developer mode first.
 
-Unpack the tarball and run `./linux-setup.sh <your ISO>` once: it copies the disc into `rom/` and
-writes `giantsrecomp.toml`. `./giantsrecompiled` starts the game, `--portal_mode=software` runs it
+Unpack the tarball and `cd` into the release directory it creates
+(`giantsrecomp-linux-<arch>-release/`). For an ISO, the setup script needs `xdvdfs` or
+`extract-xiso` on your `PATH`; an already-extracted disc folder works instead. Then run
+`./linux-setup.sh <your ISO or extracted folder>` once: it copies the disc into `rom/` and writes
+`giantsrecomp.toml`. `./giantsrecompiled` starts the game, `--portal_mode=software` runs it
 without a portal.
 
 ## Everyday commands
